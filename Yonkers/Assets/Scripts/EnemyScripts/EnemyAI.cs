@@ -7,9 +7,19 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     [SerializeField] int HP;
 
+    [SerializeField] float moveSpeed;
+
+    [SerializeField] int sightRange;
+
     [SerializeField] bool canMove;
 
+    [SerializeField] bool canJump;
+
     [SerializeField] bool canFly;
+
+    [SerializeField] bool canDodge;
+
+    [SerializeField] bool enragesWhenDamaged;
 
     [SerializeField] bool explodesOnDeath;
 
