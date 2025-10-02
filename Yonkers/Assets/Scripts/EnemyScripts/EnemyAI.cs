@@ -7,6 +7,12 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     [SerializeField] int HP;
 
+    [SerializeField] bool canMove;
+
+    [SerializeField] bool canFly;
+
+    [SerializeField] bool explodesOnDeath;
+
     Color colorOrig;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
