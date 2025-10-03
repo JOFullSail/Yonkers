@@ -1,15 +1,16 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour, IDamage
 {
     [SerializeField] Renderer model;
 
+    [SerializeField] NavMeshAgent agent;
+
     [SerializeField] int HP;
 
     [SerializeField] float moveSpeed;
-
-    [SerializeField] int sightRange;
 
     [SerializeField] bool canMove;
 
@@ -25,6 +26,8 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     Color colorOrig;
 
+    protected bool playerInRange;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -34,7 +37,7 @@ public class EnemyAI : MonoBehaviour, IDamage
     // Update is called once per frame
     void Update()
     {
-
+        LookForPlayer();
     }
 
     public void takeDamage(int amount)
@@ -52,10 +55,32 @@ public class EnemyAI : MonoBehaviour, IDamage
             
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+            playerInRange = false;
+    }
+
     IEnumerator flashRed()
     {
         model.material.color = Color.red;
         yield return new WaitForSeconds(0.1f);
         model.material.color = colorOrig;
+    }
+
+    protected bool LookForPlayer()
+    {
+        if (playerInRange)
+            agent.SetDestination(GameManager.instance.player.transform.position);
+
+        return playerInRange;
     }
 }
