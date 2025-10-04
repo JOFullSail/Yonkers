@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public class playerController : MonoBehaviour
+public class playerController : MonoBehaviour, IDamage
 {
     [SerializeField] CharacterController controller;
-
     [SerializeField] LayerMask ignoreLayer;
+
+    [SerializeField] int HP;
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
     [SerializeField] int jumpSpeed;
@@ -20,6 +21,7 @@ public class playerController : MonoBehaviour
     Vector3 playerVel;
 
     int jumpCount;
+    int hpOrig;
 
     float shootTimer;
 
@@ -28,7 +30,7 @@ public class playerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        hpOrig = HP;
     }
 
     // Update is called once per frame
@@ -59,7 +61,7 @@ public class playerController : MonoBehaviour
         jump();
         controller.Move(playerVel * Time.deltaTime);
 
-        if (Input.GetButton("Fire1") && shootTimer >= shootRate)
+        if (!gameManager.instance.isPaused && Input.GetButton("Fire1") && shootTimer >= shootRate)
         {
             shoot();
         }
@@ -103,6 +105,16 @@ public class playerController : MonoBehaviour
             }
 
             Debug.Log(hit.collider.name); // logs info to the debug status bar.
+        }
+    }
+
+    public void takeDamage(int amount)
+    {
+        HP -= amount;
+
+        if (HP <= 0)
+        {
+            gameManager.instance.playerLose();
         }
     }
 }
