@@ -1,3 +1,4 @@
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -5,10 +6,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask ignoreLayer;
     [SerializeField] CharacterController controller;
 
-    [SerializeField] int speed;
-    [SerializeField] int sprintMod;
+    [SerializeField] float Speed0;
+    [SerializeField] float MinSpeed;
+    [SerializeField] float MaxSpeed;
+    [SerializeField] float speedAccel;
+    [SerializeField] float speedDeaccel;
+    [SerializeField] float sprintMod;
     [SerializeField] int jumpSpeed;
     [SerializeField] int jumpCountMax;
+
+
     [SerializeField] int gravity;
 
     [SerializeField] int shootDamage;
@@ -16,28 +23,34 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float shootRate;
 
     Vector3 moveDir;
+    Vector3 MomentumDir;
+    Vector3 CameraDir; //here in case you want to use camera as the way of controlling momentum.
     Vector3 playerVel;
-
+    public GameObject player;
+    public PlayerController playerScript;
+    Vector3 camfor = Camera.main.transform.forward;
     int jumpCount;
 
     float shootTimer;
-
+    float currentSpeed;
     bool isSprinting;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        currentSpeed = Speed0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.yellow);
+        Debug.DrawRay(Camera.main.transform.position, camfor * shootDist, Color.yellow);
+        Vector3 camdown = camfor;
+        camdown.y /= 2;
+        Debug.DrawRay(Camera.main.transform.position, camdown * shootDist, Color.blue);
         shootTimer += Time.deltaTime;
-
+        CameraDir = camfor;
         movement();
-
         sprint();
     }
 
@@ -50,10 +63,25 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            //currentSpeed += speedAccel; slopes?
             playerVel.y -= gravity * Time.deltaTime;
         }
-        moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-        controller.Move(moveDir * speed * Time.deltaTime);
+        //if (controller.isGrounded && player.DrawRay
+        //{
+
+        //}
+        if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < MaxSpeed)
+        {
+            moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+            MomentumDir = moveDir;
+            currentSpeed += speedAccel * Time.deltaTime;
+            controller.Move(moveDir * currentSpeed * Time.deltaTime);
+        }
+        else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > Speed0)
+        {
+            currentSpeed -= speedDeaccel * Time.deltaTime;
+            controller.Move(MomentumDir * currentSpeed * Time.deltaTime);
+        }
 
         jump();
         controller.Move(playerVel * Time.deltaTime);
@@ -64,13 +92,13 @@ public class PlayerController : MonoBehaviour
 
     void sprint()
     {
-        if(Input.GetButtonDown("Sprint"))
+        if(Input.GetButtonDown("Shift"))
         {
-            speed *= sprintMod;
+            currentSpeed *= sprintMod;
         }
-        else if(Input.GetButtonUp("Sprint"))
+        else if(Input.GetButtonUp("Shift"))
         {
-            speed /= sprintMod;
+            currentSpeed /= sprintMod;
         }
     }
 
