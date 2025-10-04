@@ -22,15 +22,23 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     [SerializeField] bool enragesWhenDamaged;
 
+    [SerializeField] int enrageSpeedIncrease;
+
     [SerializeField] bool explodesOnDeath;
+    [SerializeField] GameObject explosionPrefab;
+    [SerializeField] int explosionDamage;
 
     Color colorOrig;
 
     protected bool playerInRange;
 
+    protected bool alreadyEnraged;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        alreadyEnraged = false;
+
         colorOrig = model.material.color;
     }
 
@@ -46,11 +54,27 @@ public class EnemyAI : MonoBehaviour, IDamage
 
         if(HP <= 0)
         {
+            if (explodesOnDeath && explosionPrefab != null)
+            {
+                GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+                Explosion expl = explosion.GetComponent<Explosion>();
+                if (expl != null)
+                    expl.TriggerExplosion(transform.position, explosionDamage);
+            }
+
             Destroy(gameObject);
+
         }
         else
         {
             StartCoroutine(flashRed());
+        }
+
+        if(enragesWhenDamaged && !alreadyEnraged)
+        {
+            moveSpeed += enrageSpeedIncrease;
+
+            alreadyEnraged = true;
         }
             
     }
@@ -78,7 +102,7 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     protected bool LookForPlayer()
     {
-        if (playerInRange)
+        if (playerInRange && canMove)
             agent.SetDestination(GameManager.instance.player.transform.position);
 
         return playerInRange;
