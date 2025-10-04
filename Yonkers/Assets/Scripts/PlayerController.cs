@@ -82,6 +82,13 @@ public class PlayerController : MonoBehaviour
             currentSpeed -= speedDeaccel * Time.deltaTime;
             controller.Move(MomentumDir * currentSpeed * Time.deltaTime);
         }
+        //else if (currentSpeed >= MaxSpeed) // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
+        //{
+        //    moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+        //    MomentumDir = moveDir;
+        //    currentSpeed = MaxSpeed;
+        //    controller.Move(moveDir * currentSpeed * Time.deltaTime);
+        //}
 
         jump();
         controller.Move(playerVel * Time.deltaTime);
