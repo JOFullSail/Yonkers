@@ -67,8 +67,18 @@ public class PlayerController : MonoBehaviour
         {
 
         }
-        if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < MaxSpeed)
+        if (currentSpeed >= MaxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true)) // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
         {
+            moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+            MomentumDir = moveDir;
+            controller.Move(moveDir * currentSpeed * Time.deltaTime);
+        }
+        else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < MaxSpeed)
+        {
+            if (currentSpeed < MinSpeed)
+            {
+                currentSpeed = MinSpeed;
+            }
             moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
             MomentumDir = moveDir;
             currentSpeed += speedAccel * Time.deltaTime;
@@ -77,15 +87,13 @@ public class PlayerController : MonoBehaviour
         else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > Speed0)
         {
             currentSpeed -= speedDeaccel * Time.deltaTime;
+            if (currentSpeed < 0)
+            {
+                currentSpeed = 0;
+            }
             controller.Move(MomentumDir * currentSpeed * Time.deltaTime);
         }
-        //else if (currentSpeed >= MaxSpeed) // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
-        //{
-        //    moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-        //    MomentumDir = moveDir;
-        //    currentSpeed = MaxSpeed;
-        //    controller.Move(moveDir * currentSpeed * Time.deltaTime);
-        //}
+
 
         jump();
         controller.Move(playerVel * Time.deltaTime);
@@ -98,11 +106,13 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetButtonDown("Shift"))
         {
-            currentSpeed *= sprintMod;
+            MaxSpeed *= sprintMod;
+            speedAccel *= sprintMod;
         }
         else if (Input.GetButtonUp("Shift"))
         {
-            currentSpeed /= sprintMod;
+            MaxSpeed /= sprintMod;
+            speedAccel /= sprintMod;
         }
     }
 
