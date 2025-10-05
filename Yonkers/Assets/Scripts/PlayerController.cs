@@ -69,6 +69,13 @@ public class PlayerController : MonoBehaviour
         }
         if (currentSpeed >= MaxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true)) // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
         {
+            if ( currentSpeed > MaxSpeed && Input.GetButton("Shift") == false)
+            {
+                if (currentSpeed >  MaxSpeed + 1)
+                {
+                    currentSpeed -= speedDeaccel * Time.deltaTime;
+                }
+            }
             moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
             MomentumDir = moveDir;
             controller.Move(moveDir * currentSpeed * Time.deltaTime);
