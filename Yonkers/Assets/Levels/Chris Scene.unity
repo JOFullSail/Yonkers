@@ -231,57 +231,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 724507114}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &993234338
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 993234340}
-  - component: {fileID: 993234339}
-  m_Layer: 0
-  m_Name: Gamemanager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &993234339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 993234338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54e5faeb06599ae4282eefebeaaed7d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  menuActive: {fileID: 0}
-  menuPause: {fileID: 0}
-  menuWin: {fileID: 0}
-  menuDead: {fileID: 0}
-  player: {fileID: 1830330164}
-  playerScript: {fileID: 1830330166}
-  isPaused: 0
---- !u!4 &993234340
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 993234338}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -54.3858, y: 0, z: -29.51277}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1031696681
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,9 +374,9 @@ GameObject:
   - component: {fileID: 1092955085}
   - component: {fileID: 1092955084}
   - component: {fileID: 1092955083}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Slope
-  m_TagString: Untagged
+  m_TagString: Slope
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -638,6 +587,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1186343372}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1214428339
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1214428340}
+  m_Layer: 0
+  m_Name: Player Host
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1214428340
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214428339}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.12562, y: 0, z: 12.75318}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1830330165}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1435972551
 GameObject:
   m_ObjectHideFlags: 0
@@ -758,9 +739,10 @@ GameObject:
   - component: {fileID: 1830330165}
   - component: {fileID: 1830330169}
   - component: {fileID: 1830330168}
-  - component: {fileID: 1830330166}
   - component: {fileID: 1830330167}
   - component: {fileID: 1830330170}
+  - component: {fileID: 1830330171}
+  - component: {fileID: 1830330172}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -777,43 +759,13 @@ Transform:
   m_GameObject: {fileID: 1830330164}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: -4.12562, y: 1, z: -12.75318}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1435972554}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1214428340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1830330166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1830330164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ff9e4bfbba4804488e8ac5a2d9840fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  ignoreLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  controller: {fileID: 1830330170}
-  Speed0: 0
-  MinSpeed: 10
-  MaxSpeed: 30
-  speedAccel: 1
-  speedDeaccel: 2
-  sprintMod: 1.25
-  jumpSpeed: 30
-  jumpCountMax: 2
-  gravity: 35
-  shootDamage: 1
-  shootDist: 1
-  shootRate: 1
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
 --- !u!136 &1830330167
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -918,11 +870,60 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1830330171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830330164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ff9e4bfbba4804488e8ac5a2d9840fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  controller: {fileID: 1830330170}
+  Speed0: 0
+  MinSpeed: 10
+  MaxSpeed: 50
+  speedAccel: 3
+  speedDeaccel: 2
+  sprintMod: 1.25
+  jumpSpeed: 400
+  jumpCountMax: 3
+  gravity: 500
+  shootDamage: 1
+  shootDist: 400
+  shootRate: 1
+  slopecheck: {fileID: 1830330172}
+--- !u!135 &1830330172
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830330164}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: -0.6, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 993234340}
   - {fileID: 1031696683}
-  - {fileID: 1830330165}
+  - {fileID: 1214428340}
   - {fileID: 1075166253}

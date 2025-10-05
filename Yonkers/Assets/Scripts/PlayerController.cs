@@ -1,11 +1,12 @@
 using UnityEditor.Rendering;
 using UnityEngine;
+using System.Collections;
+using System.Runtime.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] LayerMask ignoreLayer;
     [SerializeField] CharacterController controller;
-
     [SerializeField] float Speed0;
     [SerializeField] float MinSpeed;
     [SerializeField] float MaxSpeed;
@@ -14,40 +15,36 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float sprintMod;
     [SerializeField] int jumpSpeed;
     [SerializeField] int jumpCountMax;
-
-
     [SerializeField] int gravity;
-
     [SerializeField] int shootDamage;
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
-
+    [SerializeField] Collider slopecheck;
     Vector3 moveDir;
     Vector3 MomentumDir;
     Vector3 CameraDir; //here in case you want to use camera as the way of controlling momentum.
     Vector3 playerVel;
-    public GameObject player;
-    public PlayerController playerScript;
     Vector3 camfor = Camera.main.transform.forward;
     int jumpCount;
-
+    GameObject player;
     float shootTimer;
     float currentSpeed;
     bool isSprinting;
-
+    bool _onSlope;
+    Vector3 camdown = Vector3.down;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         currentSpeed = Speed0;
+        player = GameObject.FindWithTag("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(Camera.main.transform.position, camfor * shootDist, Color.yellow);
-        Vector3 camdown = camfor;
-        camdown.y /= 2;
-        Debug.DrawRay(Camera.main.transform.position, camdown * shootDist, Color.blue);
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.green);
+
+        Debug.DrawRay(player.transform.position,  camdown * shootDist, Color.blue); //ray that looks at the floor
         shootTimer += Time.deltaTime;
         CameraDir = camfor;
         movement();
@@ -66,10 +63,10 @@ public class PlayerController : MonoBehaviour
             //currentSpeed += speedAccel; slopes?
             playerVel.y -= gravity * Time.deltaTime;
         }
-        //if (controller.isGrounded && player.DrawRay
-        //{
+        if (controller.isGrounded && _onSlope == true)
+        {
 
-        //}
+        }
         if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < MaxSpeed)
         {
             moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
@@ -92,11 +89,11 @@ public class PlayerController : MonoBehaviour
 
     void sprint()
     {
-        if(Input.GetButtonDown("Shift"))
+        if (Input.GetButtonDown("Shift"))
         {
             currentSpeed *= sprintMod;
         }
-        else if(Input.GetButtonUp("Shift"))
+        else if (Input.GetButtonUp("Shift"))
         {
             currentSpeed /= sprintMod;
         }
@@ -104,7 +101,7 @@ public class PlayerController : MonoBehaviour
 
     void jump()
     {
-        if(Input.GetButtonDown("Jump") && jumpCount < jumpCountMax)
+        if (Input.GetButtonDown("Jump") && jumpCount < jumpCountMax)
         {
             playerVel.y = jumpSpeed;
             jumpCount++;
@@ -119,7 +116,7 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
         {
             IDamage dmg = hit.collider.GetComponent<IDamage>();
-            if(dmg != null)
+            if (dmg != null)
             {
                 dmg.takeDamage(shootDamage);
             }
@@ -127,4 +124,15 @@ public class PlayerController : MonoBehaviour
             Debug.Log(hit.collider.name);
         }
     }
+
+    //bool onslope()
+    //{
+    //    bool check = false;
+    //    RaycastHit slopehit;
+    //    if (Physics.Raycast(player.transform.position, camdown * shootDist, out slopehit, slopecheck.GetComponent<>))
+    //    {
+    //        check = true;
+    //    }
+    //    return check;
+    //}
 }
