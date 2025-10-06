@@ -890,8 +890,12 @@ MonoBehaviour:
   Speed0: 0
   MinSpeed: 10
   MaxSpeed: 50
-  speedAccel: 3
-  speedDeaccel: 2
+  MinAccel: 1
+  MinDeaccel: 1
+  MaxAccel: 5
+  MaxDeaccel: 10
+  speedAccelRATE: 1.2
+  speedDeaccelRATE: 1.1
   sprintMod: 1.25
   jumpSpeed: 20
   jumpCountMax: 3
