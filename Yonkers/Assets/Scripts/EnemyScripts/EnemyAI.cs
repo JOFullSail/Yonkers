@@ -14,8 +14,6 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     [SerializeField] bool canMove;
 
-    [SerializeField] bool canJump;
-
     [SerializeField] bool canFly;
 
     [SerializeField] bool canDodge;

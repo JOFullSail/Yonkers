@@ -1,43 +1,53 @@
+using UnityEditor.Rendering;
 using UnityEngine;
+using System.Collections;
+using System.Runtime.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] LayerMask ignoreLayer;
     [SerializeField] CharacterController controller;
-
-    [SerializeField] int speed;
-    [SerializeField] int sprintMod;
+    [SerializeField] float Speed0;
+    [SerializeField] float MinSpeed;
+    [SerializeField] float MaxSpeed;
+    [SerializeField] float speedAccel;
+    [SerializeField] float speedDeaccel;
+    [SerializeField] float sprintMod;
     [SerializeField] int jumpSpeed;
     [SerializeField] int jumpCountMax;
     [SerializeField] int gravity;
-
     [SerializeField] int shootDamage;
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
-
+    [SerializeField] Collider slopecheck;
     Vector3 moveDir;
+    Vector3 MomentumDir;
+    Vector3 CameraDir; //here in case you want to use camera as the way of controlling momentum.
     Vector3 playerVel;
-
+    Vector3 camfor = Camera.main.transform.forward;
     int jumpCount;
-
+    GameObject player;
     float shootTimer;
-
+    float currentSpeed;
     bool isSprinting;
-
+    bool _onSlope;
+    Vector3 camdown = Vector3.down;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-        
+        currentSpeed = Speed0;
+        player = GameObject.FindWithTag("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.yellow);
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.green);
+
+        Debug.DrawRay(player.transform.position,  camdown * shootDist, Color.blue); //ray that looks at the floor
         shootTimer += Time.deltaTime;
-
+        CameraDir = camfor;
         movement();
-
         sprint();
     }
 
@@ -50,10 +60,40 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            //currentSpeed += speedAccel; slopes?
             playerVel.y -= gravity * Time.deltaTime;
         }
-        moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-        controller.Move(moveDir * speed * Time.deltaTime);
+        if (controller.isGrounded && _onSlope == true)
+        {
+
+        }
+        if (currentSpeed >= MaxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true)) // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
+        {
+            moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+            MomentumDir = moveDir;
+            controller.Move(moveDir * currentSpeed * Time.deltaTime);
+        }
+        else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < MaxSpeed)
+        {
+            if (currentSpeed < MinSpeed)
+            {
+                currentSpeed = MinSpeed;
+            }
+            moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+            MomentumDir = moveDir;
+            currentSpeed += speedAccel * Time.deltaTime;
+            controller.Move(moveDir * currentSpeed * Time.deltaTime);
+        }
+        else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > Speed0)
+        {
+            currentSpeed -= speedDeaccel * Time.deltaTime;
+            if (currentSpeed < 0)
+            {
+                currentSpeed = 0;
+            }
+            controller.Move(MomentumDir * currentSpeed * Time.deltaTime);
+        }
+
 
         jump();
         controller.Move(playerVel * Time.deltaTime);
@@ -64,19 +104,21 @@ public class PlayerController : MonoBehaviour
 
     void sprint()
     {
-        if(Input.GetButtonDown("Sprint"))
+        if (Input.GetButtonDown("Shift"))
         {
-            speed *= sprintMod;
+            MaxSpeed *= sprintMod;
+            speedAccel *= sprintMod;
         }
-        else if(Input.GetButtonUp("Sprint"))
+        else if (Input.GetButtonUp("Shift"))
         {
-            speed /= sprintMod;
+            MaxSpeed /= sprintMod;
+            speedAccel /= sprintMod;
         }
     }
 
     void jump()
     {
-        if(Input.GetButtonDown("Jump") && jumpCount < jumpCountMax)
+        if (Input.GetButtonDown("Jump") && jumpCount < jumpCountMax)
         {
             playerVel.y = jumpSpeed;
             jumpCount++;
@@ -91,7 +133,7 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
         {
             IDamage dmg = hit.collider.GetComponent<IDamage>();
-            if(dmg != null)
+            if (dmg != null)
             {
                 dmg.takeDamage(shootDamage);
             }
@@ -99,4 +141,15 @@ public class PlayerController : MonoBehaviour
             Debug.Log(hit.collider.name);
         }
     }
+
+    //bool onslope()
+    //{
+    //    bool check = false;
+    //    RaycastHit slopehit;
+    //    if (Physics.Raycast(player.transform.position, camdown * shootDist, out slopehit, slopecheck.GetComponent<>))
+    //    {
+    //        check = true;
+    //    }
+    //    return check;
+    //}
 }
