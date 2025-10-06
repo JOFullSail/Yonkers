@@ -133,6 +133,8 @@ GameObject:
   - component: {fileID: 74138146}
   - component: {fileID: 74138151}
   - component: {fileID: 74138152}
+  - component: {fileID: 74138153}
+  - component: {fileID: 74138154}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -163,9 +165,9 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!23 &74138148
 MeshRenderer:
@@ -192,7 +194,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: f2f94ad54e874bb4bbdb70460dcdbc3c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -286,6 +288,57 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &74138153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74138145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0da4c15d8dc1b1f41915fd4e5babf7e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerKnockback
+  cc: {fileID: 74138152}
+  rb: {fileID: 74138146}
+  physicsCollider: {fileID: 74138154}
+  controlToDisable:
+  - {fileID: 74138151}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  feetOffset: {x: 0, y: 0.2, z: 0}
+  groundRadius: 0.25
+  maxGroundAngle: 55
+  landSpeedThreshold: 0.6
+  minAirTime: 0.2
+  maxAirTime: 3
+  freezeXZRotation: 1
+  maxAirVelocity: 0
+--- !u!136 &74138154
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74138145}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &664642799
 GameObject:
@@ -414,7 +467,7 @@ GameObject:
   - component: {fileID: 1626586080}
   - component: {fileID: 1626586079}
   - component: {fileID: 1626586078}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -755,6 +808,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6910883334449192257, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: afd45fb8e12fa824ab72e19bdc1a8e02, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
