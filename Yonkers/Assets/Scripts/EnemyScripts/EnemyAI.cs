@@ -19,6 +19,8 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     [SerializeField] bool canMove;
 
+    [SerializeField] bool canRotate;
+
     [SerializeField] bool canFly;
 
     [SerializeField] bool canDodge;
@@ -47,8 +49,16 @@ public class EnemyAI : MonoBehaviour, IDamage
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        originalMoveSpeed = baseMoveSpeed;
-        agent.speed = baseMoveSpeed;
+        if(canMove)
+        {
+            originalMoveSpeed = baseMoveSpeed;
+            agent.speed = baseMoveSpeed;
+        }
+        else
+        {
+            originalMoveSpeed = 0;
+            agent.speed = 0;
+        }
 
         alreadyEnraged = false;
 
@@ -182,18 +192,29 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     void faceTarget()
     {
-        Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z));
-        transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * faceTargetSpeed);
+        if(canRotate)
+        {
+            Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z));
+            transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * faceTargetSpeed);
+        }
     }
 
     protected void setnewmovespeed(float newSpeed)
     {
-        baseMoveSpeed = newSpeed;
-        agent.speed = newSpeed;
+        if (canMove)
+        {
+            baseMoveSpeed = newSpeed;
+            agent.speed = newSpeed;
+        }
+        else
+            Debug.Log("Tried to set new move speed for "+ gameObject + ", but it is set as not being allowed to move.");
     }
 
     protected void incrementmovespeed(float speedModifier)
     {
-        agent.speed += speedModifier;
+        if(canMove)
+            agent.speed += speedModifier;
+        else
+            Debug.Log("Tried to increment move speed for " + gameObject + ", but it is set as not being allowed to move.");
     }
 }

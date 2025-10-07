@@ -173,11 +173,12 @@ MonoBehaviour:
   agent: {fileID: 7079760233747805049}
   HP: 3
   faceTargetSpeed: 5
-  FOV: 360
+  FOV: 180
   roamDist: 25
   roamPauseTime: 3
   baseMoveSpeed: 1
   canMove: 1
+  canRotate: 1
   canFly: 0
   canDodge: 0
   enragesWhenDamaged: 0
