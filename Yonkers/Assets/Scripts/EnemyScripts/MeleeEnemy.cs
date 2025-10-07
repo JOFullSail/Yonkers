@@ -22,14 +22,14 @@ public class MeleeEnemy : EnemyAI
     void Update()
     {
         AttackTimer += Time.deltaTime;
-        if(LookForPlayer())
+        if(LookForPlayer() && playerInRange)
         {
 
-            if(AttackTimer >= MeleeDelay )
-            {
+           if(AttackTimer >= MeleeDelay )
+           {
                 dashattack();
                 AttackTimer = 0;
-            }
+           }
             
         }
         
@@ -40,15 +40,17 @@ public class MeleeEnemy : EnemyAI
     {
         
         Vector3 PlayerPosition = GameManager.instance.player.transform.position;
+        Vector3 PushPosition = Vector3.(PlayerPosition.x, 0, PlayerPosition.z);
         RaycastHit Dectected;
-        if(Physics.Raycast(EnemyView.position, (PlayerPosition - EnemyView.position).normalized, out Dectected, DashDistance))
+        float Dist = Vector3.Distance(GameManager.instance.player.transform.position, transform.position);
+        if(Physics.Raycast(EnemyView.position, (PlayerPosition - transform.position).normalized, out Dectected, DashDistance))
         {
 
             if (Dectected.collider.CompareTag("Player"))
             {
                 PlayerinAttackR = true;
                 Debug.Log("Player Dectected");
-                transform.position = Vector3.MoveTowards(transform.position, (PlayerPosition - EnemyView.position).normalized, Time.deltaTime * DashSpeed);
+                transform.position = Vector3.MoveTowards(transform.position, PlayerPosition, Dist);
             }
             else
             {
