@@ -3166,11 +3166,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54e5faeb06599ae4282eefebeaaed7d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  menuActive: {fileID: 4045147509666320716}
+  menuActive: {fileID: 0}
   menuPause: {fileID: 5522034241401635140}
   menuWin: {fileID: 3518356001272338581}
   menuDead: {fileID: 2110107386336820385}
   MainMenu: {fileID: 4045147509666320716}
+  goalObject: {fileID: 0}
   player: {fileID: 0}
   playerScript: {fileID: 0}
   isPaused: 0

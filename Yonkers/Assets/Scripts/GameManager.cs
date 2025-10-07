@@ -29,10 +29,13 @@ public class GameManager : MonoBehaviour
 
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<PlayerController>();
+    }
 
+    private void Start()
+    {
         statePause();
+        menuActive = MainMenu;
         menuActive.SetActive(true);
-
     }
 
     // Update is called once per frame
