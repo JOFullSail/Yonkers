@@ -17,7 +17,7 @@ public class ButtonFunctions : MonoBehaviour
     public void quit()
     {
         #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = true;
+        UnityEditor.EditorApplication.isPlaying = false;
         #else
             Application.Quit();
         #endif 
