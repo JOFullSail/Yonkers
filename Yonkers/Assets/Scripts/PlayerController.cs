@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
                 currentSpeed = 0;
             }
             //CameraDir or MomentumDir
-            controller.Move(CameraDir * currentSpeed * Time.deltaTime);
+            controller.Move(MomentumDir * currentSpeed * Time.deltaTime);
         }
 
 

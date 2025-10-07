@@ -1,6 +1,4 @@
-using Unity.Burst.Intrinsics;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class playerController : MonoBehaviour, IDamage
 {

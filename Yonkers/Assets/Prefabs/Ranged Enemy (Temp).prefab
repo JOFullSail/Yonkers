@@ -174,11 +174,13 @@ MonoBehaviour:
   HP: 3
   moveSpeed: 2
   canMove: 1
-  canJump: 0
   canFly: 0
   canDodge: 0
   enragesWhenDamaged: 0
+  enrageSpeedIncrease: 0
   explodesOnDeath: 0
-  projectile: {fileID: 5759234415074355089, guid: 22bc96d240c6f3048a496b4bf9e91fc1, type: 3}
+  explosionPrefab: {fileID: 0}
+  explosionDamage: 0
+  projectile: {fileID: 8535815344353667313, guid: 3132d7eb14a37164aa72052dd6e68a26, type: 3}
   shootPos: {fileID: 4909106797720894080}
   delayBetweenShots: 1
