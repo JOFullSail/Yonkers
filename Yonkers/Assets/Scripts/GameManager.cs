@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuDead;
     [SerializeField] GameObject MainMenu;
 
+    [SerializeField] GameObject goalObject;
+
     public GameObject player;
     public PlayerController playerScript;
 
@@ -81,7 +83,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
+    public void stateWin()
+    {
+        statePause();
+        menuActive = menuWin;
+        menuActive.SetActive(true);
+    }
+
+
     public void youDied()
     {
         statePause();

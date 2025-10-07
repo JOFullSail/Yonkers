@@ -5,27 +5,47 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
 
+    [Header("General")] 
     [SerializeField] int HP;
-    [SerializeField] int speed;
-    [SerializeField] int sprintMod;
-    [SerializeField] int jumpSpeed;
-    [SerializeField] int jumpCountMax;
-    [SerializeField] int gravity;
+    [SerializeField] int speed; // 12
 
-    [SerializeField] int shootDmg;
-    [SerializeField] int shootDist;
-    [SerializeField] float shootRate;
+    [Header("Jumping")]
+    [SerializeField] int jumpSpeed; // 12
+    [SerializeField] int jumpMaxCount; // 2
+    [SerializeField] float jumpGracePeriod; // 0.175
+    [SerializeField] int gravity; // 35
+
+    [Header("Shooting")]
+    [SerializeField] int shootDmg; // 1
+    [SerializeField] int shootDist; // 15
+    [SerializeField] float shootRate; // 0.5
+
+    [Header("Climbing")]
+    [SerializeField] float climbSpeed; // 
+    [SerializeField] int climbingDist; // 
+    [SerializeField] float climbWallDetection; // 
+    [SerializeField] float climbMaxAngle; // 90
 
 
     Vector3 moveDirec;
     Vector3 playerVel;
 
+    RaycastHit hit;
+
     int jumpCount;
     int hpOrig;
 
+    float jumpTimer;
     float shootTimer;
 
-    bool isSprinting;
+    bool isClimbing;
+
+    // - UNUSED -
+
+    //[SerializeField] int sprintMod; // Speed multiplier.
+
+    //bool isSprinting;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,28 +56,33 @@ public class playerController : MonoBehaviour, IDamage
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.blue);
 
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
+
+        if (!controller.isGrounded) jumpTimer += Time.deltaTime;
+        else jumpTimer = 0;
         shootTimer += Time.deltaTime;
 
         movement();
-
-        sprint(); // will cause a bug (warning for the future lol)
     }
 
     void movement()
     {
+        climb();
+
         if (controller.isGrounded)
         {
             playerVel.y = 0;
             jumpCount = 0;
         }
-        else playerVel.y -= gravity * Time.deltaTime;
+        else if (!isClimbing)
+        {
+            playerVel.y -= gravity * Time.deltaTime;
+        }
 
         moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
         controller.Move(moveDirec * speed * Time.deltaTime);
 
-        
         jump();
         controller.Move(playerVel * Time.deltaTime);
 
@@ -67,36 +92,53 @@ public class playerController : MonoBehaviour, IDamage
         }
     }
 
-    void sprint()
+    void climb()
     {
-        if (Input.GetButtonDown("Sprint"))
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDetection, ~ignoreLayer))
         {
-            speed *= sprintMod;
+            int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
+            if (hit.collider.CompareTag("CanClimb") && controller.slopeLimit <= wallAngle && wallAngle <= climbMaxAngle && !controller.isGrounded && (playerVel.y < 0 || isClimbing))
+            {
+                playerVel.y = climbSpeed;
+                isClimbing = true;
+            }
         }
-        else if (Input.GetButtonUp("Sprint"))
-        {
-            speed /= sprintMod;
-        }
+        else isClimbing = false;
     }
 
     void jump()
     {
-        if (Input.GetButtonDown("Jump") && jumpCount < jumpCountMax)
-        { 
+
+        if (Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount)
+        {
+            if (jumpTimer >= jumpGracePeriod && jumpCount == 0)
+            {
+                ++jumpCount;
+            }
+
             playerVel.y = jumpSpeed;
             ++jumpCount;
         }
     }
 
+    //void sprint()
+    //{
+    //    if (Input.GetButtonDown("Sprint"))
+    //    {
+    //        speed *= sprintMod;
+    //    }
+    //    else if (Input.GetButtonUp("Sprint"))
+    //    {
+    //        speed /= sprintMod;
+    //    }
+    //}
+
     void shoot()
     {
         shootTimer = 0;
 
-        // Only do this if you want to return information on what you did (pos, what it contains, the name)
-        RaycastHit hit; 
-
         // ~ignoreLayer will ignore the player later to prevent the player shooting themselves.
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer)) 
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
         {
             IDamage dmg = hit.collider.GetComponent<IDamage>();
             if (dmg != null)
