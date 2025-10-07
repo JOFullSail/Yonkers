@@ -1,30 +1,46 @@
+using Unity.Burst.Intrinsics;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class playerController : MonoBehaviour, IDamage
 {
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
 
-    [SerializeField] int HP; // Amount of Health Points the player will start with.
-    [SerializeField] int speed; // Normal speed of the player.
-    [SerializeField] int jumpSpeed; // Speed/height of the jump.
-    [SerializeField] int jumpMaxCount; // Total amount of jumps a player can make while on the air (this includes the initial jump).
-    [SerializeField] float jumpGracePeriod; // Time (in seconds) allowed to do the initial jump after falling off a platform.
-    [SerializeField] int gravity; // Player's gravitational pull.
+    [Header("General")] 
+    [SerializeField] int HP;
+    [SerializeField] int speed; // 12
 
-    [SerializeField] int shootDmg; // Amount of HP the player gun can make.
-    [SerializeField] int shootDist; // Player gun range.
-    [SerializeField] float shootRate; // Time (in seconds) until allowed to shoot again.
+    [Header("Jumping")]
+    [SerializeField] int jumpSpeed; // 12
+    [SerializeField] int jumpMaxCount; // 2
+    [SerializeField] float jumpGracePeriod; // 0.175
+    [SerializeField] int gravity; // 35
+
+    [Header("Shooting")]
+    [SerializeField] int shootDmg; // 1
+    [SerializeField] int shootDist; // 15
+    [SerializeField] float shootRate; // 0.5
+
+    [Header("Climbing")]
+    [SerializeField] float climbSpeed; // 
+    [SerializeField] int climbingDist; // 
+    [SerializeField] float climbWallDetection; // 
+    [SerializeField] float climbMaxAngle; // 90
 
 
     Vector3 moveDirec;
     Vector3 playerVel;
+
+    RaycastHit hit;
 
     int jumpCount;
     int hpOrig;
 
     float jumpTimer;
     float shootTimer;
+
+    bool isClimbing;
 
     // - UNUSED -
 
@@ -42,7 +58,8 @@ public class playerController : MonoBehaviour, IDamage
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.blue);
+
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
 
         if (!controller.isGrounded) jumpTimer += Time.deltaTime;
         else jumpTimer = 0;
@@ -53,12 +70,17 @@ public class playerController : MonoBehaviour, IDamage
 
     void movement()
     {
+        climb();
+
         if (controller.isGrounded)
         {
             playerVel.y = 0;
             jumpCount = 0;
         }
-        else playerVel.y -= gravity * Time.deltaTime;
+        else if (!isClimbing)
+        {
+            playerVel.y -= gravity * Time.deltaTime;
+        }
 
         moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
         controller.Move(moveDirec * speed * Time.deltaTime);
@@ -70,6 +92,20 @@ public class playerController : MonoBehaviour, IDamage
         {
             shoot();
         }
+    }
+
+    void climb()
+    {
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDetection, ~ignoreLayer))
+        {
+            int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
+            if (hit.collider.CompareTag("CanClimb") && controller.slopeLimit <= wallAngle && wallAngle <= climbMaxAngle && !controller.isGrounded && (playerVel.y < 0 || isClimbing))
+            {
+                playerVel.y = climbSpeed;
+                isClimbing = true;
+            }
+        }
+        else isClimbing = false;
     }
 
     void jump()
@@ -102,9 +138,6 @@ public class playerController : MonoBehaviour, IDamage
     void shoot()
     {
         shootTimer = 0;
-
-        // Only do this if you want to return information on what you did (pos, what it contains, the name)
-        RaycastHit hit;
 
         // ~ignoreLayer will ignore the player later to prevent the player shooting themselves.
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))

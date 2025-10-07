@@ -374,7 +374,7 @@ GameObject:
   - component: {fileID: 1092955085}
   - component: {fileID: 1092955084}
   - component: {fileID: 1092955083}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Slope
   m_TagString: Slope
   m_Icon: {fileID: 0}
@@ -744,7 +744,7 @@ GameObject:
   - component: {fileID: 1830330171}
   - component: {fileID: 1830330172}
   - component: {fileID: 1830330173}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
