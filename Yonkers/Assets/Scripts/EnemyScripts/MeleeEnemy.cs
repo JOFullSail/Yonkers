@@ -22,7 +22,7 @@ public class MeleeEnemy : EnemyAI
     void Update()
     {
         AttackTimer += Time.deltaTime;
-        if(LookForPlayer() && playerInRange)
+        if(canSeePlayer())
         {
 
            if(AttackTimer >= MeleeDelay )

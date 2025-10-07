@@ -1,7 +1,5 @@
-using UnityEditor.Rendering;
 using UnityEngine;
-using System.Collections;
-using System.Runtime.Serialization;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -33,7 +31,7 @@ public class PlayerController : MonoBehaviour
     Vector3 MomentumDir;
     Vector3 CameraDir; //here in case you want to use camera as the way of controlling momentum.
     Vector3 playerVel;
-    Vector3 camfor = Camera.main.transform.forward;
+    Vector3 camfor;
     int jumpCount;
     GameObject player;
     float shootTimer;
@@ -44,6 +42,7 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        camfor = Camera.main.transform.forward;
         currentSpeed = Speed0;
         currspeedAccel = MinAccel;
         currspeedDeaccel = MinDeaccel;
