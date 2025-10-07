@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuDead;
+    [SerializeField] GameObject MainMenu;
 
     public GameObject player;
     public PlayerController playerScript;
@@ -28,6 +29,7 @@ public class GameManager : MonoBehaviour
         playerScript = player.GetComponent<PlayerController>();
 
         statePause();
+        menuActive.SetActive(true);
 
     }
 
