@@ -3033,8 +3033,8 @@ MonoBehaviour:
   menuPause: {fileID: 5522034241401635140}
   menuWin: {fileID: 3518356001272338581}
   menuDead: {fileID: 2110107386336820385}
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
+  player: {fileID: 5010640151344057421, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+  playerScript: {fileID: 8703998889330178910, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
   isPaused: 0
 --- !u!1 &8222915305709388943
 GameObject:
