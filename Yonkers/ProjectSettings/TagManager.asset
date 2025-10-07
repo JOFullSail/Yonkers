@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - CanClimb
   layers:
   - Default
   - TransparentFX
@@ -11,10 +12,10 @@ TagManager:
   - Player
   - Water
   - UI
-  - Player Bullet
   - Enemy
-  - Enemy Bullet
-  - 
+  - Enemy Projectile
+  - Player Projectile
+  - Ground
   - 
   - 
   - 
