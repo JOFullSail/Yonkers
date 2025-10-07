@@ -10,8 +10,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float Speed0;
     [SerializeField] float MinSpeed;
     [SerializeField] float MaxSpeed;
-    [SerializeField] float speedAccel;
-    [SerializeField] float speedDeaccel;
+    [SerializeField] float MinAccel;
+    [SerializeField] float MinDeaccel;
+    [SerializeField] float MaxAccel;
+    [SerializeField] float MaxDeaccel;
+    [SerializeField] float speedAccelRATE;
+    [SerializeField] float speedDeaccelRATE; //how fast the Deceel ramps up
     [SerializeField] float sprintMod;
     [SerializeField] int jumpSpeed;
     [SerializeField] int jumpCountMax;
@@ -20,6 +24,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
     [SerializeField] Collider slopecheck;
+    float currspeedAccel;
+    float currspeedDeaccel;
+    float speedDeaccelOrig;
+    float speedAccelOrig;
+    float currentSpeed;
     Vector3 moveDir;
     Vector3 MomentumDir;
     Vector3 CameraDir; //here in case you want to use camera as the way of controlling momentum.
@@ -28,15 +37,19 @@ public class PlayerController : MonoBehaviour
     int jumpCount;
     GameObject player;
     float shootTimer;
-    float currentSpeed;
     bool isSprinting;
     bool _onSlope;
     Vector3 camdown = Vector3.down;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         currentSpeed = Speed0;
+        currspeedAccel = MinAccel;
+        currspeedDeaccel = MinDeaccel;
         player = GameObject.FindWithTag("Player");
+        speedDeaccelOrig = currspeedDeaccel;
+        speedAccelOrig = currspeedAccel;
     }
 
     // Update is called once per frame
@@ -44,9 +57,11 @@ public class PlayerController : MonoBehaviour
     {
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.green);
 
-        Debug.DrawRay(player.transform.position,  camdown * shootDist, Color.blue); //ray that looks at the floor
+        Debug.DrawRay(player.transform.position, camdown * shootDist, Color.blue); //ray that looks at the floor
         shootTimer += Time.deltaTime;
-        CameraDir = camfor;
+        Vector3 camwithouty = Camera.main.transform.forward;
+        camwithouty.y = 0;
+        CameraDir  = camwithouty; //no y = no fly!
         movement();
         sprint();
     }
@@ -63,41 +78,52 @@ public class PlayerController : MonoBehaviour
             //currentSpeed += speedAccel; slopes?
             playerVel.y -= gravity * Time.deltaTime;
         }
-        if (controller.isGrounded && _onSlope == true)
-        {
+        //if (controller.isGrounded && _onSlope == true)
+        //{
 
-        }
+        //}
         if (currentSpeed >= MaxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true)) // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
         {
+            if (currentSpeed > MaxSpeed && Input.GetButton("Shift") == false)
+            {
+                if (currentSpeed > MaxSpeed + 1)
+                {
+                    currentSpeed -= currspeedDeaccel * Time.deltaTime;
+                    Ramp();
+                }
+            }
             moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
             MomentumDir = moveDir;
             controller.Move(moveDir * currentSpeed * Time.deltaTime);
         }
         else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < MaxSpeed)
         {
+
             if (currentSpeed < MinSpeed)
             {
                 currentSpeed = MinSpeed;
             }
             moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
             MomentumDir = moveDir;
-            currentSpeed += speedAccel * Time.deltaTime;
+            currentSpeed += currspeedAccel * Time.deltaTime;
+            Ramp();
             controller.Move(moveDir * currentSpeed * Time.deltaTime);
         }
         else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > Speed0)
         {
-            currentSpeed -= speedDeaccel * Time.deltaTime;
+            currentSpeed -= currspeedDeaccel * Time.deltaTime;
+            Ramp();
             if (currentSpeed < 0)
             {
                 currentSpeed = 0;
             }
-            controller.Move(MomentumDir * currentSpeed * Time.deltaTime);
+            //CameraDir or MomentumDir
+            controller.Move(CameraDir * currentSpeed * Time.deltaTime);
         }
 
 
         jump();
         controller.Move(playerVel * Time.deltaTime);
-
         if (Input.GetButton("Fire1") && shootTimer >= shootRate)
             shoot();
     }
@@ -107,12 +133,14 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Shift"))
         {
             MaxSpeed *= sprintMod;
-            speedAccel *= sprintMod;
+            speedAccelRATE *= sprintMod;
+            MinSpeed *= sprintMod;
         }
         else if (Input.GetButtonUp("Shift"))
         {
             MaxSpeed /= sprintMod;
-            speedAccel /= sprintMod;
+            speedAccelRATE /= sprintMod;
+            MinSpeed /= sprintMod;
         }
     }
 
@@ -142,6 +170,36 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Ramp() //used to make Accel and Deacell higher over time.
+    { 
+        if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed < MaxSpeed)
+        {
+            currspeedAccel = speedAccelOrig;
+            if (currentSpeed == Speed0)
+            {
+                currspeedDeaccel = speedDeaccelOrig;
+            }else if (currspeedDeaccel < MaxDeaccel)
+            {
+                    currspeedDeaccel += speedDeaccelRATE * Time.deltaTime;
+
+            }
+        }
+        else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed > Speed0)
+        {
+            currspeedDeaccel = speedDeaccelOrig;
+            if (currentSpeed >= MaxSpeed)
+            {
+                currspeedAccel = MaxSpeed;
+            }
+            else if (currspeedAccel < MaxAccel)
+            {
+                currspeedAccel += speedAccelRATE * Time.deltaTime;
+            }
+           
+        }
+    } 
+    //bugs: accel goes to speed max upon speed reaching max
+    
     //bool onslope()
     //{
     //    bool check = false;
