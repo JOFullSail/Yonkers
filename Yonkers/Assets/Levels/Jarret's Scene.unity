@@ -471,23 +471,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1535497093919512893, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
       propertyPath: m_Name
-      value: Ranged Enemy (Temp)
-      objectReference: {fileID: 0}
-    - target: {fileID: 3138434720027810420, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
-      propertyPath: FOV
-      value: 360
-      objectReference: {fileID: 0}
-    - target: {fileID: 3138434720027810420, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
-      propertyPath: roamDist
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 3138434720027810420, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
-      propertyPath: roamPauseTime
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3138434720027810420, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
-      propertyPath: faceTargetSpeed
-      value: 5
+      value: Ranged Enemy (Generic)
       objectReference: {fileID: 0}
     - target: {fileID: 4909106797720894080, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
       propertyPath: m_LocalPosition.x
@@ -529,10 +513,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6910883334449192257, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: afd45fb8e12fa824ab72e19bdc1a8e02, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

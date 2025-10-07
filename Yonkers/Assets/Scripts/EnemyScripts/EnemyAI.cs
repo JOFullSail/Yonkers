@@ -15,7 +15,7 @@ public class EnemyAI : MonoBehaviour, IDamage
     [SerializeField] int roamDist;
     [SerializeField] int roamPauseTime;
 
-    [SerializeField] float moveSpeed;
+    [SerializeField] float baseMoveSpeed;
 
     [SerializeField] bool canMove;
 
@@ -25,7 +25,7 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     [SerializeField] bool enragesWhenDamaged;
 
-    [SerializeField] int enrageSpeedIncrease;
+    [SerializeField] float enrageSpeedIncrease;
 
     [SerializeField] bool explodesOnDeath;
     [SerializeField] GameObject explosionPrefab;
@@ -42,10 +42,14 @@ public class EnemyAI : MonoBehaviour, IDamage
     float roamTimer;
     float angleToPlayer;
     protected float stoppingDistanceOrig;
+    protected float originalMoveSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        originalMoveSpeed = baseMoveSpeed;
+        agent.speed = baseMoveSpeed;
+
         alreadyEnraged = false;
 
         colorOrig = model.material.color;
@@ -122,7 +126,7 @@ public class EnemyAI : MonoBehaviour, IDamage
 
         if(enragesWhenDamaged && !alreadyEnraged)
         {
-            moveSpeed += enrageSpeedIncrease;
+            incrementmovespeed(enrageSpeedIncrease);
 
             alreadyEnraged = true;
         }
@@ -180,5 +184,16 @@ public class EnemyAI : MonoBehaviour, IDamage
     {
         Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z));
         transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * faceTargetSpeed);
+    }
+
+    protected void setnewmovespeed(float newSpeed)
+    {
+        baseMoveSpeed = newSpeed;
+        agent.speed = newSpeed;
+    }
+
+    protected void incrementmovespeed(float speedModifier)
+    {
+        agent.speed += speedModifier;
     }
 }
