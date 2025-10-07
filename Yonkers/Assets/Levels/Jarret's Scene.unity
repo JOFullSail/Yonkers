@@ -365,7 +365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6200548112333165412, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 3.25
       objectReference: {fileID: 0}
     - target: {fileID: 6200548112333165412, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -473,9 +473,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ranged Enemy (Temp)
       objectReference: {fileID: 0}
+    - target: {fileID: 3138434720027810420, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
+      propertyPath: FOV
+      value: 360
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138434720027810420, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
+      propertyPath: roamDist
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138434720027810420, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
+      propertyPath: roamPauseTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138434720027810420, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
+      propertyPath: faceTargetSpeed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4909106797720894080, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -18.64647
+      value: -35.89647
       objectReference: {fileID: 0}
     - target: {fileID: 4909106797720894080, guid: 2dbb8cdd37071b549a3a73208cd0dd56, type: 3}
       propertyPath: m_LocalPosition.y
