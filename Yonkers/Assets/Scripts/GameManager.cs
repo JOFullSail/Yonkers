@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuDead;
+    [SerializeField] GameObject MainMenu;
 
     [SerializeField] GameObject goalObject;
 
@@ -28,6 +29,10 @@ public class GameManager : MonoBehaviour
 
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<PlayerController>();
+
+        statePause();
+        menuActive.SetActive(true);
+
     }
 
     // Update is called once per frame

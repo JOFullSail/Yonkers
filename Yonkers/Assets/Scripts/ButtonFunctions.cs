@@ -13,7 +13,10 @@ public class ButtonFunctions : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         GameManager.instance.stateUnpause();
     }
-
+    public void play()
+    {
+        GameManager.instance.stateUnpause();
+    }
     public void quit()
     {
         #if UNITY_EDITOR
