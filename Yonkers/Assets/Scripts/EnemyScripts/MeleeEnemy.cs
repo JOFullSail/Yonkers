@@ -21,6 +21,8 @@ public class MeleeEnemy : EnemyAI
     // Update is called once per frame
     void Update()
     {
+
+        roamRoutine();
         AttackTimer += Time.deltaTime;
         if(canSeePlayer())
         {
@@ -38,19 +40,20 @@ public class MeleeEnemy : EnemyAI
    
     void dashattack()
     {
-        
+        AttackTimer += Time.deltaTime;
         Vector3 PlayerPosition = GameManager.instance.player.transform.position;
-        Vector3 PushPosition = Vector3.(PlayerPosition.x, 0, PlayerPosition.z);
-        RaycastHit Dectected;
+        Vector3 PushPosition = new Vector3(PlayerPosition.x, 0, PlayerPosition.z);
+        RaycastHit Detected;
         float Dist = Vector3.Distance(GameManager.instance.player.transform.position, transform.position);
-        if(Physics.Raycast(EnemyView.position, (PlayerPosition - transform.position).normalized, out Dectected, DashDistance))
+        if(Physics.Raycast(EnemyView.position, (PlayerPosition - transform.position).normalized, out Detected, DashDistance))
         {
 
-            if (Dectected.collider.CompareTag("Player"))
+            if (Detected.collider.CompareTag("Player"))
             {
                 PlayerinAttackR = true;
                 Debug.Log("Player Dectected");
-                transform.position = Vector3.MoveTowards(transform.position, PlayerPosition, Dist);
+                //transform.position = Vector3.MoveTowards(transform.position, PushPosition, Dist);
+                transform.position = Vector3.Lerp(transform.position, PushPosition, DashDistance/AttackTimer);
             }
             else
             {
