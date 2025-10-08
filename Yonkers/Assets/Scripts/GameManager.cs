@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuDead;
+    [SerializeField] GameObject MainMenu;
+
+    [SerializeField] GameObject goalObject;
 
     public GameObject player;
     public PlayerController playerScript;
@@ -26,6 +29,13 @@ public class GameManager : MonoBehaviour
 
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<PlayerController>();
+    }
+
+    private void Start()
+    {
+        statePause();
+        menuActive = MainMenu;
+        menuActive.SetActive(true);
     }
 
     // Update is called once per frame
@@ -64,7 +74,26 @@ public class GameManager : MonoBehaviour
         menuActive = null;
     }
 
-    
+    public void updateGameGoal(int amount) 
+    {
+        gameGoalCount += amount;
+
+        if(gameGoalCount <= 0) 
+        {
+            menuActive = menuWin;
+            menuActive.SetActive(true);
+            statePause();  
+        }
+    }
+
+    public void stateWin()
+    {
+        statePause();
+        menuActive = menuWin;
+        menuActive.SetActive(true);
+    }
+
+
     public void youDied()
     {
         statePause();

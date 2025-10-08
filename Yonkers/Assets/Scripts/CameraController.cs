@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] int sens;
-    [SerializeField] int lockVertMin, LockVertMax;
-    [SerializeField] bool invertY;
+    [SerializeField] int mouSens; // 300
+    [SerializeField] int vertLockMin; // -60 // Allows the player to still climb the wall while looking up.
+    [SerializeField] int vertLockMax; // 90
+    [SerializeField] bool invertY; // false
 
     float rotX;
 
@@ -12,31 +13,32 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         Cursor.visible = false;
-
         Cursor.lockState = CursorLockMode.Locked;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        // get input
-        float mouseX = Input.GetAxisRaw("Mouse X") * sens * Time.deltaTime;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * sens * Time.deltaTime;
+        // Get the input
+        float mouseX = Input.GetAxisRaw("Mouse X") * mouSens * Time.deltaTime;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * mouSens * Time.deltaTime;
 
-        // use invertY
+        // Use invertY
         if (invertY)
+        {
+            // As the player moves the mouse upwards, the camera rotates on the x-axis
             rotX += mouseY;
-        else
-            rotX -= mouseY;
+        }
+        else rotX -= mouseY;
 
-        // clamp the camera on the X axis
-        rotX = Mathf.Clamp(rotX, lockVertMin, LockVertMax);
+        // Clamp camera in the x-axis
+        rotX = Mathf.Clamp(rotX, vertLockMin, vertLockMax);
 
-        // rotate the camera on the X axis
+        // Camera rotated on the x-axis
         transform.localRotation = Quaternion.Euler(rotX, 0, 0);
 
-        // rotate the player on the Y axis
+        // Player always rotates on the y-axis
         transform.parent.Rotate(Vector3.up * mouseX);
-
     }
 }
