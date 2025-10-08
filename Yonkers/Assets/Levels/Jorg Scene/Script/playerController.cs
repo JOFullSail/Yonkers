@@ -61,7 +61,7 @@ public class playerController : MonoBehaviour, IDamage
         jump();
         controller.Move(playerVel * Time.deltaTime);
 
-        if (!gameManager.instance.isPaused && Input.GetButton("Fire1") && shootTimer >= shootRate)
+        if (Input.GetButton("Fire1") && shootTimer >= shootRate)
         {
             shoot();
         }

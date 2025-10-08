@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class platformCollision : MonoBehaviour
+public class PlatformCollision : MonoBehaviour
 {
     [SerializeField] string playerTag = "Player";
     [SerializeField] Transform platform;

@@ -273,20 +273,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 203287164}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66b379c201e8bb64fbb04191d6be7d5a, type: 3}
+  m_Script: {fileID: 11500000, guid: 36fad6cbfb5563743a6f2b1c48de2b27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
   platform: {fileID: 203287165}
   waypoints:
+  - {fileID: 1291216585}
   - {fileID: 1710180347}
   - {fileID: 1698731382}
   - {fileID: 399845559}
-  - {fileID: 1291216585}
   segSpeeds:
   - 50
   - 50
   - 50
-  - 2
+  - 50
   delay: 1
   stopThreshold: 0.01
   rotateTowardsPath: 0
@@ -333,7 +333,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 230854391}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bea0bf5787e79a4397f9483e48c52ff, type: 3}
+  m_Script: {fileID: 11500000, guid: b39fa2ebd8d9bb14c8f10efce9ed20e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::platformCollision
   playerTag: Player
@@ -368,6 +368,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 249002146}
+  - component: {fileID: 249002150}
   - component: {fileID: 249002149}
   - component: {fileID: 249002148}
   - component: {fileID: 249002147}
@@ -471,6 +472,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 249002145}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &249002150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249002145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36fad6cbfb5563743a6f2b1c48de2b27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
+  platform: {fileID: 249002146}
+  waypoints:
+  - {fileID: 0}
+  segSpeeds:
+  - 50
+  delay: 0
+  stopThreshold: 0.01
+  rotateTowardsPath: 1
+  rotationSpeed: 5
 --- !u!1 &294578506
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,7 +503,7 @@ GameObject:
   m_Component:
   - component: {fileID: 294578507}
   m_Layer: 0
-  m_Name: path1
+  m_Name: path2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -555,17 +577,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b379c201e8bb64fbb04191d6be7d5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
-  platform: {fileID: 311379615}
-  waypoints:
-  - {fileID: 311379615}
-  - {fileID: 1289440495}
-  segSpeeds:
-  - 50
-  - 50
-  delay: 0
-  stopThreshold: 9
-  rotateTowardsPath: 1
-  rotationSpeed: 5
 --- !u!1 &332574571
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,8 +586,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 332574572}
+  - component: {fileID: 332574575}
   - component: {fileID: 332574574}
-  - component: {fileID: 332574573}
   m_Layer: 0
   m_Name: hitbox
   m_TagString: Untagged
@@ -599,20 +610,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 203287165}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &332574573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 332574571}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bea0bf5787e79a4397f9483e48c52ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::platformCollision
-  playerTag: Player
-  platform: {fileID: 203287165}
 --- !u!65 &332574574
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -634,6 +631,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &332574575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332574571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39fa2ebd8d9bb14c8f10efce9ed20e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlatformCollision
+  playerTag: Player
+  platform: {fileID: 203287165}
 --- !u!1 &339354679
 GameObject:
   m_ObjectHideFlags: 0
@@ -679,8 +690,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bea0bf5787e79a4397f9483e48c52ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::platformCollision
-  playerTag: Player
-  platform: {fileID: 249002146}
 --- !u!65 &339354682
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -837,7 +846,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 629625793}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bea0bf5787e79a4397f9483e48c52ff, type: 3}
+  m_Script: {fileID: 11500000, guid: b39fa2ebd8d9bb14c8f10efce9ed20e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::platformCollision
   playerTag: Player
@@ -1472,17 +1481,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b379c201e8bb64fbb04191d6be7d5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
-  platform: {fileID: 1236953530}
-  waypoints:
-  - {fileID: 1236953530}
-  - {fileID: 1409117880}
-  segSpeeds:
-  - 50
-  - 50
-  delay: 0
-  stopThreshold: 9
-  rotateTowardsPath: 1
-  rotationSpeed: 5
 --- !u!4 &1236953530
 Transform:
   m_ObjectHideFlags: 0
@@ -1605,7 +1603,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1289440490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66b379c201e8bb64fbb04191d6be7d5a, type: 3}
+  m_Script: {fileID: 11500000, guid: 36fad6cbfb5563743a6f2b1c48de2b27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
   platform: {fileID: 1289440495}
@@ -1618,17 +1616,17 @@ MonoBehaviour:
   - {fileID: 1719972738}
   - {fileID: 1609805189}
   segSpeeds:
-  - 50
   - 20
   - 20
   - 20
   - 20
   - 20
   - 20
+  - 1000
   delay: 0
-  stopThreshold: 3
+  stopThreshold: 0.01
   rotateTowardsPath: 1
-  rotationSpeed: 1
+  rotationSpeed: 5
 --- !u!4 &1289440495
 Transform:
   m_ObjectHideFlags: 0
@@ -1638,7 +1636,7 @@ Transform:
   m_GameObject: {fileID: 1289440490}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.81, y: 0, z: -4.442339}
+  m_LocalPosition: {x: -4.7, y: 0, z: 30.6}
   m_LocalScale: {x: 5, y: 1, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1788,17 +1786,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b379c201e8bb64fbb04191d6be7d5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
-  platform: {fileID: 1409117880}
-  waypoints:
-  - {fileID: 1409117880}
-  - {fileID: 311379615}
-  segSpeeds:
-  - 50
-  - 50
-  delay: 0
-  stopThreshold: 9
-  rotateTowardsPath: 1
-  rotationSpeed: 5
 --- !u!1 &1609805188
 GameObject:
   m_ObjectHideFlags: 0
@@ -2191,8 +2178,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bea0bf5787e79a4397f9483e48c52ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::platformCollision
-  playerTag: Player
-  platform: {fileID: 1093067737}
 --- !u!65 &1777762351
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2350,7 +2335,7 @@ Transform:
   m_GameObject: {fileID: 1850774957}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.7, y: 1, z: -36.15}
+  m_LocalPosition: {x: 9.2, y: 2.17, z: -28.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2705,7 +2690,7 @@ Transform:
   m_GameObject: {fileID: 2118859690}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.39, y: 0, z: -13.22}
   m_LocalScale: {x: 5, y: 1, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
