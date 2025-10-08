@@ -10,9 +10,16 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     [SerializeField] int HP;
 
-    [SerializeField] float moveSpeed;
+    [SerializeField] int faceTargetSpeed;
+    [SerializeField] int FOV;
+    [SerializeField] int roamDist;
+    [SerializeField] int roamPauseTime;
+
+    [SerializeField] float baseMoveSpeed;
 
     [SerializeField] bool canMove;
+
+    [SerializeField] bool canRotate;
 
     [SerializeField] bool canFly;
 
@@ -20,7 +27,7 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     [SerializeField] bool enragesWhenDamaged;
 
-    [SerializeField] int enrageSpeedIncrease;
+    [SerializeField] float enrageSpeedIncrease;
 
     [SerializeField] bool explodesOnDeath;
     [SerializeField] GameObject explosionPrefab;
@@ -28,29 +35,88 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     Color colorOrig;
 
-    protected bool playerInRange;
-
+    protected bool playerInRange = false;
     protected bool alreadyEnraged;
+
+    Vector3 playerDir;
+    Vector3 startPos;
+
+    float roamTimer;
+    float angleToPlayer;
+    protected float stoppingDistanceOrig;
+    protected float originalMoveSpeed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if(canMove)
+        {
+            originalMoveSpeed = baseMoveSpeed;
+            agent.speed = baseMoveSpeed;
+        }
+        else
+        {
+            originalMoveSpeed = 0;
+            agent.speed = 0;
+        }
+
         alreadyEnraged = false;
 
         colorOrig = model.material.color;
+
+        stoppingDistanceOrig = agent.stoppingDistance;
+        startPos = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        LookForPlayer();
+        roamRoutine();
+    }
+
+    protected void roamRoutine()
+    {
+        if (agent.remainingDistance < 0.01f)
+        {
+            roamTimer += Time.deltaTime;
+        }
+
+        if (playerInRange && !canSeePlayer())
+        {
+            checkRoam();
+        }
+        else if (!playerInRange)
+        {
+            checkRoam();
+        }
+    }
+    void checkRoam()
+    {
+        if (roamTimer >= roamPauseTime && agent.remainingDistance < 0.01f)
+        {
+            roam();
+        }
+    }
+
+    void roam()
+    {
+        roamTimer = 0;
+        agent.stoppingDistance = 0;
+
+        Vector3 ranPos = Random.insideUnitSphere * roamDist;
+        ranPos += startPos;
+
+        NavMeshHit hit;
+        NavMesh.SamplePosition(ranPos, out hit, roamDist, 1);
+        agent.SetDestination(hit.position);
     }
 
     public void takeDamage(int amount)
     {
         HP -= amount;
+        agent.SetDestination(GameManager.instance.player.transform.position);
 
-        if(HP <= 0)
+        if (HP <= 0)
         {
             if (explodesOnDeath && explosionPrefab != null)
             {
@@ -70,7 +136,7 @@ public class EnemyAI : MonoBehaviour, IDamage
 
         if(enragesWhenDamaged && !alreadyEnraged)
         {
-            moveSpeed += enrageSpeedIncrease;
+            incrementmovespeed(enrageSpeedIncrease);
 
             alreadyEnraged = true;
         }
@@ -97,12 +163,58 @@ public class EnemyAI : MonoBehaviour, IDamage
         yield return new WaitForSeconds(0.1f);
         model.material.color = colorOrig;
     }
-
-    protected bool LookForPlayer()
+    protected bool canSeePlayer()
     {
-        if (playerInRange && canMove)
-            agent.SetDestination(GameManager.instance.player.transform.position);
+        playerDir = GameManager.instance.player.transform.position - transform.position;
+        angleToPlayer = Vector3.Angle(playerDir, transform.forward);
+        Debug.DrawRay(transform.position, playerDir);
 
-        return playerInRange;
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, playerDir, out hit))
+        {
+            Debug.Log(hit.collider.name);
+
+            if (angleToPlayer <= (FOV) && hit.collider.CompareTag("Player") && playerInRange)
+            {
+                agent.SetDestination(GameManager.instance.player.transform.position);
+
+                if (agent.remainingDistance <= stoppingDistanceOrig)
+                    faceTarget();
+
+                agent.stoppingDistance = stoppingDistanceOrig;
+                return true;
+            }
+        }
+
+        agent.stoppingDistance = 0;
+        return false;
+    }
+
+    void faceTarget()
+    {
+        if(canRotate)
+        {
+            Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z));
+            transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * faceTargetSpeed);
+        }
+    }
+
+    protected void setnewmovespeed(float newSpeed)
+    {
+        if (canMove)
+        {
+            baseMoveSpeed = newSpeed;
+            agent.speed = newSpeed;
+        }
+        else
+            Debug.Log("Tried to set new move speed for "+ gameObject + ", but it is set as not being allowed to move.");
+    }
+
+    protected void incrementmovespeed(float speedModifier)
+    {
+        if(canMove)
+            agent.speed += speedModifier;
+        else
+            Debug.Log("Tried to increment move speed for " + gameObject + ", but it is set as not being allowed to move.");
     }
 }

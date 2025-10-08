@@ -12,17 +12,17 @@ public class MeleeEnemy : EnemyAI
     [SerializeField] float DashSpeed;
     [SerializeField] float DashRate;
 
-    bool isDash;
-    bool PlayerinAttackR;
+    //bool isDash;
+    //bool PlayerinAttackR;
     float AttackTimer;
-    Ray OnSight;
+    //Ray OnSight;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     // Update is called once per frame
     void Update()
     {
         AttackTimer += Time.deltaTime;
-        if(LookForPlayer())
+        if(canSeePlayer())
         {
 
             if(AttackTimer >= MeleeDelay )
@@ -46,14 +46,14 @@ public class MeleeEnemy : EnemyAI
 
             if (Dectected.collider.CompareTag("Player"))
             {
-                PlayerinAttackR = true;
+                //PlayerinAttackR = true;
                 Debug.Log("Player Dectected");
                 transform.position = Vector3.MoveTowards(transform.position, (PlayerPosition - EnemyView.position).normalized, Time.deltaTime * DashSpeed);
             }
-            else
-            {
-                PlayerinAttackR = false;
-            }
+            //else
+            //{
+            //    PlayerinAttackR = false;
+            //}
         }
         
     }

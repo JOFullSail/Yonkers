@@ -15,8 +15,9 @@ public class RangedEnemy : EnemyAI
     {
         shotTimer += Time.deltaTime;
 
+        roamRoutine();
 
-        if (LookForPlayer())
+        if (canSeePlayer())
         {
             if (shotTimer > delayBetweenShots)
                 shoot();

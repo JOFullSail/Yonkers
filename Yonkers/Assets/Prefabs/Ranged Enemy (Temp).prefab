@@ -70,7 +70,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: afd45fb8e12fa824ab72e19bdc1a8e02, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -149,7 +149,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 10
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -172,8 +172,13 @@ MonoBehaviour:
   model: {fileID: 6910883334449192257}
   agent: {fileID: 7079760233747805049}
   HP: 3
-  moveSpeed: 2
+  faceTargetSpeed: 5
+  FOV: 180
+  roamDist: 25
+  roamPauseTime: 3
+  baseMoveSpeed: 1
   canMove: 1
+  canRotate: 1
   canFly: 0
   canDodge: 0
   enragesWhenDamaged: 0
