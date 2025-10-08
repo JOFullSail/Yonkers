@@ -291,8 +291,13 @@ MonoBehaviour:
   model: {fileID: 5961476}
   agent: {fileID: 5961474}
   HP: 10
-  moveSpeed: 100
+  faceTargetSpeed: 3
+  FOV: 90
+  roamDist: 5
+  roamPauseTime: 2
+  baseMoveSpeed: 5
   canMove: 1
+  canRotate: 0
   canFly: 0
   canDodge: 0
   enragesWhenDamaged: 0
@@ -303,8 +308,8 @@ MonoBehaviour:
   EnemyView: {fileID: 5961479}
   MeleeDamage: 0
   MeleeDelay: 2
-  DashDistance: 40
-  DashSpeed: 50
+  DashDistance: 25
+  DashSpeed: 5
   DashRate: 2
 --- !u!1001 &368937030
 PrefabInstance:

@@ -15,7 +15,10 @@ public class MeleeEnemy : EnemyAI
     bool isDash;
     bool PlayerinAttackR;
     float AttackTimer;
+    float elaspedtime;
     Ray OnSight;
+    Vector3 PlayerPosition = GameManager.instance.player.transform.position;
+    Vector3 SetPushPosition;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     // Update is called once per frame
@@ -24,14 +27,25 @@ public class MeleeEnemy : EnemyAI
 
         roamRoutine();
         AttackTimer += Time.deltaTime;
+        elaspedtime += Time.deltaTime;
         if(canSeePlayer())
         {
 
-           if(AttackTimer >= MeleeDelay )
-           {
+
+
+            if (PlayerinAttackR == true)
+            {
+                //Vector3 PlayerPosition = GameManager.instance.player.transform.position;
+              //  Vector3 PushPosition = new Vector3(PlayerPosition.x, 0, PlayerPosition.z);
+                transform.position = Vector3.Lerp(transform.position, SetPushPosition, Time.deltaTime * DashSpeed);
+            }
+            
+            if (AttackTimer >= MeleeDelay)
+            {
+
                 dashattack();
                 AttackTimer = 0;
-           }
+            }
             
         }
         
@@ -40,7 +54,6 @@ public class MeleeEnemy : EnemyAI
    
     void dashattack()
     {
-        AttackTimer += Time.deltaTime;
         Vector3 PlayerPosition = GameManager.instance.player.transform.position;
         Vector3 PushPosition = new Vector3(PlayerPosition.x, 0, PlayerPosition.z);
         RaycastHit Detected;
@@ -52,8 +65,10 @@ public class MeleeEnemy : EnemyAI
             {
                 PlayerinAttackR = true;
                 Debug.Log("Player Dectected");
-                //transform.position = Vector3.MoveTowards(transform.position, PushPosition, Dist);
-                transform.position = Vector3.Lerp(transform.position, PushPosition, DashDistance/AttackTimer);
+                SetPushPosition = new Vector3(GameManager.instance.player.transform.position.x, 0, GameManager.instance.player.transform.position.z);
+                ////transform.position = Vector3.MoveTowards(transform.position, PushPosition, Dist);
+                //transform.position = Vector3.Lerp(transform.position, PushPosition, Time.deltaTime * DashSpeed);
+
             }
             else
             {
