@@ -7,64 +7,60 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] LayerMask ignoreLayer;
     [SerializeField] CharacterController controller;
-    [SerializeField] float Speed0;
+    [SerializeField] float DashSpeed;
     [SerializeField] float MinSpeed;
     [SerializeField] float MaxSpeed;
-    [SerializeField] float MaxDashSpeed;
     [SerializeField] float MinAccel;
-    [SerializeField] float MinDeaccel;
     [SerializeField] float MaxAccel;
+    [SerializeField] float speedAccelRATE;//how fast the Aceel ramps up
+    [SerializeField] float MinDeaccel;
     [SerializeField] float MaxDeaccel;
-    [SerializeField] float speedAccelRATE;
-    [SerializeField] float speedDeaccelRATE; //how fast the Deceel ramps up
-    [SerializeField] float sprintMod;
+    [SerializeField] float speedDeaccelRATE; //how fast the Deaceel ramps up
     [SerializeField] int jumpSpeed;
     [SerializeField] int jumpCountMax;
     [SerializeField] int gravity;
     [SerializeField] int shootDamage;
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
-    [SerializeField] Collider slopecheck;
-    [SerializeField] bool is_Momentum;
-    [SerializeField] bool dash_is_camera;
-    [SerializeField] bool dash_can_go_up;
-    [SerializeField] float internaldashtimer; //how long dash last
+    //[SerializeField] Collider slopecheck; // no use yet
+    [SerializeField] bool is_Momentum; // how momentum works true = use last input momentum false = use camera as the momentum
+    [SerializeField] bool dash_is_camera; // true = dash at the camera, false = dash at input
+    [SerializeField] bool dash_can_go_up; // if dash resets your jump vel also based on if dash based on camera is true, this enables the use of camera.y accordingly
+    [SerializeField] float DashLength; //how long dash last
     [SerializeField] float Dashcd;
+    [SerializeField] bool dashcarryover; //used to see if you want your dash speed to carry over into your current speed
+    bool is_dashing;  
     float currDashSpeed;
     float currspeedAccel;
     float currspeedDeaccel;
+    float currentSpeed;
+    float shootTimer;
+    float Dashcdtimer;//used to track dash cd.
+    float Dashtimer; //used to track how long dash will go.
     float speedDeaccelOrig;
     float speedAccelOrig;
-    float currentSpeed;
     Vector3 moveDir;
     Vector3 MomentumDir;
     Vector3 CameraDir; //here in case you want to use camera as the way of controlling momentum.
-    Vector3 playerVel;
-    Vector3 camfor = Camera.main.transform.forward;
+    Vector3 playerVel; //used for jump 
     int jumpCount;
-    float shootTimer;
-    float Dashcdtimer;
-    float Dashtimer; //used to track how long dash will go.
-    bool _onSlope;
-    Vector3 camdown = Vector3.down;
-    bool is_dashing;
-
+    float Speed0;
+    bool _onSlope; //use will be added later
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    void Start()
     {
         currentSpeed = Speed0;
         currspeedAccel = MinAccel;
         currspeedDeaccel = MinDeaccel;
         speedDeaccelOrig = currspeedDeaccel;
         speedAccelOrig = currspeedAccel;
-        Dashtimer = 1 / internaldashtimer;
+        is_dashing = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.green);
-
         //Debug.DrawRay(GameManager.instance.player.transform.position, camdown * shootDist, Color.blue); //ray that looks at the floor
         shootTimer += Time.deltaTime;
         Dashcdtimer += Time.deltaTime;
@@ -72,155 +68,162 @@ public class PlayerController : MonoBehaviour
         camwithouty.y = 0;
         CameraDir  = camwithouty; //no y = no fly!
         dash();
+        DashMomentumEnd();
         movement();
+        Gravity();
     }
 
     void movement()
     {
-        if (controller.isGrounded)
-        {
-            playerVel = Vector3.zero;
-            jumpCount = 0;
-        }
-        else
-        {
-            if (!is_dashing)
-            {
-                playerVel.y -= gravity * Time.deltaTime;
-            }
-            
-        }
         //if (controller.isGrounded && _onSlope == true)// possible slope code
         //{
-
         //}
-        if (currentSpeed >= MaxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true)) // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
-        {
-            if (currentSpeed > MaxSpeed && Input.GetButton("Shift") == false)
-            {
-                if (currentSpeed > MaxSpeed + 1)
-                {
-                    currentSpeed -= currspeedDeaccel * Time.deltaTime;
-                    Ramp();
-                }
-            }
-            moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-            MomentumDir = moveDir;
-            controller.Move(moveDir * currentSpeed * Time.deltaTime);
-        }
-        else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < MaxSpeed)
-        {
-
-            if (currentSpeed < MinSpeed)
-            {
-                currentSpeed = MinSpeed;
-            }
-            moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-            MomentumDir = moveDir;
-            currentSpeed += currspeedAccel * Time.deltaTime;
-            Ramp();
-            controller.Move(moveDir * currentSpeed * Time.deltaTime);
-        }
-        else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > Speed0)
-        {
-            currentSpeed -= currspeedDeaccel * Time.deltaTime;
-            Ramp();
-            if (currentSpeed < 0)
-            {
-                currentSpeed = 0;
-            }
-            Movelike();
-        }
+        Movementdection();
         jump();
         controller.Move(playerVel * Time.deltaTime);
         if (Input.GetButton("Fire1") && shootTimer >= shootRate)
             shoot();
     }
+    void Movementdection()
+    {
+        if (is_dashing == false)
+        {
+            if (currentSpeed >= MaxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true)) // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
+            {
+                if (currentSpeed > MaxSpeed && Input.GetButton("Shift") == false)
+                {
+                    if (currentSpeed > MaxSpeed + 1)
+                    {
+                        currentSpeed -= currspeedDeaccel * Time.deltaTime;
+                        Ramp();
+                    }
+                }
+                moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+                MomentumDir = moveDir;
+                controller.Move(moveDir * currentSpeed * Time.deltaTime);
+            }
+            else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < MaxSpeed)
+            {
 
+                if (currentSpeed < MinSpeed)
+                {
+                    currentSpeed = MinSpeed;
+                }
+                moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+                MomentumDir = moveDir;
+                currentSpeed += currspeedAccel * Time.deltaTime;
+                Ramp();
+                controller.Move(moveDir * currentSpeed * Time.deltaTime);
+            }
+            else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > Speed0)
+            {
+                currentSpeed -= currspeedDeaccel * Time.deltaTime;
+                Ramp();
+                if (currentSpeed < 0)
+                {
+                    currentSpeed = 0;
+                }
+                Movelike();
+            }    
+        }
+    }
+    void DashMomentum() //makes the dash add to the player's speed
+    {
+        if (dashcarryover)
+        {
+            if (currentSpeed < MaxSpeed)
+            {
+                if (currentSpeed + currDashSpeed > MaxSpeed)
+                {
+                    currentSpeed = MaxSpeed;
+                }
+                else
+                {
+                    currentSpeed += currDashSpeed;
+                }
+            }
+        }
+
+        currDashSpeed = 0;
+        is_dashing = false;
+    }
+    void DashMomentumEnd()// ends dash
+    {
+        if (Dashtimer >= DashLength)
+        {
+            if (dash_can_go_up == true && dash_is_camera == true)
+            {
+                StopCoroutine(dashwait(Camera.main.transform.forward * currDashSpeed * Time.deltaTime));
+                DashMomentum();
+            }
+            else if (dash_can_go_up == false && dash_is_camera == true)
+            {
+                StopCoroutine(dashwait(CameraDir * currDashSpeed * Time.deltaTime));
+                DashMomentum();
+            }
+            else
+            {
+                StopCoroutine(dashwait(MomentumDir * currDashSpeed * Time.deltaTime));
+                DashMomentum();
+            }
+
+        }
+    }
+    void Gravity()// made gravity a method for easier use has checks for the bool dash_can_go_up
+    {
+        if (controller.isGrounded)
+        {
+            playerVel = Vector3.zero;
+            jumpCount = 0;
+        } 
+        else if (is_dashing == true && dash_can_go_up == false)
+        {
+            playerVel.y = 0;
+        } 
+        else if (is_dashing == false)
+        {
+         
+            playerVel.y -= gravity * Time.deltaTime;
+        }
+
+
+    }
     void dash() //dash in a direction but has bools for how you want to specifically dash.
     {
-        is_dashing = false;
-        if (Input.GetButton("Shift"))
+        
+        if (Input.GetButton("Shift") && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true))
         {
+            is_dashing = true;
             if (Dashcdtimer >= Dashcd)
             {
                 Dashcdtimer = 0;
                 Dashtimer = 0;
-                currDashSpeed = MaxDashSpeed;
+                currDashSpeed = DashSpeed;
                 if (dash_can_go_up == true && dash_is_camera == true)
                 {
-                    StartCoroutine(dashwait(Camera.main.transform.forward * currDashSpeed * Time.deltaTime));
-                    Debug.Log("CorouEnd");
-                    if (currentSpeed < MaxSpeed)
-                    {
-                        Debug.Log("Speed if");
-                        if (currentSpeed + currDashSpeed > MaxSpeed)
-                        {
-                            currentSpeed = MaxSpeed;
-                        }
-                        else
-                        {
-                            currentSpeed += currDashSpeed;
-                        }
-                    }
-                    Debug.Log("Dash Speed Reset");
-                    currDashSpeed = 0;
+                    StartCoroutine(dashwait(Camera.main.transform.forward * currDashSpeed * Time.deltaTime)); 
                 }
                 else if (dash_can_go_up == false && dash_is_camera == true)
                 {
                     StartCoroutine(dashwait(CameraDir * currDashSpeed * Time.deltaTime));
-                    Debug.Log("CorouEnd");
-                    if (currentSpeed < MaxSpeed)
-                    {
-                        Debug.Log("Speed if");
-                        if (currentSpeed + currDashSpeed > MaxSpeed)
-                        {
-                            currentSpeed = MaxSpeed;
-                        }
-                        else
-                        {
-                            currentSpeed += currDashSpeed;
-                        }
-                    }
-                    Debug.Log("Dash Speed Reset");
-                    currDashSpeed = 0;
                 } else 
                 {
                     StartCoroutine(dashwait(MomentumDir * currDashSpeed * Time.deltaTime));
-                    Debug.Log("CorouEnd");
-                    if (currentSpeed < MaxSpeed)
-                    {
-                        Debug.Log("Speed if");
-                        if (currentSpeed + currDashSpeed > MaxSpeed)
-                        {
-                            currentSpeed = MaxSpeed;
-                        }
-                        else
-                        {
-                            currentSpeed += currDashSpeed;
-                        }
-                    }
-                    Debug.Log("Dash Speed Reset");
-                    currDashSpeed = 0;
                 }                
             }
         }
     }
-    IEnumerator dashwait(Vector3 move)
+    IEnumerator dashwait(Vector3 move) //used to make dash function
     {
-        float i = 0;
-        is_dashing = true;
-        while ( i < internaldashtimer)
+        Dashtimer = 0;
+        while (Dashtimer < DashLength)
         {
-            i += Time.deltaTime;
+            Dashtimer += Time.deltaTime;
             Dashtimer += Time.deltaTime;
             controller.Move(move);
-            Debug.Log("Still looping");
+
             yield return null;
         }
-        i = 0;
-        Debug.Log("DashEnd");
-        StopCoroutine(dashwait(move));
     }
     void jump()
     {
@@ -277,7 +280,7 @@ public class PlayerController : MonoBehaviour
             currspeedDeaccel = speedDeaccelOrig;
             if (currentSpeed >= MaxSpeed)
             {
-                currspeedAccel = MaxSpeed;
+                currspeedAccel = MaxAccel;
             }
             else if (currspeedAccel < MaxAccel)
             {
@@ -286,10 +289,7 @@ public class PlayerController : MonoBehaviour
            
         }
     } 
-    //bugs: accel goes to speed max upon speed reaching max
-    
-
-    //bool onslope()
+    //bool onslope() //more possible slope code
     //{
     //    bool check = false;
     //    RaycastHit slopehit;

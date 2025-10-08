@@ -197,7 +197,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8703998889330178910, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: internaldashtimer
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
