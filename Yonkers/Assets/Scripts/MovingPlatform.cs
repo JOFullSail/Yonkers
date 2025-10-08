@@ -9,28 +9,46 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private List<Transform> waypoints = new List<Transform>();
 
     [Header("Movement Settings")]
-    [SerializeField] private List<float> segmentSpeeds = new List<float>();
-
-    [SerializeField] private float delay = 1f;
+    [SerializeField] private List<float> segSpeeds = new List<float>();
+    [SerializeField] private float delay = 0f;
     [SerializeField] private float stopThreshold = 0.01f;
 
+    [Header("Rotation Settings")]
+    [SerializeField] private bool rotateTowardsPath = true;
+    [SerializeField] private float rotationSpeed = 5f;
+
     private int waypointIndex = 0;
+    private const float DefSpeed = 50f;
+
+    private void OnValidate()
+    {
+        if (waypoints == null) return;
+
+        int requiredCount = waypoints.Count;
+
+        if (segSpeeds == null)
+        {
+            segSpeeds = new List<float>();
+        }
+
+        while (segSpeeds.Count < requiredCount)
+        {
+            if (segSpeeds.Count == 0) 
+                segSpeeds.Add(DefSpeed);
+            else
+                segSpeeds.Add(segSpeeds[segSpeeds.Count - 1]);
+        }
+
+        while (segSpeeds.Count > requiredCount)
+        {
+            segSpeeds.RemoveAt(segSpeeds.Count - 1);
+        }
+    }
 
     private void Start()
     {
-        if (waypoints == null)
-        {
+        if (waypoints == null || waypoints.Count < 2)
             return;
-        }
-
-        if (segmentSpeeds == null)
-        {
-            segmentSpeeds = new List<float>(new float[waypoints.Count]);
-            for (int i = 0; i < segmentSpeeds.Count; i++)
-            {
-                segmentSpeeds[i] = 5f;
-            }
-        }
 
         platform.position = waypoints[0].position;
         waypointIndex = 1;
@@ -44,11 +62,22 @@ public class MovingPlatform : MonoBehaviour
             Vector3 targetPosition = waypoints[waypointIndex].position;
 
             int previousIndex = (waypointIndex - 1 + waypoints.Count) % waypoints.Count;
-            float currentSpeed = segmentSpeeds[previousIndex];
+            float currentSpeed = segSpeeds[previousIndex];
 
             while ((targetPosition - platform.position).sqrMagnitude > stopThreshold * stopThreshold)
             {
                 platform.position = Vector3.MoveTowards(platform.position, targetPosition, currentSpeed * Time.deltaTime);
+
+                if (rotateTowardsPath)
+                {
+                    Vector3 direction = (targetPosition - platform.position).normalized;
+                    if (direction.sqrMagnitude > 0.01f)
+                    {
+                        Quaternion targetRotation = Quaternion.LookRotation(direction);
+                        platform.rotation = Quaternion.Slerp(platform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                    }
+                }
+
                 yield return null;
             }
 
@@ -66,7 +95,7 @@ public class MovingPlatform : MonoBehaviour
         for (int i = 0; i < waypoints.Count; i++)
         {
             Transform currentWaypoint = waypoints[i];
-            Transform nextWaypoint = waypoints[(i + 1) % waypoints.Count]; 
+            Transform nextWaypoint = waypoints[(i + 1) % waypoints.Count];
             if (currentWaypoint != null && nextWaypoint != null)
             {
                 Gizmos.DrawLine(currentWaypoint.position, nextWaypoint.position);
