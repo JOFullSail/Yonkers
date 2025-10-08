@@ -9,7 +9,8 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private List<Transform> waypoints = new List<Transform>();
 
     [Header("Movement Settings")]
-    [SerializeField] private float speed = 5f;
+    [SerializeField] private List<float> segmentSpeeds = new List<float>();
+
     [SerializeField] private float delay = 1f;
     [SerializeField] private float stopThreshold = 0.01f;
 
@@ -17,6 +18,20 @@ public class MovingPlatform : MonoBehaviour
 
     private void Start()
     {
+        if (waypoints == null)
+        {
+            return;
+        }
+
+        if (segmentSpeeds == null)
+        {
+            segmentSpeeds = new List<float>(new float[waypoints.Count]);
+            for (int i = 0; i < segmentSpeeds.Count; i++)
+            {
+                segmentSpeeds[i] = 5f;
+            }
+        }
+
         platform.position = waypoints[0].position;
         waypointIndex = 1;
         StartCoroutine(MovePlatform());
@@ -28,9 +43,12 @@ public class MovingPlatform : MonoBehaviour
         {
             Vector3 targetPosition = waypoints[waypointIndex].position;
 
+            int previousIndex = (waypointIndex - 1 + waypoints.Count) % waypoints.Count;
+            float currentSpeed = segmentSpeeds[previousIndex];
+
             while ((targetPosition - platform.position).sqrMagnitude > stopThreshold * stopThreshold)
             {
-                platform.position = Vector3.MoveTowards(platform.position, targetPosition, speed * Time.deltaTime);
+                platform.position = Vector3.MoveTowards(platform.position, targetPosition, currentSpeed * Time.deltaTime);
                 yield return null;
             }
 
@@ -39,6 +57,7 @@ public class MovingPlatform : MonoBehaviour
             waypointIndex = (waypointIndex + 1) % waypoints.Count;
         }
     }
+
     private void OnDrawGizmos()
     {
         if (waypoints == null || waypoints.Count < 2) return;
