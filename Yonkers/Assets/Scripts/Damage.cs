@@ -59,8 +59,9 @@ public class Damage : MonoBehaviour
             {
                 GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
                 Explosion expl = explosion.GetComponent<Explosion>();
+                Vector3 explosionPosition = new Vector3(transform.position.x - 0.5f, transform.position.y, transform.position.z);
                 if (expl != null)
-                    expl.TriggerExplosion(transform.position, splashDamageAmount);
+                    expl.TriggerExplosion(explosionPosition, splashDamageAmount);
                 else
                     Debug.LogWarning("Explosion prefab does not contain an Explosion component.");
             }
