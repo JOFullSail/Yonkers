@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Explosion : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class Explosion : MonoBehaviour
     /// <summary>
     /// Trigger an explosion at a given location.
     /// Damage is applied to anything implementing IDamage.
+    /// Pushback is applied to anything implementing IPushback.
     /// </summary>
     public void TriggerExplosion(Vector3 explosionLocation, int splashDamage = 0)
     {
@@ -48,19 +50,29 @@ public class Explosion : MonoBehaviour
                 dmg.takeDamage(splashDamage);
             }
 
-            // Knockback for Player
-            PlayerKnockback playerKnock = col.GetComponentInParent<PlayerKnockback>();
-            if (playerKnock != null)
+            // Pushback
+            IPushback pb = col.GetComponentInParent<IPushback>();
+            if (pb != null)
             {
-                playerKnock.BeginPhysicsKnockback(explosionLocation, explosionForce, explosionRadius, upwardsForceModifier);
-                continue;
-            }
+                Vector3 contactPoint = Physics.ClosestPoint(explosionLocation, col, col.transform.position, col.transform.rotation);
+                Vector3 direction = (contactPoint - explosionLocation);
+                float distance = Mathf.Max(0.0001f, direction.magnitude);
+                direction /= distance;
 
-            // Knockback for regular rigidbodies
-            Rigidbody rb = col.attachedRigidbody;
-            if (rb != null && !rb.isKinematic)
-            {
-                rb.AddExplosionForce(explosionForce, explosionLocation, explosionRadius, upwardsForceModifier, ForceMode.Impulse);
+                Vector3 launchDir = Vector3.Normalize(direction + Vector3.up * upwardsForceModifier);
+
+                Vector3 launch = launchDir * explosionForce;
+
+                pb.applyPushback(launch);
+
+                PlayerController controller = col.GetComponentInParent<PlayerController>();
+                if (controller != null)
+                {
+                    controller.isInRagdoll = true;
+
+                    float lockTime = Mathf.Max(controller.minRagTime, direction.magnitude * controller.ragPerSpeed);
+                    controller.ragdollTimeLeft = Mathf.Max(controller.ragdollTimeLeft, lockTime);
+                }
             }
         }
     }

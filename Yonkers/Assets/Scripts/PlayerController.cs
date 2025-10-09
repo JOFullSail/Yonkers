@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour, IDamage
+public class PlayerController : MonoBehaviour, IDamage, IPushback
 {
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
@@ -26,9 +26,14 @@ public class PlayerController : MonoBehaviour, IDamage
     [SerializeField] float climbWallDetection; // 1.25
     [SerializeField] float climbMaxAngle; // 90
 
+    [Header("Pushback")]
+    [SerializeField] float pushDecay = 3f; // How fast push effects fade away
+    [SerializeField] float ragdollPerSpeed = 0.06f;  // seconds of control lockout per 1 m/s moved during ragdoll
+    [SerializeField] float minRagdollTime = 0.15f;
 
     Vector3 moveDirec;
     Vector3 playerVel;
+    Vector3 pushBack;
 
     RaycastHit hit;
 
@@ -37,8 +42,12 @@ public class PlayerController : MonoBehaviour, IDamage
 
     float jumpTimer;
     float shootTimer;
+    public float ragdollTimeLeft;
+    public float ragPerSpeed;
+    public float minRagTime;
 
     bool isClimbing;
+    public bool isInRagdoll = false;
 
     // - UNUSED -
 
@@ -50,6 +59,8 @@ public class PlayerController : MonoBehaviour, IDamage
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        ragPerSpeed = ragdollPerSpeed;
+        minRagTime = minRagdollTime;
         hpOrig = HP;
     }
 
@@ -59,8 +70,18 @@ public class PlayerController : MonoBehaviour, IDamage
 
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
 
-        if (!controller.isGrounded) jumpTimer += Time.deltaTime;
-        else jumpTimer = 0;
+        if (!controller.isGrounded) 
+            jumpTimer += Time.deltaTime; 
+        else 
+            jumpTimer = 0;
+
+        if (controller.isGrounded && ragdollTimeLeft > 0f)
+            ragdollTimeLeft = Mathf.Max(0f, ragdollTimeLeft - Time.deltaTime * 2f); // Recover twice as fast from ragdoll if you are on the ground
+        else
+            ragdollTimeLeft = Mathf.Max(0f, ragdollTimeLeft - Time.deltaTime);
+
+        isInRagdoll = ragdollTimeLeft > 0f;
+
         shootTimer += Time.deltaTime;
 
         movement();
@@ -80,10 +101,19 @@ public class PlayerController : MonoBehaviour, IDamage
             playerVel.y -= gravity * Time.deltaTime;
         }
 
-        moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-        controller.Move(moveDirec * speed * Time.deltaTime);
+        if (!isInRagdoll)
+        {
+            moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+            controller.Move(speed * Time.deltaTime * moveDirec);
+        }
+        else
+            controller.Move((moveDirec + pushBack) * Time.deltaTime); // pushBack can cancel out or accelerate moveDirec here
+
 
         jump();
+
+        controller.Move(pushBack * Time.deltaTime);
+        pushBack = Vector3.Lerp(pushBack, Vector3.zero, pushDecay * Time.deltaTime);
         controller.Move(playerVel * Time.deltaTime);
 
         
@@ -93,6 +123,10 @@ public class PlayerController : MonoBehaviour, IDamage
         }
     }
 
+    public void applyPushback(Vector3 direction)
+    {
+        pushBack = direction;
+    }
     void climb()
     {
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDetection, ~ignoreLayer))
