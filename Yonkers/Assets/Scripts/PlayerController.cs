@@ -106,7 +106,6 @@ public class PlayerController : MonoBehaviour, IDamage
         }
         else isClimbing = false;
     }
-
     void jump()
     {
 
