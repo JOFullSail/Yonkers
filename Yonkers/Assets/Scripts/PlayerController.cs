@@ -43,8 +43,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
     float jumpTimer;
     float shootTimer;
     public float ragdollTimeLeft;
-    public float ragPerSpeed;
-    public float minRagTime;
 
     bool isClimbing;
     public bool isInRagdoll = false;
@@ -59,8 +57,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        ragPerSpeed = ragdollPerSpeed;
-        minRagTime = minRagdollTime;
         hpOrig = HP;
     }
 
@@ -193,4 +189,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
             GameManager.instance.youDied();
         }
     }
+
+    // getters
+    public float RagdollPerSpeed() { return ragdollPerSpeed; }
+    public float MinRagdollTime() { return minRagdollTime; }
+
 }

@@ -70,7 +70,7 @@ public class Explosion : MonoBehaviour
                 {
                     controller.isInRagdoll = true;
 
-                    float lockTime = Mathf.Max(controller.minRagTime, direction.magnitude * controller.ragPerSpeed);
+                    float lockTime = Mathf.Max(controller.MinRagdollTime(), direction.magnitude * controller.RagdollPerSpeed());
                     controller.ragdollTimeLeft = Mathf.Max(controller.ragdollTimeLeft, lockTime);
                 }
             }
