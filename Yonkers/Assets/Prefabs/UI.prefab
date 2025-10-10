@@ -3171,9 +3171,10 @@ MonoBehaviour:
   menuWin: {fileID: 3518356001272338581}
   menuDead: {fileID: 2110107386336820385}
   MainMenu: {fileID: 4045147509666320716}
-  goalObject: {fileID: 0}
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
+  enableMainMenu: 0
+  goalObject: {fileID: 3454159725470672859, guid: 561cb45a4da089248b2c9f0f1e9e0be1, type: 3}
+  player: {fileID: 1722926959862536933, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+  playerScript: {fileID: 3073829574187304067, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
   isPaused: 0
 --- !u!1 &8222915305709388943
 GameObject:

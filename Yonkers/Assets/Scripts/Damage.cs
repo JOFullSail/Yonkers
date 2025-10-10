@@ -57,8 +57,10 @@ public class Damage : MonoBehaviour
         {
             if (isExplosive && explosionPrefab != null)
             {
-                GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+                Vector3 projectileExplosionLoc = type != damageType.stationary ? new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - 0.25f) : transform.position;
+                GameObject explosion =  Instantiate(explosionPrefab, projectileExplosionLoc, Quaternion.identity);
                 Explosion expl = explosion.GetComponent<Explosion>();
+                
                 if (expl != null)
                     expl.TriggerExplosion(transform.position, splashDamageAmount);
                 else

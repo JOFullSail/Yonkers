@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuDead;
     [SerializeField] GameObject MainMenu;
 
+    [SerializeField] bool enableMainMenu = false;
+
     [SerializeField] GameObject goalObject;
 
     public GameObject player;
@@ -33,14 +35,20 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        statePause();
-        menuActive = MainMenu;
-        menuActive.SetActive(true);
+        if(enableMainMenu)
+        {
+            stateMainMenuOpen();
+            menuActive = MainMenu;
+            menuActive.SetActive(true);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (menuActive == MainMenu && Input.GetKeyDown(KeyCode.Space))
+                stateUnpause();
+
         if (Input.GetButtonDown("Cancel"))
         {
             if (menuActive == null)
@@ -56,6 +64,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void stateMainMenuOpen()
+    {
+        isPaused = true;
+        Time.timeScale = 0;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
     public void statePause()
     {
         isPaused = !isPaused;
