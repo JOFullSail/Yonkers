@@ -5,25 +5,19 @@ using UnityEngine;
 public class MeleeEnemy : EnemyAI
 {
     [Header("Melee Attributes")]
-    [SerializeField] Transform EnemyView;
+    [SerializeField] Transform EnemyPOS;
     [SerializeField] int MeleeDamage;
     [SerializeField] float MeleeDelay;
     [SerializeField] float DashDistance;
     [SerializeField] float DashSpeed;
     [SerializeField] float TargetDistance;
     
-
-    bool isDash;
     bool AttackRange;
     float AttackTimer;
     Vector3 PlayerPosition;
     Vector3 NewPushPosition;
     Vector3 Dir;
 
-    //Vector3 PushPosition;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-
-    // Update is called once per frame
     void Update()
     {
         PlayerPosition = GameManager.instance.player.transform.position - transform.position;
@@ -34,27 +28,18 @@ public class MeleeEnemy : EnemyAI
             if (AttackTimer > MeleeDelay)
             {
                 dashattack();
-                
                 AttackTimer = 0;
             }
-
-            if (AttackRange == true) {
-
+            if (AttackRange == true)
+            {
                 transform.position = Vector3.Lerp(transform.position, NewPushPosition, Time.deltaTime * DashSpeed);
-                
-
             }
-            
-            
         }
-        
     }
 
    
     void dashattack()
     {
-        
-      
         RaycastHit Detected;
         Debug.DrawRay(transform.position, PlayerPosition, color: Color.blue);
         if(Physics.Raycast(transform.position, (PlayerPosition).normalized, out Detected, TargetDistance))
@@ -62,21 +47,14 @@ public class MeleeEnemy : EnemyAI
             Debug.Log("Object Detected");
             if (Detected.collider.CompareTag("Player"))
             {
-                Vector3 Dir = transform.forward;
-                NewPushPosition = GameManager.instance.player.transform.position;
+                Dir = transform.forward;
+                NewPushPosition = new Vector3 (GameManager.instance.player.transform.position.x, 0, GameManager.instance.player.transform.position.z);
                 Debug.Log("Player Dectected");
-                //transform.position = Vector3.Lerp(transform.position, NewPushPosition, Time.deltaTime * DashSpeed);
-                AttackRange = true;
-               
-                
+                AttackRange = true; 
             }
             else
-            {
-                AttackRange = false;
-            }
+                  AttackRange = false;
         }
-        
-        
     }
 
 

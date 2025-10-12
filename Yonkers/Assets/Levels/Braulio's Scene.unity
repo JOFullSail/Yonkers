@@ -129,12 +129,13 @@ GameObject:
   m_Component:
   - component: {fileID: 5961479}
   - component: {fileID: 5961480}
+  - component: {fileID: 5961481}
   - component: {fileID: 5961477}
   - component: {fileID: 5961476}
   - component: {fileID: 5961475}
   - component: {fileID: 5961473}
   - component: {fileID: 5961474}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -270,7 +271,7 @@ Transform:
   m_GameObject: {fileID: 5961472}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.22586, y: 0.6, z: -29.88647}
+  m_LocalPosition: {x: -0.22586, y: 1.35, z: -29.88647}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -292,12 +293,12 @@ MonoBehaviour:
   agent: {fileID: 5961474}
   HP: 10
   faceTargetSpeed: 3
-  FOV: 90
+  FOV: 180
   roamDist: 5
-  roamPauseTime: 2
+  roamPauseTime: 1
   baseMoveSpeed: 5
   canMove: 1
-  canRotate: 0
+  canRotate: 1
   canFly: 0
   canDodge: 0
   enragesWhenDamaged: 0
@@ -305,12 +306,33 @@ MonoBehaviour:
   explodesOnDeath: 0
   explosionPrefab: {fileID: 0}
   explosionDamage: 0
-  EnemyView: {fileID: 5961479}
-  MeleeDamage: 0
+  EnemyPOS: {fileID: 5961479}
+  MeleeDamage: 5
   MeleeDelay: 2
-  DashDistance: 25
-  DashSpeed: 5
-  DashRate: 2
+  DashDistance: 10
+  DashSpeed: 8
+  TargetDistance: 25
+--- !u!114 &5961481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5961472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7f77064c38e6842bd97cf9d67dfeb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Damage
+  type: 1
+  rb: {fileID: 0}
+  damageAmount: 0
+  isExplosive: 0
+  splashDamageAmount: 0
+  damageRate: 0
+  speed: 0
+  destroyTime: 0
+  explosionPrefab: {fileID: 0}
 --- !u!1 &55877985 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2110107386336820385, guid: 215926efe3bb64447a943794adc5b998, type: 3}
@@ -339,7 +361,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &270818264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,6 +462,10 @@ PrefabInstance:
     - target: {fileID: 2701138106116441341, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073829574187304067, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: shootDmg
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5010640151344057421, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_Name
@@ -588,7 +614,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5449305075613367386, guid: 215926efe3bb64447a943794adc5b998, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5522034241401635140, guid: 215926efe3bb64447a943794adc5b998, type: 3}
       propertyPath: m_IsActive
@@ -835,6 +861,7 @@ MonoBehaviour:
   menuWin: {fileID: 1764752430}
   menuDead: {fileID: 55877985}
   MainMenu: {fileID: 172018095}
+  enableMainMenu: 0
   goalObject: {fileID: 0}
   player: {fileID: 1546513830}
   playerScript: {fileID: 1546513834}
@@ -1004,6 +1031,7 @@ MonoBehaviour:
   menuWin: {fileID: 0}
   menuDead: {fileID: 0}
   MainMenu: {fileID: 0}
+  enableMainMenu: 0
   goalObject: {fileID: 0}
   player: {fileID: 1546513830}
   playerScript: {fileID: 1546513834}
