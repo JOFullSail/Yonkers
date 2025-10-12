@@ -10,7 +10,7 @@ public class Explosion : MonoBehaviour
     [SerializeField] float explosionRadius = 5f;
     [SerializeField] float explosionForce = 10f;
     [SerializeField] float upwardsForceModifier = 0.5f;
-
+     
     [Header("Collision/LOS")]
     [Tooltip("Which layers can be affected by the blast?")]
     [SerializeField] LayerMask overlapMask = ~0;
@@ -69,6 +69,7 @@ public class Explosion : MonoBehaviour
                 if (controller != null)
                 {
                     controller.isInRagdoll = true;
+                    controller.knockbacked = true;
 
                     float lockTime = Mathf.Max(controller.MinRagdollTime(), direction.magnitude * controller.RagdollPerSpeed());
                     controller.ragdollTimeLeft = Mathf.Max(controller.ragdollTimeLeft, lockTime);
