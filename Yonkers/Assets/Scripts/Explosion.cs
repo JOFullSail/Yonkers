@@ -10,7 +10,7 @@ public class Explosion : MonoBehaviour
     [SerializeField] float explosionRadius = 5f;
     [SerializeField] float explosionForce = 10f;
     [SerializeField] float upwardsForceModifier = 0.5f;
-     
+
     [Header("Collision/LOS")]
     [Tooltip("Which layers can be affected by the blast?")]
     [SerializeField] LayerMask overlapMask = ~0;
@@ -65,14 +65,13 @@ public class Explosion : MonoBehaviour
 
                 pb.applyPushback(launch);
 
-                PlayerController controller = col.GetComponentInParent<PlayerController>();
-                if (controller != null)
+                if (col.CompareTag("Player"))
                 {
-                    controller.isInRagdoll = true;
-                    controller.knockbacked = true;
+                    GameManager.instance.playerScript.isInRagdoll = true;
+                    GameManager.instance.playerScript.knockbacked = true;
 
-                    float lockTime = Mathf.Max(controller.MinRagdollTime(), direction.magnitude * controller.RagdollPerSpeed());
-                    controller.ragdollTimeLeft = Mathf.Max(controller.ragdollTimeLeft, lockTime);
+                    float lockTime = Mathf.Max(GameManager.instance.playerScript.MinRagdollTime(), direction.magnitude * GameManager.instance.playerScript.RagdollPerSpeed());
+                    GameManager.instance.playerScript.ragdollTimeLeft = Mathf.Max(GameManager.instance.playerScript.ragdollTimeLeft, lockTime);
                 }
             }
         }

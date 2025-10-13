@@ -373,7 +373,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
     }
     public void applyPushback(Vector3 direction)
     {
-        pushBack = direction;
+        pushBack += direction;
     }
     void KnockbackMovement()
     {
@@ -407,23 +407,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
             controller.Move((MomentumDir + Knockback) * Time.deltaTime); // knock back is added to the last known input
         }
         //mkaing knockback decrease
-        if (Knockback.z > 0 && knockbacktimer > 0.001f)
+        if (Mathf.Abs(Knockback.z) > 0.001f && knockbacktimer > 0.001f)
         {
             Knockback.z -= gravity * Time.deltaTime;
             currentSpeed = 1;
         }
-        else if (Knockback.z <= 0)
-        {
-            Knockback.z = 0;
-        }
-        if (Knockback.x > 0 && knockbacktimer > 0.001f)
+        if ((Mathf.Abs(Knockback.x)) > 0.001f && knockbacktimer > 0.001f)
         {
             Knockback.x -= gravity * Time.deltaTime;
             currentSpeed = 1;
-        }
-        else if (Knockback.x <= 0)
-        {
-            Knockback.x = 0;
         }
     }
     void RagdollTimer()
