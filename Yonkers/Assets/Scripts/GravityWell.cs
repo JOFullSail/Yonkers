@@ -19,4 +19,13 @@ public class GravityWell : MonoBehaviour
             GameManager.instance.playerScript.applyPushback(impulse);
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            GameManager.instance.playerScript.applyPushback(Vector3.zero);
+            GameManager.instance.playerScript.ClearKnockback();
+        }
+    }
 }

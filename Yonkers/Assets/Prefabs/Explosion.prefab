@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3767b6e114eae9d418d6f0149339d72d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explosion
-  explosionEffect: {fileID: 7050976960048075254, guid: ccf564c097fec9546a8a00cfa5e0f2c0, type: 3}
+  explosionEffect: {fileID: 7186919351858238002, guid: ccf564c097fec9546a8a00cfa5e0f2c0, type: 3}
   explosionRadius: 2
   explosionForce: 15
   upwardsForceModifier: 0.5
