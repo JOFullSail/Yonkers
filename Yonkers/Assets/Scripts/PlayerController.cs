@@ -442,6 +442,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
         speedAccelOrig = currspeedAccel;
     }
 
+    public void ClearKnockback()
+    {
+        knockbacked = false;
+        Knockback = Vector3.zero;
+    }
+
 }
 
 //Gold's pile of possible features
