@@ -53,13 +53,14 @@ public class Damage : MonoBehaviour
 
         IDamage dmg = other.GetComponent<IDamage>();
 
-        if (dmg != null && (type == damageType.moving || type == damageType.stationary || type == damageType.homing))
+        if (type == damageType.moving || type == damageType.stationary || type == damageType.homing)
         {
-            dmg.takeDamage(damageAmount);
             if (isExplosive && explosionPrefab != null)
             {
-                GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+                Vector3 projectileExplosionLoc = type != damageType.stationary ? new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - 0.25f) : transform.position;
+                GameObject explosion =  Instantiate(explosionPrefab, projectileExplosionLoc, Quaternion.identity);
                 Explosion expl = explosion.GetComponent<Explosion>();
+                
                 if (expl != null)
                     expl.TriggerExplosion(transform.position, splashDamageAmount);
                 else
@@ -67,9 +68,15 @@ public class Damage : MonoBehaviour
             }
             else
                 Debug.LogWarning(gameObject.name + " is set as being explosive but it doesn't have an explosive prefab assigned.");
+
+            if (dmg != null)
+            {
+                dmg.takeDamage(damageAmount);
+
+            }
         }
 
-        if (type == damageType.homing || type == damageType.moving)
+        if (type == damageType.homing || type == damageType.moving || (type == damageType.stationary && isExplosive))
         {
             Destroy(gameObject);
         }

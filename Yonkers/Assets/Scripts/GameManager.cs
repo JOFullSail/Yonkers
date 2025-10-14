@@ -8,6 +8,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuDead;
+    [SerializeField] GameObject MainMenu;
+
+    [SerializeField] bool enableMainMenu = false;
+
+    [SerializeField] GameObject goalObject;
 
     public GameObject player;
     public PlayerController playerScript;
@@ -28,9 +33,22 @@ public class GameManager : MonoBehaviour
         playerScript = player.GetComponent<PlayerController>();
     }
 
+    private void Start()
+    {
+        if(enableMainMenu)
+        {
+            stateMainMenuOpen();
+            menuActive = MainMenu;
+            menuActive.SetActive(true);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (menuActive == MainMenu && Input.GetKeyDown(KeyCode.Space))
+                stateUnpause();
+
         if (Input.GetButtonDown("Cancel"))
         {
             if (menuActive == null)
@@ -46,6 +64,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void stateMainMenuOpen()
+    {
+        isPaused = true;
+        Time.timeScale = 0;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
     public void statePause()
     {
         isPaused = !isPaused;
@@ -64,7 +89,26 @@ public class GameManager : MonoBehaviour
         menuActive = null;
     }
 
-    
+    public void updateGameGoal(int amount) 
+    {
+        gameGoalCount += amount;
+
+        if(gameGoalCount <= 0) 
+        {
+            menuActive = menuWin;
+            menuActive.SetActive(true);
+            statePause();  
+        }
+    }
+
+    public void stateWin()
+    {
+        statePause();
+        menuActive = menuWin;
+        menuActive.SetActive(true);
+    }
+
+
     public void youDied()
     {
         statePause();

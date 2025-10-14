@@ -45,6 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Explosion
   explosionEffect: {fileID: 7050976960048075254, guid: ccf564c097fec9546a8a00cfa5e0f2c0, type: 3}
-  explosionRadius: 5
-  explosionForce: 10
-  upwardsForceModifier: 2
+  explosionRadius: 2
+  explosionForce: 15
+  upwardsForceModifier: 0.5
+  overlapMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  blockByObstacles: 0
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 513
