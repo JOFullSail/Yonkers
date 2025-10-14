@@ -55,7 +55,6 @@ public class MeleeEnemy : EnemyAI
             GameManager.instance.playerScript.knockbacked = true;
             GameManager.instance.playerScript.applyPushback(TotalPunch);
             GameManager.instance.playerScript.takeDamage(MeleeDamage);
-            StartCoroutine(StopKnockback());
             AttackTimer = 0;
         }
         
@@ -77,11 +76,5 @@ public class MeleeEnemy : EnemyAI
             }
             
         }
-    }
-
-    IEnumerator StopKnockback()
-    {
-        yield return new WaitForSeconds(0.7f);
-        GameManager.instance.playerScript.ClearKnockback();
     }
 }

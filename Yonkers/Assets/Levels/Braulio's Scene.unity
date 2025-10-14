@@ -307,7 +307,7 @@ MonoBehaviour:
   explosionDamage: 0
   EnemyPOS: {fileID: 5961479}
   Upwardforce: 50
-  MeleeDamage: 5
+  MeleeDamage: 20
   MeleeDelay: 2
   DashDistance: 10
   DashSpeed: 8
