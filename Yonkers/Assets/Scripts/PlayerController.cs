@@ -409,12 +409,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
         //mkaing knockback decrease
         if (Mathf.Abs(Knockback.z) > 0.001f && knockbacktimer > 0.001f)
         {
-            Knockback.z -= gravity * Time.deltaTime;
+            Knockback.z -= (Knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
             currentSpeed = 1;
         }
         if ((Mathf.Abs(Knockback.x)) > 0.001f && knockbacktimer > 0.001f)
         {
-            Knockback.x -= gravity * Time.deltaTime;
+            Knockback.x -= (Knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
             currentSpeed = 1;
         }
     }
