@@ -1,16 +1,16 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
+using System.Collections;
 
 public class Explosion : MonoBehaviour
 {
     [Header("VFX")]
-    [SerializeField] GameObject explosionEffect;
+    [SerializeField] ParticleSystem explosionEffect;
 
     [Header("Blast Settings")]
     [SerializeField] float explosionRadius = 5f;
     [SerializeField] float explosionForce = 10f;
     [SerializeField] float upwardsForceModifier = 0.5f;
-     
+
     [Header("Collision/LOS")]
     [Tooltip("Which layers can be affected by the blast?")]
     [SerializeField] LayerMask overlapMask = ~0;
@@ -28,7 +28,14 @@ public class Explosion : MonoBehaviour
     /// </summary>
     public void TriggerExplosion(Vector3 explosionLocation, int splashDamage = 0)
     {
-        if (explosionEffect) Instantiate(explosionEffect, explosionLocation, Quaternion.identity);
+        if (explosionEffect)
+        {
+            ParticleSystem.MainModule mainModule = explosionEffect.main;
+
+            mainModule.stopAction = ParticleSystemStopAction.Destroy;
+
+            Instantiate(explosionEffect, explosionLocation, Quaternion.identity);
+        }
 
         Collider[] cols = Physics.OverlapSphere(explosionLocation, explosionRadius, overlapMask, QueryTriggerInteraction.Ignore);
 
@@ -65,16 +72,17 @@ public class Explosion : MonoBehaviour
 
                 pb.applyPushback(launch);
 
-                PlayerController controller = col.GetComponentInParent<PlayerController>();
-                if (controller != null)
+                if (col.CompareTag("Player"))
                 {
-                    controller.isInRagdoll = true;
-                    controller.knockbacked = true;
+                    GameManager.instance.playerScript.isInRagdoll = true;
+                    GameManager.instance.playerScript.knockbacked = true;
 
-                    float lockTime = Mathf.Max(controller.MinRagdollTime(), direction.magnitude * controller.RagdollPerSpeed());
-                    controller.ragdollTimeLeft = Mathf.Max(controller.ragdollTimeLeft, lockTime);
+                    float lockTime = Mathf.Max(GameManager.instance.playerScript.MinRagdollTime(), direction.magnitude * GameManager.instance.playerScript.RagdollPerSpeed());
+                    GameManager.instance.playerScript.ragdollTimeLeft = Mathf.Max(GameManager.instance.playerScript.ragdollTimeLeft, lockTime);
                 }
             }
+
+            Destroy(gameObject);
         }
     }
 }

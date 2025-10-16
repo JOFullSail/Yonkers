@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class PlayerController : MonoBehaviour, IDamage, IPushback
+public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 {
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreShottingLayer;
@@ -16,9 +17,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
 
 
     [Header("Shooting")]
-    [SerializeField] int shootDmg; // 1 (Could be changed)
-    [SerializeField] int shootDist; // 15 (Could be changed)
-    [SerializeField] float shootRate; // 0.5 (Could be changed)
+    [SerializeField] List<GunStats> gunList = new List<GunStats>();
+    [SerializeField] GameObject gunModel;
+    [SerializeField] int shootDamage;
+    [SerializeField] int shootDist;
+    [SerializeField] float shootRate;
 
     [Header("Climbing")]
     [SerializeField] float climbSpeed; // 10.25
@@ -68,6 +71,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
     RaycastHit hit;
 
     //Ints
+    int gunListPos;
     int jumpCount;
     int hpOrig;
     //Floats
@@ -174,7 +178,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
             IDamage dmg = hit.collider.GetComponent<IDamage>();
             if (dmg != null)
             {
-                dmg.takeDamage(shootDmg);
+                dmg.takeDamage(shootDamage);
             }
             Debug.Log(hit.collider.name); // logs info to the debug status bar.
         }
@@ -205,8 +209,33 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
     }
     void Shoot()
     {
-        if (Input.GetButton("Fire1") && shootTimer >= shootRate)
+        if (Input.GetButton("Fire1") && shootTimer >= shootRate && gunList[gunListPos].ammoCurrent > 0)
+        {
             ShootApplyDamage();
+            if (gunList[gunListPos].ammoCurrent <= 0 && gunList[gunListPos].ammoReserves <= 0 && gunList[gunListPos].isSpecial)
+            {
+                gunList.RemoveAt(gunListPos);
+                if(gunList.Count > 0)
+                {
+                    gunListPos = 0;
+                    ChangeGun();
+                }
+            }
+        }
+            
+
+        Reload();
+        SelectGun();
+    }
+
+    void Reload()
+    {
+        if (Input.GetButtonDown("Reload") && gunList[gunListPos].ammoReserves > 0)
+        {
+            int ammoToLoad = gunList[gunListPos].ammoMax <= gunList[gunListPos].ammoReserves ? gunList[gunListPos].ammoMax : gunList[gunListPos].ammoReserves;
+            gunList[gunListPos].ammoReserves -= (gunList[gunListPos].ammoMax - gunList[gunListPos].ammoCurrent);
+            gunList[gunListPos].ammoCurrent = ammoToLoad;
+        }
     }
     void Movement()
     {
@@ -373,7 +402,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
     }
     public void applyPushback(Vector3 direction)
     {
-        pushBack = direction;
+        pushBack += direction;
     }
     void KnockbackMovement()
     {
@@ -407,23 +436,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
             controller.Move((MomentumDir + Knockback) * Time.deltaTime); // knock back is added to the last known input
         }
         //mkaing knockback decrease
-        if (Knockback.z > 0 && knockbacktimer > 0.001f)
+        if (Mathf.Abs(Knockback.z) > 0.001f && knockbacktimer > 0.001f)
         {
-            Knockback.z -= gravity * Time.deltaTime;
+            Knockback.z -= (Knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
             currentSpeed = 1;
         }
-        else if (Knockback.z <= 0)
+        if ((Mathf.Abs(Knockback.x)) > 0.001f && knockbacktimer > 0.001f)
         {
-            Knockback.z = 0;
-        }
-        if (Knockback.x > 0 && knockbacktimer > 0.001f)
-        {
-            Knockback.x -= gravity * Time.deltaTime;
+            Knockback.x -= (Knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
             currentSpeed = 1;
-        }
-        else if (Knockback.x <= 0)
-        {
-            Knockback.x = 0;
         }
     }
     void RagdollTimer()
@@ -450,6 +471,52 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback
         speedAccelOrig = currspeedAccel;
     }
 
+    public void ClearKnockback()
+    {
+        knockbacked = false;
+        Knockback = Vector3.zero;
+    }
+
+    public void GetGunStats(GunStats gun)
+    {
+        gunList.Add(gun);
+        gunListPos = gunList.Count - 1;
+
+        ChangeGun();
+    }
+
+    void ChangeGun()
+    {
+        shootDamage = gunList[gunListPos].shootDamage;
+        shootDist = gunList[gunListPos].shootDist;
+        shootRate = gunList[gunListPos].shootRate;
+
+        if(gunModel != null)
+        {
+            gunModel.GetComponent<MeshFilter>().sharedMesh = gunList[gunListPos].gunModel.GetComponent<MeshFilter>().sharedMesh;
+            gunModel.GetComponent<MeshRenderer>().sharedMaterial = gunList[gunListPos].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+    }
+
+    void SelectGun()
+    {
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            if (gunListPos < gunList.Count - 1)
+                gunListPos++;
+            else
+                gunListPos = 0;
+            ChangeGun();
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            if (gunListPos > 0)
+                gunListPos--;
+            else
+                gunListPos = gunList.Count - 1;
+            ChangeGun();
+        }
+    }
 }
 
 //Gold's pile of possible features
