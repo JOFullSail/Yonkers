@@ -15,14 +15,15 @@ MonoBehaviour:
   gunModel: {fileID: 302068756496654038, guid: 23c3e148841aa3048849b2a3ae6f3e6c, type: 3}
   shootDamage: 1
   shootDist: 15
-  shootRate: 5
+  shootRate: 3
   ammoCurrent: 30
   ammoMax: 30
-  ammoReserves: 0
-  recoilToCamera: 0
+  ammoReserves: 300
+  recoilToCamera: 0.5
   recoilToUser: 0
-  isExplosive: 0
   isSpecial: 0
+  isExplosive: 0
+  projectileExplosionPrefab: {fileID: 0}
   hitEffect: {fileID: 0}
   shootSound: []
   shootSoundVol: 0

@@ -13,16 +13,17 @@ MonoBehaviour:
   m_Name: Rocket Launcher
   m_EditorClassIdentifier: Assembly-CSharp::GunStats
   gunModel: {fileID: 0}
-  shootDamage: 1
-  shootDist: 15
+  shootDamage: 5
+  shootDist: 199
   shootRate: 0.1
   ammoCurrent: 0
   ammoMax: 1
-  ammoReserves: 0
+  ammoReserves: 3
   recoilToCamera: 0
   recoilToUser: 0
-  isExplosive: 0
-  isSpecial: 0
+  isSpecial: 1
+  isExplosive: 1
+  projectileExplosionPrefab: {fileID: 0}
   hitEffect: {fileID: 0}
   shootSound: []
   shootSoundVol: 0
