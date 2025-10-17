@@ -8,27 +8,27 @@ public class Spring : MonoBehaviour
     Vector3 springDirection = Vector3.zero; 
     Vector3 minorTeleport = Vector3.zero;
     bool damagingSpring = false;
-    bool checkdelay = true;
+    bool checkforTeleportobject = true;
 
     private void Start()
     {
         damagingSpring = gameObject.GetComponent<Damage>();
-        if (!checkdelay) //I have to delay the change to the real teleport location object to not cause a null ref. It works.
-        {
-            emptySpringObject = emptySpringObject.transform.Find("TpLocation").gameObject;
-        }
-        else
-        {
-            checkdelay = false;
-        }
     }
 
     private void Update()
     {//all in update in case you want to try adding springs to moving platforms.
-        if (!damagingSpring) 
+        if (!damagingSpring)
         {
             springDirection = transform.up.normalized;
-            Debug.DrawRay(emptySpringObject.transform.position, springDirection * (((SpringForce * SpringForce) / 70) * 2), Color.red);
+            if (!checkforTeleportobject)
+            {
+                Debug.DrawRay(emptySpringObject.transform.position, springDirection * (((SpringForce * SpringForce) / 70) * 2), Color.red);
+            }
+            else if (emptySpringObject.transform.Find("TpLocation") != null)
+            {
+                emptySpringObject = emptySpringObject.transform.Find("TpLocation").gameObject;
+                checkforTeleportobject = false;
+            }
         }
     }
     private void OnTriggerEnter(Collider other)
