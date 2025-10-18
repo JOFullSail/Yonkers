@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] int shootDmg = 1;
     [SerializeField] int shootDist = 20;
     [SerializeField] float shootRate = 0.5f;
+    [SerializeField] bool weaponIsHitscan;
+    [SerializeField] GameObject projectile;
 
     [Header("Climbing")]
     //[Tooltip("Makes climbing easier for the player.\n\n- Players will be able to continue climbing even while looking away from the wall.\n" +
@@ -152,6 +154,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         get { return minRagdollTime; }
     }
 
+    public bool IsDashing
+    {
+        get { return isDashing; }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -254,7 +261,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         --gunList[gunListIdx].ammoCurrent;
 
         // ~ignoreLayer will ignore the player later to prevent the player shooting themselves.
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreShooting))
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreShooting) && weaponIsHitscan)
         {
             IDamage dmg = hit.collider.GetComponent<IDamage>();
             if (dmg != null)
@@ -262,6 +269,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 dmg.takeDamage(shootDmg);
             }
         }
+        else if(projectile != null)
+            Instantiate(projectile, Camera.main.transform.position, Camera.main.transform.rotation);
     }
 
     public void takeDamage(int amount)
@@ -331,6 +340,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         shootDmg = gunList[gunListIdx].shootDamage;
         shootDist = gunList[gunListIdx].shootDist;
         shootRate = gunList[gunListIdx].shootRate;
+        weaponIsHitscan = gunList[gunListIdx].isHitscan;
+        projectile = gunList[gunListIdx].projectile;
 
         if (gunModel != null)
         {
@@ -570,12 +581,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (Mathf.Abs(knockback.z) > 0.001f && knockbackTimer > 0.001f)
         {
             knockback.z -= (knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
-            //currentSpeed = 1; // Removed to prevent the player from being slowed down after a pushback.
+            currentSpeed = 1; // Removed to prevent the player from being slowed down after a pushback.
         }
         if ((Mathf.Abs(knockback.x)) > 0.001f && knockbackTimer > 0.001f)
         {
             knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
-            //currentSpeed = 1; // Removed to prevent the player from being slowed down after a pushback.
+            currentSpeed = 1; // Removed to prevent the player from being slowed down after a pushback.
         }
     }
 

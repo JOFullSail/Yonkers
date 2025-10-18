@@ -3127,7 +3127,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2930401099769102833}
-  - component: {fileID: 3822388677249788966}
+  - component: {fileID: 6557067459796300750}
   m_Layer: 5
   m_Name: Gamemanager
   m_TagString: Untagged
@@ -3154,7 +3154,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3822388677249788966
+--- !u!114 &6557067459796300750
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3163,7 +3163,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8055951996010168383}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54e5faeb06599ae4282eefebeaaed7d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 0580092815dddce49b1c163f2a471c72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   menuActive: {fileID: 0}
@@ -3172,9 +3172,9 @@ MonoBehaviour:
   menuDead: {fileID: 2110107386336820385}
   MainMenu: {fileID: 4045147509666320716}
   enableMainMenu: 0
-  goalObject: {fileID: 3454159725470672859, guid: 561cb45a4da089248b2c9f0f1e9e0be1, type: 3}
-  player: {fileID: 1722926959862536933, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-  playerScript: {fileID: 3073829574187304067, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+  player: {fileID: 0}
+  playerScript: {fileID: 0}
+  goalObject: {fileID: 0}
   isPaused: 0
 --- !u!1 &8222915305709388943
 GameObject:

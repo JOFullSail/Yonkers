@@ -12,10 +12,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] bool enableMainMenu = false;
 
-    [SerializeField] GameObject goalObject;
-
     public GameObject player;
     public PlayerController playerScript;
+    public GameObject goalObject;
 
     public bool isPaused;
 
@@ -31,6 +30,8 @@ public class GameManager : MonoBehaviour
 
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<PlayerController>();
+
+        goalObject = GameObject.FindWithTag("Goal");
     }
 
     private void Start()
