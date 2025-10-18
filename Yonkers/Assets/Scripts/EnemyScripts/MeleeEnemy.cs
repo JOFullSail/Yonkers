@@ -53,7 +53,6 @@ public class MeleeEnemy : EnemyAI
         
 
         if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= Reach) {
-            Debug.Log("Ouch!!!");
             GameManager.instance.playerScript.knockbacked = true;
             GameManager.instance.playerScript.applyPushback(TotalPunch);
             GameManager.instance.playerScript.takeDamage(MeleeDamage);
@@ -69,12 +68,10 @@ public class MeleeEnemy : EnemyAI
         Debug.DrawRay(transform.position, PlayerPosition, color: Color.blue);
         if(Physics.Raycast(transform.position, (PlayerPosition).normalized, out Detected, TargetDistance))
         {
-            Debug.Log("Object Detected");
             if (Detected.collider.CompareTag("Player"))
             {
                 Dir = transform.forward;
-                NewPushPosition = new Vector3 (GameManager.instance.player.transform.position.x, 0, GameManager.instance.player.transform.position.z);
-                Debug.Log("Player Dectected");
+                NewPushPosition = new Vector3 (GameManager.instance.player.transform.position.x, transform.position.y, GameManager.instance.player.transform.position.z);
             }
             
         }
