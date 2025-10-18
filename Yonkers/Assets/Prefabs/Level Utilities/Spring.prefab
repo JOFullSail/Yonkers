@@ -137,8 +137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spring
   SpringForce: 100
-  teleportlocation: {fileID: 3377173794296036823}
-  errorcheck: 1.6
+  emptySpringObject: {fileID: 1927110842440638434}
 --- !u!135 &501570028699806899
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -171,7 +170,7 @@ GameObject:
   - component: {fileID: 7522090036820044611}
   m_Layer: 0
   m_Name: TpLocation
-  m_TagString: Spring Teleport
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

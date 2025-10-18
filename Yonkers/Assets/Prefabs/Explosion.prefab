@@ -46,8 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Explosion
   explosionEffect: {fileID: 7186919351858238002, guid: ccf564c097fec9546a8a00cfa5e0f2c0, type: 3}
   explosionRadius: 2
-  explosionForce: 15
-  upwardsForceModifier: 0.5
+  explosionForce: 20
+  upwardsForceModifier: 10
   overlapMask:
     serializedVersion: 2
     m_Bits: 4294967295

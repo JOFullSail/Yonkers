@@ -1,56 +1,52 @@
-
-using System.Collections;
+using UnityEditor;
 using UnityEngine;
-
 
 
 public class MeleeEnemy : EnemyAI
 {
-
-    
     [Header("Melee Attributes")]
-    [SerializeField] Transform EnemyPOS;// Enemy transfrom
-    [SerializeField] float Upwardforce; //
-    [SerializeField] int MeleeDamage;
-    [SerializeField] float MeleeDelay;
-    [SerializeField] float DashDistance;
-    [SerializeField] float DashSpeed;
-    [SerializeField] float TargetDistance;
-    [SerializeField] float Reach;
+    [SerializeField] Transform enemyPOS;// Enemy transfrom
+    [SerializeField] float upwardforce; //
+    [SerializeField] int meleeDamage;
+    [SerializeField] float meleeDelay;
+    [SerializeField] float dashDistance;
+    [SerializeField] float dashSpeed;
+    [SerializeField] float targetDistance;
+    [SerializeField] float reach;
 
-    bool Collide;
-    bool AttackRange;
-    float AttackTimer;
-    Vector3 PlayerPosition;
-    Vector3 NewPushPosition;
-    Vector3 Dir ;
+    //bool collide;
+    //bool attackRange;
+    float attackTimer;
+    Vector3 playerPosition;
+    Vector3 newPushPosition;
+    Vector3 dir;
 
     void Update()
     {
-        PlayerPosition = GameManager.instance.player.transform.position - transform.position;
-        AttackTimer += Time.deltaTime;
-        roamRoutine();
-        if (canSeePlayer())
+        playerPosition = GameManager.instance.player.transform.position - transform.position;
+        attackTimer += Time.deltaTime;
+        enemyRoutine(); // roamRoutine()
+        if (playerDetected && (firstTimeMet && initialAttackDelay <= 0.0f ||
+            !firstTimeMet && attackDelayTimer <= 0.0f))
         {
-            
-            if (AttackTimer > MeleeDelay)
+
+            if (attackTimer > meleeDelay)
             {
                 dashattack();
 
-                transform.position = Vector3.Lerp(transform.position, NewPushPosition, Time.deltaTime * DashSpeed);
-                punch(Upwardforce, (GameManager.instance.player.transform.position - transform.position));
-                
+                transform.position = Vector3.Lerp(transform.position, newPushPosition, Time.deltaTime * dashSpeed);
+                punch(upwardforce, (GameManager.instance.player.transform.position - transform.position));
+
             }
-            
+
         }
     }
 
-    void punch(float Force, Vector3 Dir)
+    void punch(float Force, Vector3 dir)
     {
 
-        Dir = Dir.normalized;
-        Vector3 TotalPunch = Dir * Force;
-        
+        dir = dir.normalized;
+        Vector3 totalPunch = dir * Force;
 
         if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= Reach) {
             GameManager.instance.playerScript.knockbacked = true;
@@ -58,22 +54,21 @@ public class MeleeEnemy : EnemyAI
             GameManager.instance.playerScript.takeDamage(MeleeDamage);
             AttackTimer = 0;
         }
-        
-    }
 
+    }
 
     void dashattack()
     {
-        RaycastHit Detected;
-        Debug.DrawRay(transform.position, PlayerPosition, color: Color.blue);
-        if(Physics.Raycast(transform.position, (PlayerPosition).normalized, out Detected, TargetDistance))
+        RaycastHit detected;
+        Debug.DrawRay(transform.position, playerPosition, color: Color.blue);
+        if (Physics.Raycast(transform.position, (playerPosition).normalized, out detected, targetDistance))
         {
             if (Detected.collider.CompareTag("Player"))
             {
                 Dir = transform.forward;
                 NewPushPosition = new Vector3 (GameManager.instance.player.transform.position.x, transform.position.y, GameManager.instance.player.transform.position.z);
             }
-            
+
         }
     }
 }
