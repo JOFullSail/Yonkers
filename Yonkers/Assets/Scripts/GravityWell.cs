@@ -15,7 +15,7 @@ public class GravityWell : MonoBehaviour
 
             Vector3 impulse = toCenter * pullStrength;
 
-            GameManager.instance.playerScript.knockbacked = true;
+            GameManager.instance.playerScript.Knockbacked = true;
             GameManager.instance.playerScript.applyPushback(impulse);
         }
     }

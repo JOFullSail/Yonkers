@@ -69,10 +69,10 @@ public class Spring : MonoBehaviour
                 }
                 if (other.GetComponentInParent<PlayerController>() != null)
                 {
-                    other.GetComponentInParent<PlayerController>().knockbacked = true;
-                    GameManager.instance.playerScript.isInRagdoll = true;
-                    float lockTime = Mathf.Max(GameManager.instance.playerScript.MinRagdollTime(), springDirection.magnitude * GameManager.instance.playerScript.RagdollPerSpeed());
-                    GameManager.instance.playerScript.ragdollTimeLeft = Mathf.Max(GameManager.instance.playerScript.ragdollTimeLeft, lockTime);
+                    other.GetComponentInParent<PlayerController>().Knockbacked = true;
+                    GameManager.instance.playerScript.IsInRagdoll = true;
+                    float lockTime = Mathf.Max(GameManager.instance.playerScript.MinRagdollTime, springDirection.magnitude * GameManager.instance.playerScript.RagdollPerSpeed);
+                    GameManager.instance.playerScript.RagdollTimeLeft = Mathf.Max(GameManager.instance.playerScript.RagdollTimeLeft, lockTime);
                 }
             }
         }
@@ -93,7 +93,7 @@ public class Spring : MonoBehaviour
                 }
                 if (other.GetComponentInParent<PlayerController>() != null)
                 {
-                    other.GetComponentInParent<PlayerController>().knockbacked = true;
+                    other.GetComponentInParent<PlayerController>().Knockbacked = true;
                 }
             }
         }

@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a26598f2f0d473f4386516ec970ad73e, type: 3}
   m_Name: Pistol
   m_EditorClassIdentifier: Assembly-CSharp::GunStats
-  gunModel: {fileID: 2440906724474284878, guid: ddd6ac00c8a9c2d4788647458c1154de, type: 3}
+  gunModel: {fileID: 4873880299464486465, guid: 195c32f0d92a8b6448eaeef2bdff01a7, type: 3}
   shootDamage: 1
-  shootDist: 15
-  shootRate: 1
-  ammoCurrent: 0
-  ammoMax: 10
+  shootDist: 20
+  shootRate: 0.5
+  ammoCurrent: 50
+  ammoMax: 50
   ammoReserves: 999
   recoilToCamera: 0
   recoilToUser: 0
@@ -26,4 +26,4 @@ MonoBehaviour:
   projectileExplosionPrefab: {fileID: 0}
   hitEffect: {fileID: 0}
   shootSound: []
-  shootSoundVol: 0
+  shootSoundVol: 0.5
