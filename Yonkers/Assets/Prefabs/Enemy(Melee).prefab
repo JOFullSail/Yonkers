@@ -46,34 +46,44 @@ MonoBehaviour:
   m_GameObject: {fileID: 874386655747510684}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8efcf11cee3cce647ba720cc2cbcf769, type: 3}
+  m_Script: {fileID: 11500000, guid: aaf456c966d44034c81072299c971e75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemy
   model: {fileID: 6474914506028839312}
   agent: {fileID: 7532659087428590176}
-  HP: 10
-  faceTargetSpeed: 3
-  FOV: 180
-  roamDist: 5
-  roamPauseTime: 1
+  HP: 2
+  FOV: 90
   baseMoveSpeed: 5
   canMove: 1
   canRotate: 1
-  canFly: 0
-  canDodge: 0
+  canRoam: 0
+  alwaysRoaming: 0
+  randomizeRoamTime: 0
+  facingWhileRoaming: 0
+  approachWhenShot: 1
+  damageWhenDelayed: 0
+  damageWhenUndetected: 1
   enragesWhenDamaged: 0
-  enrageSpeedIncrease: 0
   explodesOnDeath: 0
+  faceTargetSpeed: 5
+  stoppingDistance: 10
+  roamDist: 0
+  roamPauseTime: 2
+  randomMinRoamTime: 1
+  randomMaxRoamTime: 2
+  initialAttackDelay: 1
+  attackDelay: 1
+  enrageSpeedIncrease: 0
   explosionPrefab: {fileID: 0}
   explosionDamage: 0
-  EnemyPOS: {fileID: 3190504052256248743}
-  Upwardforce: 50
-  MeleeDamage: 20
-  MeleeDelay: 2
-  DashDistance: 10
-  DashSpeed: 8
-  TargetDistance: 25
-  Reach: 5
+  enemyPOS: {fileID: 3190504052256248743}
+  upwardforce: 40
+  meleeDamage: 20
+  meleeDelay: 2
+  dashDistance: 10
+  dashSpeed: 8
+  targetDistance: 25
+  reach: 5
 --- !u!33 &3014402504388006189
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -19,6 +19,9 @@ public class GunStats : ScriptableObject
     public bool isExplosive;
     public GameObject projectileExplosionPrefab;
 
+    public bool isHitscan;
+    public GameObject projectile;
+
     public ParticleSystem hitEffect;
     public AudioClip[] shootSound;
     [Range(0, 1)] public float shootSoundVol;
