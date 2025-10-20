@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [Header("General")]
     [SerializeField] int HP = 10;
     //[SerializeField] int speed = 12; // Left here since the use of the movement speed have not been decided.
+    [SerializeField] float freezeDelay = 0.5f; //used to know when the player can be frozen again.
 
     [Header("Jumping")]
     [SerializeField] int jumpSpeed = 12;
@@ -79,40 +80,59 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] bool debugFastClimb;
     [Tooltip("Sets the player's climb speed.\n\n- Gravity will not pull you down as fast with high values.")]
     [SerializeField] float debugClimbSpeed = 50f;
-
+    //RayCast
     RaycastHit hit;
-
+    //Ints
     int gunListIdx;
     int jumpCount;
     int hpOrig;
-
+    //bools
     bool isDashing;
     bool isClimbing;
     bool isJumping;
     bool isInRagdoll;
     bool knockbacked;
-
+    bool GravityON; //true = gravity active // false = gravity disabled *MAINLY FOR SPRINGS DON'T USE FOR KNOCKBACK THINGS*
+    bool FrozenOn; //false = not frozen //true = frozen
+    //Floats
+    public float gravityOffTimer; // Used to time a duration of having no gravity.
+    public float gravityLockout = 0; //amount of time gravity is disabled
+    float freezeTimer; // Used to time a duration of being frozen.      < HEY BROLY CHECK SPRING CODE FOR AN EXAMPLE OF HOW TO USE THIS
+    float freezeLockout = 0;//amount of time player is disabled         <
+    float freezeDelaytimer; //used to know when you can be frozen again. 
     float knockbackTimer;      // Used to know when to start losing knockback.
+
+
     float jumpTimer;
     float shootTimer;
     float ragdollTimeLeft;
-    float currentDashSpeed;
-    float currentSpeedAccel;
-    float currentSpeedDeaccel;
-    float currentSpeed;
     float dashCooldownTimer;   // Used to track dash cooldown.
     float dashTimer;           // Used to track how long dash will go.
     float speedDeaccelOrig;
     float speedAccelOrig;
     float speedZero = 0.0f;
 
+
+
+    //Movement V2
+    float currentSpeedX; //forward+ and back-
+    float currentSpeedAccelX;
+    float currentSpeedDeaccelX;
+    float currentDashSpeedX;
+    float currentSpeedZ; //right+ and left-
+    float currentSpeedAccelZ;
+    float currentSpeedDeaccelZ;
+    float currentDashSpeedZ;
+
     // Vectors for the player
-    Vector3 moveDirec;   // Input direction from the player.
+    Vector3 moveDirecX; //Movement V2 input from on X axis
+    Vector3 moveDirecZ; //Movement V2 input from on Z axis
     Vector3 playerVel;   // Used for jump and also holds pushback.y.
     Vector3 pushBack;    // Force applied to the player.
-    Vector3 momentumDir; // Last input direction used.
+    Vector3 momentumDirX; //Movement V2 last input direction on X axis
+    Vector3 momentumDirZ;//Movement V2 last input direction on Z axis
     Vector3 knockback;   // Used to hold pushBack.x and z.
-    
+
     // - UNUSED -
     //[SerializeField] Collider slopecheck; // no use yet
     // bool _onSlope; //use will be added later
@@ -124,6 +144,14 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //float AirTime; // might have a future use
     // void AirCheck() {if (controller.isGrounded){ AirTime = 0;}} //possible airtime code
 
+    //what gold needs to do
+    //make movement work on two axis speeds. Done
+    //make springs add to current speed
+    //make springs able to chain halfway
+    //add slow down for broly
+    //add freeze for broly halfway
+    //make a toggle for gravity done
+    //knockback
 
     public bool DebugSpawnAtCamera
     {
@@ -138,13 +166,13 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     public bool IsInRagdoll
     {
         get { return isInRagdoll; }
-        set {  isInRagdoll = value; }
+        set { isInRagdoll = value; }
     }
 
     public bool Knockbacked
     {
         get { return knockbacked; }
-        set {  knockbacked = value; }
+        set { knockbacked = value; }
     }
 
     public float RagdollPerSpeed
@@ -166,14 +194,19 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void Start()
     {
         respawnPlayer(false, false);
-
         hpOrig = HP;
-        currentSpeed = speedZero;
-        currentSpeedAccel = minAccel;
-        currentSpeedDeaccel = minDeaccel;
-        speedDeaccelOrig = currentSpeedDeaccel;
-        speedAccelOrig = currentSpeedAccel;
-
+        currentSpeedX = speedZero;
+        currentSpeedZ = speedZero;
+        currentSpeedAccelX = minAccel;
+        currentSpeedDeaccelX = minDeaccel;
+        currentSpeedAccelZ = minAccel;
+        currentSpeedDeaccelZ = minDeaccel;
+        speedDeaccelOrig = currentSpeedDeaccelZ;
+        speedDeaccelOrig = currentSpeedDeaccelX;
+        speedAccelOrig = currentSpeedAccelZ;
+        speedAccelOrig = currentSpeedAccelX;
+        isDashing = false;
+        GravityON = true;
         if (debugFastClimb) climbSpeed = debugClimbSpeed;
     }
 
@@ -190,16 +223,22 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void playerMovement()
     {
-
-        climb();
-        dash();
-
-        dashEnd();
-        movement();
-        jump();
+        Frozen(); //checking if you're frozen
+        if (FrozenOn == false) // long as you're not frozen you can do all your usual movement
+        {
+            climb();
+            dash();
+            movement();
+            dashEnd();
+            jump();
+        }
         knockbackMovement();
         controller.Move(playerVel * Time.deltaTime); // Used here to apply gravity correctly
-        Gravity();
+        Gravityoff(); //checking if you disabled gravity first
+        if (GravityON)
+        {
+            Gravity();
+        }
     }
 
     void climb()
@@ -221,7 +260,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 controller.slopeLimit <= wallAngle &&
                 wallAngle <= climbMaxAngle &&
                 !controller.isGrounded &&
-                (playerVel.y < -1 || isClimbing))
+                (playerVel.y < -1 || isClimbing)
+                 && GravityON)
             {
                 playerVel.y = climbSpeed;
                 isClimbing = true;
@@ -233,7 +273,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void jump()
     {
-        if (!isClimbing && Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount)
+        if (!isClimbing && Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && GravityON)
         {
             if (jumpTimer >= jumpGracePeriod && jumpCount == 0)
             {
@@ -258,7 +298,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 dmg.takeDamage(shootDmg);
             }
         }
-        else if(projectile != null)
+        else if (projectile != null)
             Instantiate(projectile, Camera.main.transform.position, Camera.main.transform.rotation);
     }
 
@@ -276,11 +316,13 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         if (!controller.isGrounded) jumpTimer += Time.deltaTime;
         else jumpTimer = 0;
-
         shootTimer += Time.deltaTime;
         dashCooldownTimer += Time.deltaTime;
         ragdollTimer();
         knockbackTimer += Time.deltaTime;
+        gravityOffTimer += Time.deltaTime;
+        freezeTimer += Time.deltaTime;
+        freezeDelaytimer += Time.deltaTime;
     }
 
     void shoot()
@@ -370,125 +412,511 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void movementIncrementation()
     {
-        // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
-        if (currentSpeed >= maxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true)) 
+        //V1
+        //if (currentSpeed >= maxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true))
+        //{
+        //    if (currentSpeed > maxSpeed && Input.GetButton("Shift") == false)
+        //    {
+        //        if (currentSpeed > maxSpeed + 1)
+        //        {
+        //            currentSpeed -= currentSpeedDeaccel * Time.deltaTime;
+        //            ramp();
+        //        }
+        //    }
+        //    moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+        //    momentumDir = moveDirec;
+        //}
+        //else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < maxSpeed)
+        //{
+        //    if (currentSpeed < minSpeed)
+        //    {
+        //        currentSpeed = minSpeed;
+        //    }
+        //    moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+        //    momentumDir = moveDirec;
+        //    ramp();
+        //}
+        //else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > speedZero)
+        //{
+        //    currentSpeed -= currentSpeedDeaccel * Time.deltaTime;
+        //    ramp();
+        //    if (currentSpeed < 0)
+        //    {
+        //        currentSpeed = 0;
+        //    }
+        //}
+        //V2
+
+        if ((Input.GetButton("UP") == false && Input.GetButton("DOWN") == false && Input.GetButton("LEFT") == false && Input.GetButton("RIGHT") == false) && ((currentSpeedZ > speedZero || currentSpeedZ < speedZero) || (currentSpeedX > speedZero || currentSpeedX < speedZero)))
         {
-            if (currentSpeed > maxSpeed && Input.GetButton("Shift") == false)
-            {
-                if (currentSpeed > maxSpeed + 1)
-                {
-                    currentSpeed -= currentSpeedDeaccel * Time.deltaTime;
-                    ramp();
-                }
-            }
-            moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-            momentumDir = moveDirec;
-        }
-        else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < maxSpeed)
-        {
-            if (currentSpeed < minSpeed)
-            {
-                currentSpeed = minSpeed;
-            }
-            moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-            momentumDir = moveDirec;
-            currentSpeed += currentSpeedAccel * Time.deltaTime;
             ramp();
         }
-        else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > speedZero)
+        else
         {
-            currentSpeed -= currentSpeedDeaccel * Time.deltaTime;
-            ramp();
-            if (currentSpeed < 0)
+            //vertical X
+            if (((Input.GetButton("UP") == true) && Input.GetButton("DOWN") == true) || ((Input.GetButton("UP") == false) && Input.GetButton("DOWN") == false)) // if both inputed 
             {
-                currentSpeed = 0;
+                ramp();
+            }
+            else if ((Input.GetButton("UP") == true) && currentSpeedX >= maxSpeed) // over max speed going forward
+            {
+                moveDirecX = Input.GetAxis("UP") * transform.forward;
+                momentumDirX = moveDirecX;
+                ramp();
+            }
+            else if ((Input.GetButton("DOWN") == true) && currentSpeedX <= -maxSpeed) // over max speed going backwards
+            {
+                moveDirecX = Input.GetAxis("DOWN") * transform.forward;
+                momentumDirX = moveDirecX;
+                ramp();
+            }
+            else if ((Input.GetButton("UP") == true) && currentSpeedX < maxSpeed) // getting speed forward
+            {
+                moveDirecX = Input.GetAxis("UP") * transform.forward;
+                momentumDirX = moveDirecX;
+                ramp();
+            }
+            else if ((Input.GetButton("DOWN") == true) && currentSpeedX > -maxSpeed) // getting speed backwards
+            {
+                moveDirecX = Input.GetAxis("DOWN") * transform.forward;
+                momentumDirX = moveDirecX;
+                ramp();
+            }
+            //horizontal Z
+            if (((Input.GetButton("LEFT") == true) && Input.GetButton("RIGHT") == true) || ((Input.GetButton("LEFT") == false) && Input.GetButton("RIGHT") == false)) // if both inputed
+            {
+                ramp();
+            }
+            else if ((Input.GetButton("RIGHT") == true) && currentSpeedZ >= maxSpeed) // over max speed going right
+            {
+                moveDirecZ = -Input.GetAxis("RIGHT") * transform.right; //transform.right and Z
+                momentumDirZ = moveDirecZ;
+                ramp();
+            }
+            else if ((Input.GetButton("LEFT") == true) && currentSpeedZ <= -maxSpeed) // over max speed going left
+            {
+                moveDirecZ = Input.GetAxis("LEFT") * transform.right;
+                momentumDirZ = moveDirecZ;
+                ramp();
+            }
+            else if ((Input.GetButton("RIGHT") == true) && currentSpeedZ < maxSpeed) // getting speed right
+            {
+                moveDirecZ = -Input.GetAxis("RIGHT") * transform.right;
+                momentumDirZ = moveDirecZ;
+                ramp();
+            }
+            else if ((Input.GetButton("LEFT") == true) && currentSpeedZ > -maxSpeed) // getting speed left
+            {
+                moveDirecZ = Input.GetAxis("LEFT") * transform.right;
+                momentumDirZ = moveDirecZ;
+                ramp();
             }
         }
     }
 
     void moveLike()// Main way the player moves
     {
-        if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && (currentSpeed < maxSpeed || currentSpeed >= maxSpeed))
+        //V2
+        if (GravityON == false) //if gravity is off you can only have knockback, no inputs allowed!
         {
-            controller.Move((moveDirec + knockback) * currentSpeed * Time.deltaTime);
+            controller.Move(knockback * Time.deltaTime);
         }
-        else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false))
+        else if ((Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true))
         {
-            controller.Move((momentumDir + knockback) * currentSpeed * Time.deltaTime);
+            controller.Move((((moveDirecX * currentSpeedX) + (moveDirecZ * currentSpeedZ)) + (knockback)) * Time.deltaTime);
+        }
+        else if (Input.GetButton("UP") == false && Input.GetButton("DOWN") == false && Input.GetButton("LEFT") == false && Input.GetButton("RIGHT") == false)
+        {
+            controller.Move((((momentumDirX * currentSpeedX) + (momentumDirZ * currentSpeedZ)) + (knockback)) * Time.deltaTime);
+        }
+    }
+
+    void ramp() // Used to make Accel and Deacell higher over time. MovementV2: Will also do the decrease and increase of current speeds
+    {
+
+        //V2
+        //vertical
+        if ((Input.GetButton("UP") == false && Input.GetButton("DOWN") == false && Input.GetButton("LEFT") == false && Input.GetButton("RIGHT") == false) && ((currentSpeedZ > speedZero || currentSpeedZ < speedZero) || (currentSpeedX > speedZero || currentSpeedX < speedZero)))
+        {
+            //// no input but X or Z still have speed. They decrease until set 0
+            if (currentSpeedX > speedZero || currentSpeedX < speedZero)
+            {
+                if (currentSpeedX < 0.5f && currentSpeedX > -0.5f)
+                {
+                    currentSpeedX = 0;
+                }
+                else
+                {
+                    if (currentSpeedX > speedZero)
+                    {
+                        currentSpeedAccelX = speedAccelOrig;
+                        currentSpeedX -= currentSpeedDeaccelX;
+                        if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                        {
+                            currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
+                        }
+                        else if (currentSpeedAccelX > maxDeaccel)
+                        {
+                            currentSpeedAccelX = maxDeaccel;
+                        }
+                    }
+                    else if (currentSpeedX < speedZero)
+                    {
+                        currentSpeedDeaccelX = speedDeaccelOrig;
+                        currentSpeedX += currentSpeedAccelX;
+                        if (currentSpeedAccelX < maxAccel) //Aceel ramp
+                        {
+                            currentSpeedAccelX += speedAccelRate * Time.deltaTime;
+                        }
+                        else if (currentSpeedAccelX > maxAccel)
+                        {
+                            currentSpeedAccelX = maxAccel;
+                        }
+                    }
+                }
+            }
+            if (currentSpeedZ > speedZero || currentSpeedZ < speedZero)
+            {
+                if (currentSpeedZ < 0.5f && currentSpeedZ > -0.5f)
+                {
+                    currentSpeedZ = 0;
+                }
+                else
+                {
+                    if (currentSpeedZ > speedZero)
+                    {
+                        currentSpeedAccelZ = speedAccelOrig;
+                        currentSpeedZ -= currentSpeedDeaccelZ;
+                        if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                        {
+                            currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
+                        }
+                    }
+                    else if (currentSpeedZ < speedZero)
+                    {
+                        currentSpeedDeaccelZ = speedDeaccelOrig;
+                        currentSpeedZ += currentSpeedAccelZ;
+                        if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                        {
+                            currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+        }
+        else // if there's a input
+        {
+            if (((Input.GetButton("UP") == true) && Input.GetButton("DOWN") == true) || ((Input.GetButton("UP") == false) && Input.GetButton("DOWN") == false)) // if both inputed or neither, nothing happens direction wise but you slow down all the same.
+            {
+                if (currentSpeedX > speedZero || currentSpeedX < speedZero)
+                {
+                    if (currentSpeedX < 0.5f && currentSpeedX > -0.5f)
+                    {
+                        currentSpeedX = 0;
+                    }
+                    else
+                    {
+                        if (currentSpeedX > speedZero)
+                        {
+                            currentSpeedAccelX = speedAccelOrig;
+                            currentSpeedX -= currentSpeedDeaccelX;
+                            if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                            {
+                                currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
+                            }
+                        }
+                        else if (currentSpeedX < speedZero)
+                        {
+                            currentSpeedDeaccelX = speedDeaccelOrig;
+                            currentSpeedX += currentSpeedAccelX;
+                            if (currentSpeedAccelX < maxAccel) //Accel ramp
+                            {
+                                currentSpeedAccelX += speedAccelRate * Time.deltaTime;
+                            }
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("UP") == true) && currentSpeedX >= maxSpeed) // over max speed going forward, you slow down and it ramps up until you reach your normal max speed
+            {
+                if (currentSpeedX > maxSpeed && Input.GetButton("Shift") == false)
+                {
+                    if (currentSpeedX > maxSpeed + 1)
+                    {
+                        currentSpeedX -= currentSpeedDeaccelX * Time.deltaTime;
+                        if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                        {
+                            currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("DOWN") == true) && currentSpeedX <= -maxSpeed) // over max speed going backwards, you slow down and it ramps up until you reach your normal NEGATIVE max speed
+            {
+                if (currentSpeedX < -maxSpeed && Input.GetButton("Shift") == false)
+                {
+                    if (currentSpeedX < -maxSpeed - 1)
+                    {
+                        currentSpeedX += currentSpeedAccelX * Time.deltaTime;
+                        if (currentSpeedAccelX < maxAccel) //Aceel ramp
+                        {
+                            currentSpeedAccelX += speedAccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("UP") == true) && currentSpeedX < maxSpeed) // getting speed forward
+            {
+                if (currentSpeedX > -minSpeed && currentSpeedX < minSpeed)
+                {
+                    currentSpeedX = minSpeed;
+                }
+                currentSpeedDeaccelX = speedDeaccelOrig;
+                currentSpeedX += currentSpeedAccelX * Time.deltaTime;
+                if (currentSpeedAccelX < maxAccel) //Aceel ramp
+                {
+                    currentSpeedAccelX += speedAccelRate * Time.deltaTime;
+                }
+            }
+            else if ((Input.GetButton("DOWN") == true) && currentSpeedX > -maxSpeed) // getting speed backwards
+            {
+                if (currentSpeedX > -minSpeed && currentSpeedX < minSpeed)
+                {
+                    currentSpeedX = -minSpeed;
+                }
+                currentSpeedAccelX = speedAccelOrig;
+                currentSpeedX -= currentSpeedDeaccelX * Time.deltaTime;
+                if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                {
+                    currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
+                }
+            }
+            //horizontal
+            if (((Input.GetButton("LEFT") == true) && Input.GetButton("RIGHT") == true) || ((Input.GetButton("LEFT") == false) && Input.GetButton("RIGHT") == false)) // if both inputed or neither
+            {
+                if (currentSpeedZ > speedZero || currentSpeedZ < speedZero)
+                {
+                    if (currentSpeedZ < 0.5f && currentSpeedZ > -0.5f)
+                    {
+                        currentSpeedZ = 0;
+                    }
+                    else
+                    {
+                        if (currentSpeedZ > speedZero)
+                        {
+                            currentSpeedAccelZ = speedAccelOrig;
+                            currentSpeedZ -= currentSpeedDeaccelZ;
+                            if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                            {
+                                currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
+                            }
+                        }
+                        else if (currentSpeedZ < speedZero)
+                        {
+                            currentSpeedDeaccelZ = speedDeaccelOrig;
+                            currentSpeedZ += currentSpeedAccelZ;
+                            if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                            {
+                                currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
+                            }
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("RIGHT") == true) && currentSpeedZ >= maxSpeed) // over max speed going right
+            {
+                if (currentSpeedX > maxSpeed && Input.GetButton("Shift") == false)
+                {
+                    if (currentSpeedZ > maxSpeed + 1)
+                    {
+                        currentSpeedZ -= currentSpeedDeaccelZ * Time.deltaTime;
+                        if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                        {
+                            currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("LEFT") == true) && currentSpeedZ <= -maxSpeed) // over max speed going left
+            {
+                if (currentSpeedZ < -maxSpeed && Input.GetButton("Shift") == false)
+                {
+                    if (currentSpeedZ < -maxSpeed - 1)
+                    {
+                        currentSpeedZ += currentSpeedAccelZ * Time.deltaTime;
+                        if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                        {
+                            currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("RIGHT") == true) && currentSpeedZ < maxSpeed) // getting speed right
+            {
+                if (currentSpeedZ > -minSpeed && currentSpeedZ < minSpeed)
+                {
+                    currentSpeedZ = minSpeed;
+                }
+                currentSpeedDeaccelZ = speedDeaccelOrig;
+                currentSpeedZ += currentSpeedAccelZ * Time.deltaTime;
+                if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                {
+                    currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
+                }
+            }
+            else if ((Input.GetButton("LEFT") == true) && currentSpeedZ > -maxSpeed) // getting speed left
+            {
+                if (currentSpeedZ > -minSpeed && currentSpeedZ < minSpeed)
+                {
+                    currentSpeedZ = -minSpeed;
+                }
+                currentSpeedAccelZ = speedAccelOrig;
+                currentSpeedZ -= currentSpeedDeaccelZ * Time.deltaTime;
+                if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                {
+                    currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
+                }
+            }
         }
 
     }
 
-    void ramp() // Used to make Accel and Deacell higher over time.
+    void dash() // Dash in a direction. Bool for if hyou want dash to increase your movement speed
     {
-        if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed < maxSpeed)
+        //v2
+        if (Input.GetButton("Shift") && (Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true) && isClimbing == false && isInRagdoll == false && GravityON)
         {
-            currentSpeedAccel = speedAccelOrig;
-            if (currentSpeed == speedZero)
-            {
-                currentSpeedDeaccel = speedDeaccelOrig;
-            }
-            else if (currentSpeedDeaccel < maxDeaccel)
-            {
-                currentSpeedDeaccel += speedDeaccelRate * Time.deltaTime;
 
-            }
-        }
-        else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed > speedZero)
-        {
-            currentSpeedDeaccel = speedDeaccelOrig;
-            if (currentSpeed >= maxSpeed)
-            {
-                currentSpeedAccel = maxAccel;
-            }
-            else if (currentSpeedAccel < maxAccel)
-            {
-                currentSpeedAccel += speedAccelRate * Time.deltaTime;
-            }
-        }
-    }
-
-    void dash() // Dash in a direction but has bools for how you want to specifically dash.
-    {
-
-        if (Input.GetButton("Shift") && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && isClimbing == false && isInRagdoll == false)
-        {
-            isDashing = true;
             if (dashCooldownTimer >= dashCooldown)
             {
+                isDashing = true;
                 dashCooldownTimer = 0.0f;
                 dashTimer = 0.0f;
-                currentDashSpeed = dashSpeed;
-                StartCoroutine(dashWait(momentumDir * currentDashSpeed * Time.deltaTime));
+                if (Input.GetButton("UP") == true && Input.GetButton("DOWN") == true)
+                {
+                    currentDashSpeedX = 0;
+                }
+                else if (Input.GetButton("UP") == true)
+                {
+                    currentDashSpeedX = dashSpeed;
+                }
+                else if (Input.GetButton("DOWN") == true)
+                {
+                    currentDashSpeedX = -dashSpeed;
+                }
+                if (Input.GetButton("LEFT") == true && Input.GetButton("RIGHT") == true)
+                {
+                    currentDashSpeedZ = 0;
+                }
+                else if (Input.GetButton("LEFT") == true)
+                {
+                    currentDashSpeedZ = -dashSpeed;
+                }
+                else if (Input.GetButton("RIGHT") == true)
+                {
+                    currentDashSpeedZ = dashSpeed;
+                }
+                StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
             }
         }
     }
 
     void dashMomentum() // Makes the dash add to the player's speed
     {
+        //if (dashCarryOver)
+        //{
+        //    if (currentSpeed < maxSpeed)
+        //    {
+        //        if (currentSpeed + currentDashSpeed > maxSpeed)
+        //        {
+        //            currentSpeed = maxSpeed;
+        //        }
+        //        else
+        //        {
+        //            currentSpeed += currentDashSpeed;
+        //        }
+        //    }
+        //}
+        //currentDashSpeed = 0;
+        //isDashing = false;
+        //v2
         if (dashCarryOver)
         {
-            if (currentSpeed < maxSpeed)
+            //Dash on X axis
+            if (currentDashSpeedX > 0) // if dash on X was postive
             {
-                if (currentSpeed + currentDashSpeed > maxSpeed)
+                if (currentSpeedX < maxSpeed)
                 {
-                    currentSpeed = maxSpeed;
+                    if (currentSpeedX + currentDashSpeedX > maxSpeed)
+                    {
+                        currentSpeedX = maxSpeed;
+                    }
+                    else
+                    {
+                        currentSpeedX += currentDashSpeedX;
+                    }
                 }
-                else
+            }
+            else // if dash on X was negative
+            {
+                if (currentSpeedX > -maxSpeed)
                 {
-                    currentSpeed += currentDashSpeed;
+                    if (currentSpeedX + currentDashSpeedX < -maxSpeed)
+                    {
+                        currentSpeedX = -maxSpeed;
+                    }
+                    else
+                    {
+                        currentSpeedX += currentDashSpeedX;
+                    }
+                }
+            }
+            // Dash on Z axis
+            if (currentDashSpeedZ > 0) // if dash on Z was postive
+            {
+                if (currentSpeedZ < maxSpeed)
+                {
+                    if (currentSpeedZ + currentDashSpeedZ > maxSpeed)
+                    {
+                        currentSpeedZ = maxSpeed;
+                    }
+                    else
+                    {
+                        currentSpeedZ += currentDashSpeedZ;
+                    }
+                }
+            }
+            else // if dash on Z was negative
+            {
+                if (currentSpeedZ > -maxSpeed)
+                {
+                    if (currentSpeedZ + currentDashSpeedZ < -maxSpeed)
+                    {
+                        currentSpeedZ = -maxSpeed;
+                    }
+                    else
+                    {
+                        currentSpeedZ += currentDashSpeedZ;
+                    }
                 }
             }
         }
-        currentDashSpeed = 0;
+        currentDashSpeedX = 0;
+        currentDashSpeedZ = 0;
         isDashing = false;
     }
 
     void dashEnd()// Ends dash
     {
+        //if (dashTimer >= dashLength || knockbacked)
+        //{
+        //    StopCoroutine(dashWait(momentumDir * currentDashSpeed * Time.deltaTime));
+        //    dashMomentum();
+        //}
+        //v2
         if (dashTimer >= dashLength || knockbacked)
         {
-            StopCoroutine(dashWait(momentumDir * currentDashSpeed * Time.deltaTime));
+            StopCoroutine(dashWait((momentumDirX * currentDashSpeedX) * Time.deltaTime + (momentumDirZ * currentDashSpeedZ) * Time.deltaTime));
             dashMomentum();
         }
     }
@@ -536,7 +964,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     }
 
     void knockbackMovement()
-    {  
+    {
         // Appying forces when hit
         if (isInRagdoll && knockbacked)
         {
@@ -564,18 +992,19 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
         else if (isInRagdoll)
         {
-            controller.Move((momentumDir + knockback) * Time.deltaTime); // knock back is added to the last known input
+            controller.Move((momentumDirX + knockback) * Time.deltaTime + (momentumDirZ + knockback) * Time.deltaTime); // knock back is added to the last known input
         }
         // Making knockback decrease
-        if (Mathf.Abs(knockback.z) > 0.001f && knockbackTimer > 0.001f)
+        if (GravityON == true)
         {
-            knockback.z -= (knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
-            currentSpeed = 1; // Removed to prevent the player from being slowed down after a pushback.
-        }
-        if ((Mathf.Abs(knockback.x)) > 0.001f && knockbackTimer > 0.001f)
-        {
-            knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
-            currentSpeed = 1; // Removed to prevent the player from being slowed down after a pushback.
+            if (Mathf.Abs(knockback.z) > 0.001f && knockbackTimer > 0.001f)
+            {
+                knockback.z -= (knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
+            }
+            if ((Mathf.Abs(knockback.x)) > 0.001f && knockbackTimer > 0.001f)
+            {
+                knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime); 
+            }
         }
     }
 
@@ -598,11 +1027,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void movementResetFull() // Used to reset player Movement values
     {
-        currentSpeed = speedZero;
-        currentSpeedAccel = minAccel;
-        currentSpeedDeaccel = minDeaccel;
-        speedDeaccelOrig = currentSpeedDeaccel;
-        speedAccelOrig = currentSpeedAccel;
+        currentSpeedX = speedZero;
+        currentSpeedZ = speedZero;
+        currentSpeedAccelX = minAccel;
+        currentSpeedDeaccelX = minDeaccel;
+        currentSpeedAccelZ = minAccel;
+        currentSpeedDeaccelZ = minDeaccel;
     }
 
     public void clearKnockback()
@@ -610,7 +1040,33 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         knockbacked = false;
         knockback = Vector3.zero;
     }
+    void Gravityoff() //checks if you changed gravity lockout and reset the timer.
+    {
+        if (gravityOffTimer < gravityLockout)
+        {
+            GravityON = false;
+        }
+        else
+        {
+            GravityON = true;
+        }
+    }
 
+    void Frozen() //checks if you changed freeze lockout and reset the timer.
+    {
+        if (freezeDelaytimer > freezeDelay)
+        {
+            if (freezeTimer < freezeLockout)
+            {
+                FrozenOn = true;
+            }
+            else
+            {
+                FrozenOn = false;
+                freezeDelaytimer = 0;
+            }
+        }
+    }
     public void respawnPlayer(bool resetPlayer, bool resetHealth)
     {
         if (GameManager.instance.playerSpawn != null)
