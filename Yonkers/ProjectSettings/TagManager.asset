@@ -9,6 +9,7 @@ TagManager:
   - Slope
   - Hazard
   - Goal
+  - PlayerSpawn
   layers:
   - Default
   - TransparentFX
