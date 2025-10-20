@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -8,9 +9,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuDead;
-    [SerializeField] GameObject MainMenu;
+    [SerializeField] GameObject mainMenu;
 
     [SerializeField] bool enableMainMenu = false;
+
+    public GameObject playerSpawn;
 
     public GameObject player;
     public PlayerController playerScript;
@@ -19,8 +22,9 @@ public class GameManager : MonoBehaviour
     public bool isPaused;
 
     float timeScaleOrig;
+    GameObject playerSpawnOrig;
 
-    private int gameGoalCount;
+    int gameGoalCount;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -30,16 +34,31 @@ public class GameManager : MonoBehaviour
 
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<PlayerController>();
-
+        playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+        playerSpawnOrig = playerSpawn;
         goalObject = GameObject.FindWithTag("Goal");
+
+    #if UNITY_EDITOR
+        if (playerScript.DebugSpawnAtCamera)
+        {
+            if (playerSpawn != null)
+            {
+                Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
+                playerSpawn.transform.position = cameraTransform.position;
+                playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
+                playerSpawnOrig = playerSpawn;
+            }
+            else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
+        }
+    #endif
     }
 
     private void Start()
     {
-        if(enableMainMenu)
+        if (enableMainMenu)
         {
             stateMainMenuOpen();
-            menuActive = MainMenu;
+            menuActive = mainMenu;
             menuActive.SetActive(true);
         }
     }
@@ -47,7 +66,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (menuActive == MainMenu && Input.GetKeyDown(KeyCode.Space))
+        if (menuActive == mainMenu && Input.GetKeyDown(KeyCode.Space))
                 stateUnpause();
 
         if (Input.GetButtonDown("Cancel"))
@@ -72,6 +91,7 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
+
     public void statePause()
     {
         isPaused = !isPaused;
@@ -108,7 +128,6 @@ public class GameManager : MonoBehaviour
         menuActive = menuWin;
         menuActive.SetActive(true);
     }
-
 
     public void youDied()
     {
