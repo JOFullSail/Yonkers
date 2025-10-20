@@ -8,6 +8,11 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.stateUnpause();
     }
 
+    public void respawn()
+    {
+        GameManager.instance.stateUnpause();
+        GameManager.instance.playerScript.respawnPlayer(true, true);
+    }
     public void restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -19,11 +24,11 @@ public class ButtonFunctions : MonoBehaviour
     }
     public void quit()
     {
-        #if UNITY_EDITOR
+    #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-        #else
+    #else
             Application.Quit();
-        #endif 
+    #endif 
     }
 
 }

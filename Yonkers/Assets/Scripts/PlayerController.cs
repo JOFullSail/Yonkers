@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -69,18 +70,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float minRagdollTime = 0.15f;
 
     [Header("Debug")]
+    [Tooltip("Spawns the player in the Scene Editor's Camera location.")]
+    [SerializeField] bool debugSpawnAtCamera;
     [Tooltip("Gives the player the ability to climb literally anything.")]
     [SerializeField] bool debugClimbAnything;
     [Tooltip("Gives the player the ability to climb at any given speed set to Debug Climb Speed.\n\n" +
         "- Gravity will not pull you down as fast with high values.")]
     [SerializeField] bool debugFastClimb;
-    [Tooltip("Gives the player the ability to sprint when pressing and holding the Left Shift key. It was left unused as a design choice.\n\n" +
-        "- Will replace the player's dash.\n\n- Useful for skipping levels when debugging.\n\n- Hi TetraBitGaming!")]
-    [SerializeField] bool debugSprint;
     [Tooltip("Sets the player's climb speed.\n\n- Gravity will not pull you down as fast with high values.")]
     [SerializeField] float debugClimbSpeed = 50f;
-    [Tooltip("Multiplier for the player's unused sprint speed.\n\n - Hi TetraBitGaming!")]
-    [SerializeField] int debugSprintModifier = 10;
 
     RaycastHit hit;
 
@@ -126,6 +124,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //float AirTime; // might have a future use
     // void AirCheck() {if (controller.isGrounded){ AirTime = 0;}} //possible airtime code
 
+
+    public bool DebugSpawnAtCamera
+    {
+        get { return debugSpawnAtCamera; }
+    }
     public float RagdollTimeLeft
     {
         get { return ragdollTimeLeft; }
@@ -162,7 +165,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (debugFastClimb) climbSpeed = debugClimbSpeed;
+        respawnPlayer(false, false);
 
         hpOrig = HP;
         currentSpeed = speedZero;
@@ -170,7 +173,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         currentSpeedDeaccel = minDeaccel;
         speedDeaccelOrig = currentSpeedDeaccel;
         speedAccelOrig = currentSpeedAccel;
-        isDashing = false;
+
+        if (debugFastClimb) climbSpeed = debugClimbSpeed;
     }
 
     // Update is called once per frame
@@ -188,9 +192,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
 
         climb();
-
-        if (debugSprint) sprint();
-        else dash();
+        dash();
 
         dashEnd();
         movement();
@@ -198,19 +200,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         knockbackMovement();
         controller.Move(playerVel * Time.deltaTime); // Used here to apply gravity correctly
         Gravity();
-    }
-
-    // FOR DEBUG PURPOSES ONLY
-    void sprint()
-    {
-        if (Input.GetButtonDown("Sprint"))
-        {
-            currentSpeed *= debugSprintModifier;
-        }
-        else if (Input.GetButtonUp("Sprint"))
-        {
-            currentSpeed /= debugSprintModifier;
-        }
     }
 
     void climb()
@@ -232,7 +221,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 controller.slopeLimit <= wallAngle &&
                 wallAngle <= climbMaxAngle &&
                 !controller.isGrounded &&
-                (playerVel.y < 0 || isClimbing))
+                (playerVel.y < -1 || isClimbing))
             {
                 playerVel.y = climbSpeed;
                 isClimbing = true;
@@ -519,7 +508,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         if (isDashing == true)
         {
-            Debug.Log("Dashing or Jumping");
+            //Debug.Log("Dashing or Jumping");
             playerVel.y = 0.0f;
         }
         else if (isJumping == true)
@@ -530,13 +519,13 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
         else if (controller.isGrounded)
         {
-            Debug.Log("On Floor");
+            //Debug.Log("On Floor");
             playerVel.y = -(0.001f);
             jumpCount = 0;
         }
         else if (isDashing == false && isClimbing == false)
         {
-            Debug.Log("Not Floor");
+            //Debug.Log("Not Floor");
             playerVel.y -= gravity * Time.deltaTime;
         }
     }
@@ -596,6 +585,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             ragdollTimeLeft = Mathf.Max(0f, ragdollTimeLeft - Time.deltaTime * 2f); // Recover twice as fast from ragdoll if you are on the ground
         else
             ragdollTimeLeft = Mathf.Max(0f, ragdollTimeLeft - Time.deltaTime);
+
         if (ragdollTimeLeft <= 0f)
         {
             isInRagdoll = false;
@@ -619,6 +609,32 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         knockbacked = false;
         knockback = Vector3.zero;
+    }
+
+    public void respawnPlayer(bool resetPlayer, bool resetHealth)
+    {
+        if (GameManager.instance.playerSpawn != null)
+        {
+
+            controller.enabled = false;
+            controller.transform.position = GameManager.instance.playerSpawn.transform.position;
+            controller.transform.rotation = GameManager.instance.playerSpawn.transform.localRotation;
+            controller.enabled = true;
+        }
+
+        if (resetPlayer)
+        {
+            knockbacked = false;
+            isInRagdoll = false;
+            knockbackTimer = 0f;
+            playerVel = Vector3.zero;
+        }
+
+        if (resetHealth)
+        {
+            HP = hpOrig;
+            // Reset UI Health function
+        }
     }
 }
 

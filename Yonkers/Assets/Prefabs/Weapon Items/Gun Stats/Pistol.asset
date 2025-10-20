@@ -16,7 +16,7 @@ MonoBehaviour:
   shootDamage: 1
   shootDist: 20
   shootRate: 0.5
-  ammoCurrent: 50
+  ammoCurrent: 47
   ammoMax: 50
   ammoReserves: 999
   recoilToCamera: 0
@@ -24,6 +24,8 @@ MonoBehaviour:
   isSpecial: 0
   isExplosive: 0
   projectileExplosionPrefab: {fileID: 0}
+  isHitscan: 1
+  projectile: {fileID: 0}
   hitEffect: {fileID: 0}
   shootSound: []
   shootSoundVol: 0.5
