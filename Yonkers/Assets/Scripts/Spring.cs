@@ -5,6 +5,8 @@ public class Spring : MonoBehaviour
 {
     [Range(0.2f, 100)][SerializeField] float SpringForce = 3;
     [SerializeField] GameObject emptySpringObject; //please use the empty object used to hold the spring and Teleport. It's is used for finding the Teleport object //only for non damaging springs
+    [SerializeField] bool SpringGravityDisable; //if spring disables gravity
+    [SerializeField] float disableGravityTime; //how long to disable Gravity
     Vector3 springDirection = Vector3.zero; 
     Vector3 minorTeleport = Vector3.zero;
     bool damagingSpring = false;
@@ -27,7 +29,7 @@ public class Spring : MonoBehaviour
             else if (emptySpringObject.transform.Find("TpLocation") != null)
             {
                 emptySpringObject = emptySpringObject.transform.Find("TpLocation").gameObject;
-                checkforTeleportobject = false;
+                checkforTeleportobject = false; 
             }
         }
     }
@@ -78,6 +80,11 @@ public class Spring : MonoBehaviour
         }
         else //else normal spring logic
         {
+            if (SpringGravityDisable)
+            {
+                GameManager.instance.playerScript.gravityOffTimer = 0;
+                GameManager.instance.playerScript.gravityLockout = disableGravityTime;
+            }
             springDirection = transform.up.normalized;
             minorTeleport = emptySpringObject.transform.position;
             if (other.CompareTag("Player"))

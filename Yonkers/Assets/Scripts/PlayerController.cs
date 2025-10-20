@@ -80,39 +80,39 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] bool debugFastClimb;
     [Tooltip("Sets the player's climb speed.\n\n- Gravity will not pull you down as fast with high values.")]
     [SerializeField] float debugClimbSpeed = 50f;
-
+    //RayCast
     RaycastHit hit;
-
+    //Ints
     int gunListIdx;
     int jumpCount;
     int hpOrig;
-
+    //bools
     bool isDashing;
     bool isClimbing;
     bool isJumping;
     bool isInRagdoll;
     bool knockbacked;
-    bool GravityON; //true = gravity active // false = gravity disabled
+    bool GravityON; //true = gravity active // false = gravity disabled *MAINLY FOR SPRINGS DON'T USE FOR KNOCKBACK THINGS*
     bool FrozenOn; //false = not frozen //true = frozen
-
+    //Floats
+    public float gravityOffTimer; // Used to time a duration of having no gravity.
+    public float gravityLockout = 0; //amount of time gravity is disabled
+    float freezeTimer; // Used to time a duration of being frozen.      < HEY BROLY CHECK SPRING CODE FOR AN EXAMPLE OF HOW TO USE THIS
+    float freezeLockout = 0;//amount of time player is disabled         <
+    float freezeDelaytimer; //used to know when you can be frozen again. 
     float knockbackTimer;      // Used to know when to start losing knockback.
-    float gravityOffTimer; // Used to time a duration of having no gravity.
-    float freezeTimer; // Used to time a duration of being frozen.
-    float freezeDelaytimer; //used to know when you can be frozen again
+
+
     float jumpTimer;
     float shootTimer;
     float ragdollTimeLeft;
-    float currentDashSpeed;
-    float currentSpeedAccel;
-    float currentSpeedDeaccel;
-    float currentSpeed;
     float dashCooldownTimer;   // Used to track dash cooldown.
     float dashTimer;           // Used to track how long dash will go.
     float speedDeaccelOrig;
     float speedAccelOrig;
     float speedZero = 0.0f;
-    float gravityLockout = 0; //amount of time gravity is disabled
-    float freezeLockout = 0;//amount of time player is disabled
+
+
 
     //Movement V2
     float currentSpeedX; //forward+ and back-
@@ -125,12 +125,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     float currentDashSpeedZ;
 
     // Vectors for the player
-    Vector3 moveDirec;   // Input direction from the player.
     Vector3 moveDirecX; //Movement V2 input from on X axis
     Vector3 moveDirecZ; //Movement V2 input from on Z axis
     Vector3 playerVel;   // Used for jump and also holds pushback.y.
     Vector3 pushBack;    // Force applied to the player.
-    Vector3 momentumDir; // Last input direction used.
     Vector3 momentumDirX; //Movement V2 last input direction on X axis
     Vector3 momentumDirZ;//Movement V2 last input direction on Z axis
     Vector3 knockback;   // Used to hold pushBack.x and z.
@@ -196,20 +194,19 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void Start()
     {
         respawnPlayer(false, false);
-
         hpOrig = HP;
-        currentSpeed = speedZero;
-        currentSpeedAccel = minAccel;
-        currentSpeedDeaccel = minDeaccel;
+        currentSpeedX = speedZero;
+        currentSpeedZ = speedZero;
+        currentSpeedAccelX = minAccel;
+        currentSpeedDeaccelX = minDeaccel;
+        currentSpeedAccelZ = minAccel;
+        currentSpeedDeaccelZ = minDeaccel;
         speedDeaccelOrig = currentSpeedDeaccelZ;
         speedDeaccelOrig = currentSpeedDeaccelX;
         speedAccelOrig = currentSpeedAccelZ;
         speedAccelOrig = currentSpeedAccelX;
         isDashing = false;
         GravityON = true;
-        speedDeaccelOrig = currentSpeedDeaccel;
-        speedAccelOrig = currentSpeedAccel;
-
         if (debugFastClimb) climbSpeed = debugClimbSpeed;
     }
 
@@ -230,8 +227,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (FrozenOn == false) // long as you're not frozen you can do all your usual movement
         {
             climb();
-            if (debugSprint) sprint();
-            else dash();
+            dash();
             movement();
             dashEnd();
             jump();
@@ -264,7 +260,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 controller.slopeLimit <= wallAngle &&
                 wallAngle <= climbMaxAngle &&
                 !controller.isGrounded &&
-                (playerVel.y < -1 || isClimbing))
+                (playerVel.y < -1 || isClimbing)
+                 && GravityON)
             {
                 playerVel.y = climbSpeed;
                 isClimbing = true;
@@ -276,7 +273,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void jump()
     {
-        if (!isClimbing && Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount)
+        if (!isClimbing && Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && GravityON)
         {
             if (jumpTimer >= jumpGracePeriod && jumpCount == 0)
             {
@@ -519,20 +516,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void moveLike()// Main way the player moves
     {
-        //V1
-        //if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && (currentSpeed < maxSpeed || currentSpeed >= maxSpeed))
-        //{
-        //    controller.Move((moveDirec + knockback) * currentSpeed * Time.deltaTime);
-        //}
-        //else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false))
-        //{
-        //    controller.Move((momentumDir + knockback) * currentSpeed * Time.deltaTime);
-        //}
         //V2
-        // up and down moveDirect x
-        // left and right move Directz
-        // cuurentspeedx and current speedz will be taking care of in ramp.
-        if ((Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true))
+        if (GravityON == false) //if gravity is off you can only have knockback, no inputs allowed!
+        {
+            controller.Move(knockback * Time.deltaTime);
+        }
+        else if ((Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true))
         {
             controller.Move((((moveDirecX * currentSpeedX) + (moveDirecZ * currentSpeedZ)) + (knockback)) * Time.deltaTime);
         }
@@ -544,32 +533,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void ramp() // Used to make Accel and Deacell higher over time. MovementV2: Will also do the decrease and increase of current speeds
     {
-        //V1
-        //if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed < maxSpeed)
-        //{
-        //    currentSpeedAccel = speedAccelOrig;
-        //    if (currentSpeed == speedZero)
-        //    {
-        //        currentSpeedDeaccel = speedDeaccelOrig;
-        //    }
-        //    else if (currentSpeedDeaccel < maxDeaccel)
-        //    {
-        //        currentSpeedDeaccel += speedDeaccelRate * Time.deltaTime;
 
-        //    }
-        //}
-        //else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed > speedZero)
-        //{
-        //    currentSpeedDeaccel = speedDeaccelOrig;
-        //    if (currentSpeed >= maxSpeed)
-        //    {
-        //        currentSpeedAccel = maxAccel;
-        //    }
-        //    else if (currentSpeedAccel < maxAccel)
-        //    {
-        //        currentSpeedAccel += speedAccelRate * Time.deltaTime;
-        //    }
-        //}
         //V2
         //vertical
         if ((Input.GetButton("UP") == false && Input.GetButton("DOWN") == false && Input.GetButton("LEFT") == false && Input.GetButton("RIGHT") == false) && ((currentSpeedZ > speedZero || currentSpeedZ < speedZero) || (currentSpeedX > speedZero || currentSpeedX < speedZero)))
@@ -817,10 +781,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     }
 
-    void dash() // Dash in a direction but has bools for how you want to specifically dash.
+    void dash() // Dash in a direction. Bool for if hyou want dash to increase your movement speed
     {
         //v2
-        if (Input.GetButton("Shift") && (Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true) && isClimbing == false && isInRagdoll == false)
+        if (Input.GetButton("Shift") && (Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true) && isClimbing == false && isInRagdoll == false && GravityON)
         {
 
             if (dashCooldownTimer >= dashCooldown)
@@ -1031,17 +995,16 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             controller.Move((momentumDirX + knockback) * Time.deltaTime + (momentumDirZ + knockback) * Time.deltaTime); // knock back is added to the last known input
         }
         // Making knockback decrease
-        if (Mathf.Abs(knockback.z) > 0.001f && knockbackTimer > 0.001f)
+        if (GravityON == true)
         {
-            knockback.z -= (knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
-            currentSpeedX = 1; // Removed to prevent the player from being slowed down after a pushback.
-            currentSpeedZ = 1;
-        }
-        if ((Mathf.Abs(knockback.x)) > 0.001f && knockbackTimer > 0.001f)
-        {
-            knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime); 
-            currentSpeedX = 1; // Removed to prevent the player from being slowed down after a pushback.
-            currentSpeedZ = 1;
+            if (Mathf.Abs(knockback.z) > 0.001f && knockbackTimer > 0.001f)
+            {
+                knockback.z -= (knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
+            }
+            if ((Mathf.Abs(knockback.x)) > 0.001f && knockbackTimer > 0.001f)
+            {
+                knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime); 
+            }
         }
     }
 
@@ -1064,11 +1027,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void movementResetFull() // Used to reset player Movement values
     {
-        currentSpeed = speedZero;
-        currentSpeedAccel = minAccel;
-        currentSpeedDeaccel = minDeaccel;
-        speedDeaccelOrig = currentSpeedDeaccel;
-        speedAccelOrig = currentSpeedAccel;
+        currentSpeedX = speedZero;
+        currentSpeedZ = speedZero;
+        currentSpeedAccelX = minAccel;
+        currentSpeedDeaccelX = minDeaccel;
+        currentSpeedAccelZ = minAccel;
+        currentSpeedDeaccelZ = minDeaccel;
     }
 
     public void clearKnockback()
@@ -1076,7 +1040,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         knockbacked = false;
         knockback = Vector3.zero;
     }
-    void Gravityoff()
+    void Gravityoff() //checks if you changed gravity lockout and reset the timer.
     {
         if (gravityOffTimer < gravityLockout)
         {
@@ -1088,7 +1052,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
     }
 
-    void Frozen()
+    void Frozen() //checks if you changed freeze lockout and reset the timer.
     {
         if (freezeDelaytimer > freezeDelay)
         {
@@ -1101,7 +1065,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 FrozenOn = false;
                 freezeDelaytimer = 0;
             }
-
+        }
+    }
     public void respawnPlayer(bool resetPlayer, bool resetHealth)
     {
         if (GameManager.instance.playerSpawn != null)
