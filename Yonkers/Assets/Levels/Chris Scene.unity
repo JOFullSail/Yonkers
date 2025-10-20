@@ -126,13 +126,13 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &433891712 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3073829574187304067, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+  m_CorrespondingSourceObject: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
   m_PrefabInstance: {fileID: 628899526}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 433891708}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ff9e4bfbba4804488e8ac5a2d9840fd, type: 3}
+  m_Script: {fileID: 11500000, guid: 109cc463c9ab70f4c920b2ac9b625b4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
 --- !u!1001 &464522613
@@ -223,6 +223,34 @@ PrefabInstance:
     - target: {fileID: 1722926959862536933, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: HP
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: maxAccel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: minAccel
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: maxDeaccel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: minDeaccel
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: speedAccelRate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: speedDeaccelRate
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2701138106116441341, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1042,7 +1070,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1186343372}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &1526285824
+--- !u!1001 &1275613711
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1050,14 +1078,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3822388677249788966, guid: 215926efe3bb64447a943794adc5b998, type: 3}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 433891708}
-    - target: {fileID: 3822388677249788966, guid: 215926efe3bb64447a943794adc5b998, type: 3}
-      propertyPath: playerScript
-      value: 
-      objectReference: {fileID: 433891712}
     - target: {fileID: 4582240833952157343, guid: 215926efe3bb64447a943794adc5b998, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1142,6 +1162,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 6557067459796300750, guid: 215926efe3bb64447a943794adc5b998, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 433891708}
+    - target: {fileID: 6557067459796300750, guid: 215926efe3bb64447a943794adc5b998, type: 3}
+      propertyPath: goalObject
+      value: 
+      objectReference: {fileID: 3454159725470672859, guid: 561cb45a4da089248b2c9f0f1e9e0be1, type: 3}
+    - target: {fileID: 6557067459796300750, guid: 215926efe3bb64447a943794adc5b998, type: 3}
+      propertyPath: playerScript
+      value: 
+      objectReference: {fileID: 433891712}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1342,7 +1374,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1526285824}
+  - {fileID: 1275613711}
   - {fileID: 1031696683}
   - {fileID: 1075166253}
   - {fileID: 628899526}

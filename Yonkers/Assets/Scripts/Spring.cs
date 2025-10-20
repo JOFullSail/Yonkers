@@ -82,7 +82,7 @@ public class Spring : MonoBehaviour
             minorTeleport = emptySpringObject.transform.position;
             if (other.CompareTag("Player"))
             {
-                minorTeleport.y = other.GetComponent<CharacterController>().height + 0.5f;
+                minorTeleport.y = other.GetComponent<CharacterController>().height + 1.5f;
                 other.enabled = false;
                 other.transform.position = minorTeleport;
                 Debug.Log("Teleport");
