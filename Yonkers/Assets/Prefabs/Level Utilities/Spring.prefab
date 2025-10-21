@@ -62,8 +62,8 @@ Transform:
   m_GameObject: {fileID: 2671365447736313527}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.421337, y: 1.0180689, z: -7.26678}
-  m_LocalScale: {x: 0.7000001, y: 1, z: 0.7}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.7, y: 1, z: 0.7}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9074249160853374609}
@@ -101,7 +101,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 4cc7f733e7813354682b3d12d2e995eb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -136,8 +136,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc702b2847c7ca14093ff8c450e97f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spring
-  SpringForce: 100
+  SpringForce: 12
   emptySpringObject: {fileID: 1927110842440638434}
+  SpringGravityDisable: 1
+  disableGravityTime: 5
+  springDelay: 0.5
 --- !u!135 &501570028699806899
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -184,7 +187,7 @@ Transform:
   m_GameObject: {fileID: 3377173794296036823}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.38286, y: 1.514, z: -7.26678}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
