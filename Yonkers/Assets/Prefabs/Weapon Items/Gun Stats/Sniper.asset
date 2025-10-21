@@ -13,16 +13,20 @@ MonoBehaviour:
   m_Name: Sniper
   m_EditorClassIdentifier: Assembly-CSharp::GunStats
   gunModel: {fileID: 2967893401005709350, guid: 29e1afeebe706394f97bf743f4fcc742, type: 3}
-  shootDamage: 5
-  shootDist: 1000
-  shootRate: 0.5
+  shootRate: 0.25
   ammoCurrent: 4
   ammoMax: 4
-  ammoReserves: 0
+  ammoReserves: 40
   recoilToCamera: 0
   recoilToUser: 0
-  isExplosive: 0
   isSpecial: 0
-  hitEffect: {fileID: 0}
+  projectile: {fileID: 0}
+  isHitscan: 1
+  hitscanShootDamage: 5
+  hitscanShootDist: 1000
+  hitEffect: {fileID: 1301697207402410478, guid: 39f852c28f9c3fd45a427c24f3564ba7, type: 3}
   shootSound: []
   shootSoundVol: 0
+  positionWhenHeld: {x: 0.2850304, y: -0.2229996, z: 0.4335518}
+  rotationWhenHeld: {x: -89.98, y: 0, z: 0}
+  scaleWhenHeld: {x: 100, y: 100, z: 100}

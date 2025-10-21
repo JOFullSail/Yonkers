@@ -458,6 +458,7 @@ MonoBehaviour:
   model: {fileID: 622344896017071724}
   animator: {fileID: 235456910743786271}
   agent: {fileID: 5674799451293093876}
+  headPos: {fileID: 7626663719005779446}
   HP: 2
   FOV: 90
   baseMoveSpeed: 10
