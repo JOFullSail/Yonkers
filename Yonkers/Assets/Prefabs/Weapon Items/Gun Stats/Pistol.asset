@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: Assembly-CSharp::GunStats
   gunModel: {fileID: 4873880299464486465, guid: 195c32f0d92a8b6448eaeef2bdff01a7, type: 3}
-  shootDamage: 1
-  shootDist: 20
   shootRate: 0.5
   ammoCurrent: 50
   ammoMax: 50
@@ -22,10 +20,10 @@ MonoBehaviour:
   recoilToCamera: 0
   recoilToUser: 0
   isSpecial: 0
-  isExplosive: 0
-  projectileExplosionPrefab: {fileID: 0}
-  isHitscan: 1
   projectile: {fileID: 0}
+  isHitscan: 1
+  hitscanShootDamage: 1
+  hitscanShootDist: 15
   hitEffect: {fileID: 0}
   shootSound: []
   shootSoundVol: 0.5

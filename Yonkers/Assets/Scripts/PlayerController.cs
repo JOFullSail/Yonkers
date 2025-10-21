@@ -265,7 +265,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         --gunList[gunListIdx].ammoCurrent;
 
         // ~ignoreLayer will ignore the player later to prevent the player shooting themselves.
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreShooting) && weaponIsHitscan)
+        if (weaponIsHitscan && Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreShooting))
         {
             IDamage dmg = hit.collider.GetComponent<IDamage>();
             if (dmg != null)
@@ -273,7 +273,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 dmg.takeDamage(shootDmg);
             }
         }
-        else if(projectile != null)
+        else if(projectile != null && !weaponIsHitscan)
             Instantiate(projectile, Camera.main.transform.position, Camera.main.transform.rotation);
     }
 
@@ -347,8 +347,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void changeGun()
     {
-        shootDmg = gunList[gunListIdx].shootDamage;
-        shootDist = gunList[gunListIdx].shootDist;
+        shootDmg = gunList[gunListIdx].hitscanShootDamage;
+        shootDist = gunList[gunListIdx].hitscanShootDist;
         shootRate = gunList[gunListIdx].shootRate;
         weaponIsHitscan = gunList[gunListIdx].isHitscan;
         projectile = gunList[gunListIdx].projectile;

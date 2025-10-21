@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: Rocket Launcher
   m_EditorClassIdentifier: Assembly-CSharp::GunStats
   gunModel: {fileID: 4490302565791019165, guid: f26add0b8561051438426890f3bd0f19, type: 3}
-  shootDamage: 5
-  shootDist: 199
   shootRate: 0.1
   ammoCurrent: 0
   ammoMax: 1
@@ -22,10 +20,10 @@ MonoBehaviour:
   recoilToCamera: 0
   recoilToUser: 0
   isSpecial: 1
-  isExplosive: 1
-  projectileExplosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
-  isHitscan: 0
   projectile: {fileID: 4092872357349286730, guid: 3bef1433a85e5aa438d34ea091772b56, type: 3}
+  isHitscan: 0
+  hitscanShootDamage: 1
+  hitscanShootDist: 15
   hitEffect: {fileID: 0}
   shootSound:
   - {fileID: 8300000, guid: 40e71b0f7bd610849b40f150553f4702, type: 3}
