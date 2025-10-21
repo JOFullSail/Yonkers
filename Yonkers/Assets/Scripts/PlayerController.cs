@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool isClimbing;
     bool isJumping;
     bool isInRagdoll;
-    bool knockbacked;
+    bool knockbacked; 
     bool GravityON; //true = gravity active // false = gravity disabled *MAINLY FOR SPRINGS DON'T USE FOR KNOCKBACK THINGS*
     bool FrozenOn; //false = not frozen //true = frozen
     //Floats
@@ -554,7 +554,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             //// no input but X or Z still have speed. They decrease until set 0
             if (currentSpeedX > speedZero || currentSpeedX < speedZero)
             {
-                if (currentSpeedX < (0.5f) && currentSpeedX > (-0.5f))
+                if (currentSpeedX < (0.5f + maxAccel) && currentSpeedX > (-0.5f + -maxDeaccel))
                 {
                     currentSpeedX = 0;
                 }
@@ -564,34 +564,26 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     {
                         currentSpeedAccelX = speedAccelOrig;
                         currentSpeedX -= currentSpeedDeaccelX;
-                        if (currentDashSpeedX > speedZero)
+                        if (currentSpeedX > speedZero)
                         {
                             currentSpeedX = 0;
                         }
-                        if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                        else if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
                         {
                             currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
-                        }
-                        else if (currentSpeedAccelX > maxDeaccel)
-                        {
-                            currentSpeedAccelX = maxDeaccel;
                         }
                     }
                     else if (currentSpeedX < speedZero)
                     {
                         currentSpeedDeaccelX = speedDeaccelOrig;
                         currentSpeedX += currentSpeedAccelX;
-                        if (currentDashSpeedX < speedZero)
+                        if (currentSpeedX < speedZero) 
                         {
                             currentSpeedX = 0;
-                        }
-                        if (currentSpeedAccelX < maxAccel) //Aceel ramp
+                        } 
+                        else if (currentSpeedAccelX < maxAccel) //Aceel ramp
                         {
                             currentSpeedAccelX += speedAccelRate * Time.deltaTime;
-                        }
-                        else if (currentSpeedAccelX > maxAccel)
-                        {
-                            currentSpeedAccelX = maxAccel;
                         }
                     }
                 }
@@ -608,11 +600,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     {
                         currentSpeedAccelZ = speedAccelOrig;
                         currentSpeedZ -= currentSpeedDeaccelZ;
-                        if (currentDashSpeedZ > speedZero)
+                        if (currentSpeedZ > speedZero)
                         {
                             currentSpeedZ = 0;
                         }
-                        if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                        else if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
                         {
                             currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
                         }
@@ -621,11 +613,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     {
                         currentSpeedDeaccelZ = speedDeaccelOrig;
                         currentSpeedZ += currentSpeedAccelZ;
-                        if (currentDashSpeedZ < speedZero)
+                        if (currentSpeedZ < speedZero)
                         {
                             currentSpeedZ = 0;
                         }
-                        if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                        else if (currentSpeedAccelZ < maxAccel) //Aceel ramp
                         {
                             currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
                         }
@@ -639,7 +631,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 if (currentSpeedX > speedZero || currentSpeedX < speedZero)
                 {
-                    if (currentSpeedX < 0.5f && currentSpeedX > -0.5f)
+                    if (currentSpeedX < (0.5f + maxAccel) && currentSpeedX > (-0.5f + -maxDeaccel))
                     {
                         currentSpeedX = 0;
                     }
@@ -649,7 +641,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                         {
                             currentSpeedAccelX = speedAccelOrig;
                             currentSpeedX -= currentSpeedDeaccelX;
-                            if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                            if (currentSpeedX > speedZero)
+                            {
+                                currentSpeedX = 0;
+                            }
+                            else if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
                             {
                                 currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
                             }
@@ -658,7 +654,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                         {
                             currentSpeedDeaccelX = speedDeaccelOrig;
                             currentSpeedX += currentSpeedAccelX;
-                            if (currentSpeedAccelX < maxAccel) //Accel ramp
+                            if (currentSpeedX < speedZero)
+                            {
+                                currentSpeedX = 0;
+                            }
+                            else if (currentSpeedAccelX < maxAccel) //Aceel ramp
                             {
                                 currentSpeedAccelX += speedAccelRate * Time.deltaTime;
                             }
@@ -735,11 +735,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                         {
                             currentSpeedAccelZ = speedAccelOrig;
                             currentSpeedZ -= currentSpeedDeaccelZ;
-                            if (currentDashSpeedZ > speedZero)
+                            if (currentSpeedZ > speedZero)
                             {
                                 currentSpeedZ = 0;
                             }
-                            if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                            else if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
                             {
                                 currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
                             }
@@ -748,11 +748,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                         {
                             currentSpeedDeaccelZ = speedDeaccelOrig;
                             currentSpeedZ += currentSpeedAccelZ;
-                            if (currentDashSpeedZ < speedZero)
+                            if (currentSpeedZ < speedZero)
                             {
                                 currentSpeedZ = 0;
                             }
-                            if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                            else if (currentSpeedAccelZ < maxAccel) //Aceel ramp
                             {
                                 currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
                             }
