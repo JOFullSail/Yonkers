@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
 
-public class EnemyAI : MonoBehaviour, IDamage
+public class EnemyAI : MonoBehaviour, IDamage, IPushback
 {
     [SerializeField] Renderer model;
 
@@ -372,5 +372,10 @@ public class EnemyAI : MonoBehaviour, IDamage
             agent.speed += speedModifier;
         else
             Debug.Log("Tried to increment move speed for " + gameObject + ", but it is set as not being allowed to move.");
+    }
+
+    public void applyPushback(Vector3 direction)
+    {
+        // TODO
     }
 }
