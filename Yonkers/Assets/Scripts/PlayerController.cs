@@ -951,7 +951,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         //    dashMomentum();
         //}
         //v2
-        if (dashTimer >= dashLength || knockbacked)
+        if (dashTimer >= dashLength || knockbacked || GameManager.instance.isPaused)
         {
             StopCoroutine(dashWait((momentumDirX * currentDashSpeedX) * Time.deltaTime + (momentumDirZ * currentDashSpeedZ) * Time.deltaTime));
             dashMomentum();
