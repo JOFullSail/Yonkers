@@ -76,7 +76,7 @@ MonoBehaviour:
   enrageSpeedIncrease: 0
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
   explosionDamage: 0
-  projectile: {fileID: 5759234415074355089, guid: 21c49c4d12dd8474f9eab4f29537c61d, type: 3}
+  projectile: {fileID: 4092872357349286730, guid: 94706be9cfa2f2d4b8593c6576516cee, type: 3}
   shootPos: {fileID: 4973814861632810392}
   delayBetweenShots: 2
 --- !u!33 &8655421634982953001

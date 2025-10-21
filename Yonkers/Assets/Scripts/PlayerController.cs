@@ -1034,11 +1034,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         // Making knockback decrease
         if (GravityON == true)
         {
-            if (Mathf.Abs(knockback.z) > 0.001f && knockbackTimer > 0.001f)
+            if (Mathf.Abs(knockback.z) > 0.01f && knockbackTimer > 0.001f)
             {
                 knockback.z -= (knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
             }
-            if ((Mathf.Abs(knockback.x)) > 0.001f && knockbackTimer > 0.001f)
+            if ((Mathf.Abs(knockback.x)) > 0.01f && knockbackTimer > 0.001f)
             {
                 knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime); 
             }
