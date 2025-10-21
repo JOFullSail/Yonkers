@@ -54,7 +54,11 @@ public class FadingPlatform : MonoBehaviour
         float timer = 0f;
         while (timer < fadeDelay)
         {
-            if (!playerOn) { fading = false; yield break; }
+            if (!playerOn)
+            {
+                fading = false;
+                yield break;
+            }
             timer += Time.deltaTime;
             yield return null;
         }
@@ -62,7 +66,6 @@ public class FadingPlatform : MonoBehaviour
         float alpha = 1f;
         while (alpha > 0f)
         {
-            if (!playerOn) { SetAlpha(1f); fading = false; yield break; }
             alpha -= Time.deltaTime * fadeSpeed;
             SetAlpha(alpha);
             yield return null;
@@ -71,11 +74,12 @@ public class FadingPlatform : MonoBehaviour
         rend.enabled = coll.enabled = false;
 
         yield return new WaitForSeconds(respawnTime);
-        targetObject.position = targetObject.position;
+
         SetAlpha(1f);
         rend.enabled = coll.enabled = true;
         fading = false;
     }
+
 
     void SetAlpha(float alpha)
     {
