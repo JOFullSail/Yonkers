@@ -1,99 +1,137 @@
 using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 {
     [SerializeField] CharacterController controller;
-    [SerializeField] LayerMask ignoreShottingLayer;
+    [SerializeField] LayerMask ignoreShooting;
+    [SerializeField] LayerMask ignoreClimbing;
 
     [Header("General")]
-    [SerializeField] int HP; // 10 (Could be changed)
+    [SerializeField] int HP = 10;
+    //[SerializeField] int speed = 12; // Left here since the use of the movement speed have not been decided.
+    [SerializeField] float freezeDelay = 0.5f; //used to know when the player can be frozen again.
 
     [Header("Jumping")]
-    [SerializeField] int jumpSpeed; // 12
-    [SerializeField] int jumpMaxCount; // 2
-    [SerializeField] float jumpGracePeriod; // 0.175
+    [SerializeField] int jumpSpeed = 12;
+    [SerializeField] int jumpMaxCount = 2;
+    [Tooltip("Amount of time (in seconds) the player has to trigger the first jump after falling off a platform. \n" +
+        "If the player jumps after the grace period, the player will only trigger the second jump.")]
+    [SerializeField] float jumpGracePeriod = 0.175f;
 
 
-    [Header("Shooting")]
+    [Header("Shooting")] // Values could be changed
     [SerializeField] List<GunStats> gunList = new List<GunStats>();
     [SerializeField] GameObject gunModel;
-    [SerializeField] int shootDamage;
-    [SerializeField] int shootDist;
-    [SerializeField] float shootRate;
+    [SerializeField] int shootDmg = 1;
+    [SerializeField] int shootDist = 20;
+    [SerializeField] float shootRate = 0.5f;
+    [SerializeField] bool weaponIsHitscan;
+    [SerializeField] GameObject projectile;
 
     [Header("Climbing")]
-    [SerializeField] float climbSpeed; // 10.25
-    [SerializeField] int climbingDist; // 0
-    [SerializeField] float climbWallDetection; // 1.25
-    [SerializeField] float climbMaxAngle; // 90
+    //[Tooltip("Makes climbing easier for the player.\n\n- Players will be able to continue climbing even while looking away from the wall.\n" +
+    //    "- The player will automatically ledge grab when they reach the top of a wall.")]
+    //// Make playerVel.y = 0 once they get to the ledge. Attempt to build system that makes the player jump over a wall and land on the surface above automatically.
+    //[SerializeField] bool climbAccessability;
+    [SerializeField] float climbSpeed = 10.25f;
+    //[Tooltip("Amount of time the player is allowed to climb a wall.\n\n- Will be overrided once the player reaches the top of a wall.")]
+    //[SerializeField] float climbingTime = 0.5f; not used yet :) // might have to be higher for taller walls.
+    [Tooltip("Distance between the player and the wall required for the player to climb a wall.")]
+    [SerializeField] float climbWallDetection = 1.25f;
+    [Tooltip("Max angle of a wall the player can climb.")]
+    [SerializeField] float climbMaxAngle = 90f;
 
-    [Header("RagDoll")]
-    [SerializeField] float ragdollPerSpeed = 0.06f;  // seconds of control lockout per 1 m/s moved during ragdoll
-    [SerializeField] float minRagdollTime = 0.15f;
+    [Header("Speed")]
+    [SerializeField] float minSpeed = 3f; // What your speed starts at from 0.
+    [SerializeField] float maxSpeed = 12f;
 
-    [Header("Movement")]
-    [SerializeField] float MinSpeed; //3 //what your speed starts at from 0
-    [SerializeField] float MaxSpeed; // 12
-
-    [Header("Accel")]
-    [SerializeField] float MinAccel;
-    [SerializeField] float MaxAccel;
-    [SerializeField] float speedAccelRATE;//how fast the Aceel ramps up
-    [SerializeField] float MinDeaccel;
-    [SerializeField] float MaxDeaccel;
-    [SerializeField] float speedDeaccelRATE; //how fast the Deaceel ramps up
+    [Header("Acceleration")]
+    [SerializeField] float minAccel;
+    [SerializeField] float maxAccel;
+    [SerializeField] float speedAccelRate; // How fast the Aceel ramps up.
+    [SerializeField] float minDeaccel;
+    [SerializeField] float maxDeaccel;
+    [SerializeField] float speedDeaccelRate; // How fast the Deaceel ramps up.
 
     [Header("Dash")]
-    [SerializeField] float DashSpeed; //
-    [SerializeField] float DashLength; //how long dash last
-    [SerializeField] float Dashcd;
+    [SerializeField] bool dashCarryOver; // Best false //used to see if you want your dash speed to carry over into your current speed.
+    [SerializeField] float dashSpeed;
+    [SerializeField] float dashLength; //How long dash lasts.
+    [SerializeField] float dashCooldown;
 
     [Header("Forces")]
-    [SerializeField] int gravity; // 35 // down force
+    [SerializeField] int gravity = 35;
 
+    [Header("Ragdoll")]
+    [SerializeField] bool knockbackOnly; // Used to see if the player momentum has any input on the knockback. True = when knocked backed player momentum isn't considered.
+    [SerializeField] float ragdollPerSpeed = 0.06f;  // Seconds of control lockout per 1 m/s moved during ragdoll.
+    [SerializeField] float minRagdollTime = 0.15f;
 
-    [Header("Bools")]
-    [SerializeField] bool dashcarryover; //Best false //used to see if you want your dash speed to carry over into your current speed
-    [SerializeField] bool Knockback_only; //used to see if the player momentum has any input on the knockback. True = when knocked backed player momentum isn't considered.
-
-    //"INTERNAL FILEDS //Used in the background for various things
-
-    //Vectors for player
-    Vector3 moveDirec; //inputted direction from player
-    Vector3 playerVel; // used for jump and also holds pushback y
-    Vector3 pushBack; //force applied to player
-    Vector3 MomentumDir; //last input direction is used
-    Vector3 Knockback; //used to hold pushback's x and z
-
-    //RaycastHit
+    [Header("Debug")]
+    [Tooltip("Spawns the player in the Scene Editor's Camera location.")]
+    [SerializeField] bool debugSpawnAtCamera;
+    [Tooltip("Gives the player the ability to climb literally anything.")]
+    [SerializeField] bool debugClimbAnything;
+    [Tooltip("Gives the player the ability to climb at any given speed set to Debug Climb Speed.\n\n" +
+        "- Gravity will not pull you down as fast with high values.")]
+    [SerializeField] bool debugFastClimb;
+    [Tooltip("Sets the player's climb speed.\n\n- Gravity will not pull you down as fast with high values.")]
+    [SerializeField] float debugClimbSpeed = 50f;
+    //RayCast
     RaycastHit hit;
-
     //Ints
-    int gunListPos;
+    int gunListIdx;
     int jumpCount;
     int hpOrig;
-    //Floats
-    float knockbacktimer; //uesd to know when to start losing knockback
-    float jumpTimer;
-    float shootTimer;
-    public float ragdollTimeLeft;
-    float currDashSpeed;
-    float currspeedAccel;
-    float currspeedDeaccel;
-    float currentSpeed;
-    float Dashcdtimer;//used to track dash cd.
-    float Dashtimer; //used to track how long dash will go.
-    float speedDeaccelOrig;
-    float speedAccelOrig;
-    float Speed0 = 0;
-    //Bools
-    bool is_dashing;
+    //bools
+    bool isDashing;
     bool isClimbing;
     bool isJumping;
-    public bool isInRagdoll = false;
-    public bool knockbacked = false;
+    bool isInRagdoll;
+    bool knockbacked; 
+    bool GravityON; //true = gravity active // false = gravity disabled *MAINLY FOR SPRINGS DON'T USE FOR KNOCKBACK THINGS*
+    bool FrozenOn; //false = not frozen //true = frozen
+    //Floats
+    public float gravityOffTimer; // Used to time a duration of having no gravity.
+    public float gravityLockout = 0; //amount of time gravity is disabled
+    float freezeTimer; // Used to time a duration of being frozen.      < HEY BROLY CHECK SPRING CODE FOR AN EXAMPLE OF HOW TO USE THIS
+    float freezeLockout = 0;//amount of time player is disabled         <
+    float freezeDelaytimer; //used to know when you can be frozen again. 
+    float knockbackTimer;      // Used to know when to start losing knockback.
+
+
+    float jumpTimer;
+    float shootTimer;
+    float ragdollTimeLeft;
+    float dashCooldownTimer;   // Used to track dash cooldown.
+    float dashTimer;           // Used to track how long dash will go.
+    float speedDeaccelOrig;
+    float speedAccelOrig;
+    float speedZero = 0.0f;
+
+
+
+    //Movement V2
+    float currentSpeedX; //forward+ and back-
+    float currentSpeedAccelX;
+    float currentSpeedDeaccelX;
+    float currentDashSpeedX;
+    float currentSpeedZ; //right+ and left-
+    float currentSpeedAccelZ;
+    float currentSpeedDeaccelZ;
+    float currentDashSpeedZ;
+
+    // Vectors for the player
+    Vector3 moveDirecX; //Movement V2 input from on X axis
+    Vector3 moveDirecZ; //Movement V2 input from on Z axis
+    Vector3 playerVel;   // Used for jump and also holds pushback.y.
+    Vector3 pushBack;    // Force applied to the player.
+    Vector3 momentumDirX; //Movement V2 last input direction on X axis
+    Vector3 momentumDirZ;//Movement V2 last input direction on Z axis
+    Vector3 knockback;   // Used to hold pushBack.x and z.
 
     // - UNUSED -
     //[SerializeField] Collider slopecheck; // no use yet
@@ -106,82 +144,165 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //float AirTime; // might have a future use
     // void AirCheck() {if (controller.isGrounded){ AirTime = 0;}} //possible airtime code
 
+    //what gold needs to do
+    //make movement work on two axis speeds. Done
+    //make springs add to current speed
+    //make springs able to chain halfway
+    //add slow down for broly
+    //add freeze for broly halfway
+    //make a toggle for gravity done
+    //knockback
+
+    public bool DebugSpawnAtCamera
+    {
+        get { return debugSpawnAtCamera; }
+    }
+    public float RagdollTimeLeft
+    {
+        get { return ragdollTimeLeft; }
+        set { ragdollTimeLeft = value; }
+    }
+
+    public bool IsInRagdoll
+    {
+        get { return isInRagdoll; }
+        set { isInRagdoll = value; }
+    }
+
+    public bool Knockbacked
+    {
+        get { return knockbacked; }
+        set { knockbacked = value; }
+    }
+
+    public float RagdollPerSpeed
+    {
+        get { return ragdollPerSpeed; }
+    }
+
+    public float MinRagdollTime
+    {
+        get { return minRagdollTime; }
+    }
+
+    public bool IsDashing
+    {
+        get { return isDashing; }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        respawnPlayer(false, false);
         hpOrig = HP;
-        currentSpeed = Speed0;
-        currspeedAccel = MinAccel;
-        currspeedDeaccel = MinDeaccel;
-        speedDeaccelOrig = currspeedDeaccel;
-        speedAccelOrig = currspeedAccel;
-        is_dashing = false;
+        currentSpeedX = speedZero;
+        currentSpeedZ = speedZero;
+        currentSpeedAccelX = minAccel;
+        currentSpeedDeaccelX = minDeaccel;
+        currentSpeedAccelZ = minAccel;
+        currentSpeedDeaccelZ = minDeaccel;
+        speedDeaccelOrig = currentSpeedDeaccelZ;
+        speedDeaccelOrig = currentSpeedDeaccelX;
+        speedAccelOrig = currentSpeedAccelZ;
+        speedAccelOrig = currentSpeedAccelX;
+        isDashing = false;
+        GravityON = true;
+        if (debugFastClimb) climbSpeed = debugClimbSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Timers();
-        Shoot();
-        PlayerMovement();
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
+
+        if(!GameManager.instance.isPaused)
+        {
+            timers();
+            shoot();
+            playerMovement();
+        }
     }
 
-    void PlayerMovement()
+    void playerMovement()
     {
-
-        climb();
-        dash();
-        DashEnd();
-        Movement();
-        jump();
-        KnockbackMovement();
-        controller.Move(playerVel * Time.deltaTime); //used here to apply gravity correctly
-        Gravity();
+        Frozen(); //checking if you're frozen
+        if (FrozenOn == false) // long as you're not frozen you can do all your usual movement
+        {
+            climb();
+            dash();
+            movement();
+            dashEnd();
+            jump();
+        }
+        knockbackMovement();
+        controller.Move(playerVel * Time.deltaTime); // Used here to apply gravity correctly
+        Gravityoff(); //checking if you disabled gravity first
+        if (GravityON)
+        {
+            Gravity();
+        }
     }
 
     void climb()
     {
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDetection, ~ignoreShottingLayer) && is_dashing == false)
+        int noClimbLayers;
+        string noClimbTag = "NoClimb";
+        if (debugClimbAnything)
+        {
+            noClimbLayers = 0;
+            noClimbTag = "Player";
+        }
+        else noClimbLayers = ignoreClimbing.value;
+
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDetection, ~noClimbLayers))
         {
             int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
-            if (hit.collider.CompareTag("CanClimb") && controller.slopeLimit <= wallAngle && wallAngle <= climbMaxAngle && !controller.isGrounded && Input.GetButton("Jump"))
+
+            if (!hit.collider.CompareTag(noClimbTag) &&
+                controller.slopeLimit <= wallAngle &&
+                wallAngle <= climbMaxAngle &&
+                !controller.isGrounded &&
+                (playerVel.y < -1 || isClimbing)
+                 && GravityON)
             {
                 playerVel.y = climbSpeed;
                 isClimbing = true;
             }
+            else isClimbing = false;
         }
         else isClimbing = false;
     }
+
     void jump()
     {
-        if (!isClimbing)
+        if (!isClimbing && Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && GravityON)
         {
-            if (Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount)
+            if (jumpTimer >= jumpGracePeriod && jumpCount == 0)
             {
-                if (jumpTimer >= jumpGracePeriod && jumpCount == 0)
-                {
-                    ++jumpCount;
-                }
-                isJumping = true;
+                ++jumpCount;
             }
+
+            isJumping = true;
         }
     }
 
-    void ShootApplyDamage()
+    void shootApplyDamage()
     {
         shootTimer = 0;
+        --gunList[gunListIdx].ammoCurrent;
 
         // ~ignoreLayer will ignore the player later to prevent the player shooting themselves.
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreShottingLayer))
+        if (weaponIsHitscan && Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreShooting))
         {
             IDamage dmg = hit.collider.GetComponent<IDamage>();
             if (dmg != null)
             {
-                dmg.takeDamage(shootDamage);
+                dmg.takeDamage(shootDmg);
             }
-            Debug.Log(hit.collider.name); // logs info to the debug status bar.
         }
+        else if(projectile != null && !weaponIsHitscan)
+            Instantiate(projectile, Camera.main.transform.position, Camera.main.transform.rotation);
     }
 
     public void takeDamage(int amount)
@@ -190,269 +311,747 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
         if (HP <= 0)
         {
-            //GameManager.instance.youDied();  RE ADD THIS!!!!!
+            GameManager.instance.youDied();
         }
     }
 
-    // getters
-    public float RagdollPerSpeed() { return ragdollPerSpeed; }
-    public float MinRagdollTime() { return minRagdollTime; }
-    void Timers()
+    void timers()
     {
-        shootTimer += Time.deltaTime;
-        Dashcdtimer += Time.deltaTime;
-        RagdollTimer();
-        knockbacktimer += Time.deltaTime;
-        //jump timer for wwhen in the air.
         if (!controller.isGrounded) jumpTimer += Time.deltaTime;
-        else { jumpTimer = 0; }
+        else jumpTimer = 0;
+        shootTimer += Time.deltaTime;
+        dashCooldownTimer += Time.deltaTime;
+        ragdollTimer();
+        knockbackTimer += Time.deltaTime;
+        gravityOffTimer += Time.deltaTime;
+        freezeTimer += Time.deltaTime;
+        freezeDelaytimer += Time.deltaTime;
     }
-    void Shoot()
+
+    void shoot()
     {
-        if (Input.GetButton("Fire1") && shootTimer >= shootRate && gunList[gunListPos].ammoCurrent > 0)
+        if (Input.GetButton("Fire1") && gunList.Count > 0 && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate)
         {
-            ShootApplyDamage();
-            if (gunList[gunListPos].ammoCurrent <= 0 && gunList[gunListPos].ammoReserves <= 0 && gunList[gunListPos].isSpecial)
+            shootApplyDamage();
+
+            // For special guns
+            if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
             {
-                gunList.RemoveAt(gunListPos);
-                if(gunList.Count > 0)
+                gunList.RemoveAt(gunListIdx);
+                gunListIdx = 0;
+                if (gunList.Count > 0)
                 {
-                    gunListPos = 0;
-                    ChangeGun();
-                }
-            }
-        }
-            
-
-        Reload();
-        SelectGun();
-    }
-
-    void Reload()
-    {
-        if (Input.GetButtonDown("Reload") && gunList[gunListPos].ammoReserves > 0)
-        {
-            int ammoToLoad = gunList[gunListPos].ammoMax <= gunList[gunListPos].ammoReserves ? gunList[gunListPos].ammoMax : gunList[gunListPos].ammoReserves;
-            gunList[gunListPos].ammoReserves -= (gunList[gunListPos].ammoMax - gunList[gunListPos].ammoCurrent);
-            gunList[gunListPos].ammoCurrent = ammoToLoad;
-        }
-    }
-    void Movement()
-    {
-        if (is_dashing == false && isInRagdoll == false && isClimbing == false)
-        {
-            Movementincrementation();
-            Movelike();
-        }
-    }
-    void Movementincrementation()
-    {
-        if (currentSpeed >= MaxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true)) // Uncomment this block of code to prevent the player from stopping immediately after reaching max speed.
-        {
-            if (currentSpeed > MaxSpeed && Input.GetButton("Shift") == false)
-            {
-                if (currentSpeed > MaxSpeed + 1)
-                {
-                    currentSpeed -= currspeedDeaccel * Time.deltaTime;
-                    Ramp();
-                }
-            }
-            moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-            MomentumDir = moveDirec;
-        }
-        else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < MaxSpeed)
-        {
-            if (currentSpeed < MinSpeed)
-            {
-                currentSpeed = MinSpeed;
-            }
-            moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-            MomentumDir = moveDirec;
-            currentSpeed += currspeedAccel * Time.deltaTime;
-            Ramp();
-        }
-        else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > Speed0)
-        {
-            currentSpeed -= currspeedDeaccel * Time.deltaTime;
-            Ramp();
-            if (currentSpeed < 0)
-            {
-                currentSpeed = 0;
-            }
-        }
-    }
-    void Movelike()//main way the player moves
-    {
-        if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && (currentSpeed < MaxSpeed || currentSpeed >= MaxSpeed))
-        {
-            controller.Move((moveDirec + Knockback) * currentSpeed * Time.deltaTime);
-        }
-        else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false))
-        {
-            controller.Move((MomentumDir + Knockback) * currentSpeed * Time.deltaTime);
-        }
-
-    }
-    void Ramp() //used to make Accel and Deacell higher over time.
-    {
-        if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed < MaxSpeed)
-        {
-            currspeedAccel = speedAccelOrig;
-            if (currentSpeed == Speed0)
-            {
-                currspeedDeaccel = speedDeaccelOrig;
-            }
-            else if (currspeedDeaccel < MaxDeaccel)
-            {
-                currspeedDeaccel += speedDeaccelRATE * Time.deltaTime;
-
-            }
-        }
-        else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed > Speed0)
-        {
-            currspeedDeaccel = speedDeaccelOrig;
-            if (currentSpeed >= MaxSpeed)
-            {
-                currspeedAccel = MaxAccel;
-            }
-            else if (currspeedAccel < MaxAccel)
-            {
-                currspeedAccel += speedAccelRATE * Time.deltaTime;
-            }
-        }
-    }
-    void dash() //dash in a direction but has bools for how you want to specifically dash.
-    {
-
-        if (Input.GetButton("Shift") && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && isClimbing == false && isInRagdoll == false)
-        {
-            is_dashing = true;
-            if (Dashcdtimer >= Dashcd)
-            {
-                Dashcdtimer = 0;
-                Dashtimer = 0;
-                currDashSpeed = DashSpeed;
-                StartCoroutine(dashwait(MomentumDir * currDashSpeed * Time.deltaTime));
-            }
-        }
-    }
-    void DashMomentum() //makes the dash add to the player's speed
-    {
-        if (dashcarryover)
-        {
-            if (currentSpeed < MaxSpeed)
-            {
-                if (currentSpeed + currDashSpeed > MaxSpeed)
-                {
-                    currentSpeed = MaxSpeed;
+                    changeGun();
                 }
                 else
                 {
-                    currentSpeed += currDashSpeed;
+                    gunModel.GetComponent<MeshFilter>().sharedMesh = null;
+                    gunModel.GetComponent<MeshRenderer>().sharedMaterial = null;
+                }
+
+            }
+        }
+
+
+        reload();
+        if (gunList.Count > 0) switchGun();
+    }
+
+    void reload()
+    {
+        if (Input.GetButtonDown("Reload") && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0)
+        {
+            int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
+            gunList[gunListIdx].ammoReserves -= (gunList[gunListIdx].ammoMax - gunList[gunListIdx].ammoCurrent);
+            gunList[gunListIdx].ammoCurrent = ammoToLoad;
+        }
+    }
+
+    public void GetGunStats(GunStats gun)
+    {
+        gunList.Add(gun);
+        gunListIdx = gunList.Count - 1;
+
+        changeGun();
+    }
+
+    void changeGun()
+    {
+        shootDmg = gunList[gunListIdx].hitscanShootDamage;
+        shootDist = gunList[gunListIdx].hitscanShootDist;
+        shootRate = gunList[gunListIdx].shootRate;
+        weaponIsHitscan = gunList[gunListIdx].isHitscan;
+        projectile = gunList[gunListIdx].projectile;
+
+        if (gunModel != null)
+        {
+            gunModel.transform.localScale = gunList[gunListIdx].scaleWhenHeld;
+            gunModel.transform.localRotation = Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld);
+            gunModel.transform.localPosition = gunList[gunListIdx].positionWhenHeld;
+
+            gunModel.GetComponent<MeshFilter>().sharedMesh = gunList[gunListIdx].gunModel.GetComponent<MeshFilter>().sharedMesh;
+            gunModel.GetComponent<MeshRenderer>().sharedMaterial = gunList[gunListIdx].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+    }
+
+    void switchGun()
+    {
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            if (gunListIdx < gunList.Count - 1)
+                ++gunListIdx;
+            else
+                gunListIdx = 0;
+            changeGun();
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            if (gunListIdx > 0)
+                --gunListIdx;
+            else
+                gunListIdx = gunList.Count - 1;
+            changeGun();
+        }
+    }
+
+    void movement()
+    {
+        if (isDashing == false && isInRagdoll == false)
+        {
+            movementIncrementation();
+            moveLike();
+        }
+    }
+
+    void movementIncrementation()
+    {
+        //V1
+        //if (currentSpeed >= maxSpeed && (Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true))
+        //{
+        //    if (currentSpeed > maxSpeed && Input.GetButton("Shift") == false)
+        //    {
+        //        if (currentSpeed > maxSpeed + 1)
+        //        {
+        //            currentSpeed -= currentSpeedDeaccel * Time.deltaTime;
+        //            ramp();
+        //        }
+        //    }
+        //    moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+        //    momentumDir = moveDirec;
+        //}
+        //else if ((Input.GetButton("Horizontal") == true || Input.GetButton("Vertical") == true) && currentSpeed < maxSpeed)
+        //{
+        //    if (currentSpeed < minSpeed)
+        //    {
+        //        currentSpeed = minSpeed;
+        //    }
+        //    moveDirec = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
+        //    momentumDir = moveDirec;
+        //    ramp();
+        //}
+        //else if ((Input.GetButton("Horizontal") == false && Input.GetButton("Vertical") == false) && currentSpeed > speedZero)
+        //{
+        //    currentSpeed -= currentSpeedDeaccel * Time.deltaTime;
+        //    ramp();
+        //    if (currentSpeed < 0)
+        //    {
+        //        currentSpeed = 0;
+        //    }
+        //}
+        //V2
+
+        if ((Input.GetButton("UP") == false && Input.GetButton("DOWN") == false && Input.GetButton("LEFT") == false && Input.GetButton("RIGHT") == false) && ((currentSpeedZ > speedZero || currentSpeedZ < speedZero) || (currentSpeedX > speedZero || currentSpeedX < speedZero)))
+        {
+            ramp();
+        }
+        else
+        {
+            //vertical X
+            if (((Input.GetButton("UP") == true) && Input.GetButton("DOWN") == true) || ((Input.GetButton("UP") == false) && Input.GetButton("DOWN") == false)) // if both inputed 
+            {
+                ramp();
+            }
+            else if ((Input.GetButton("UP") == true) && currentSpeedX >= maxSpeed) // over max speed going forward
+            {
+                moveDirecX = Input.GetAxis("UP") * transform.forward;
+                momentumDirX = moveDirecX;
+                ramp();
+            }
+            else if ((Input.GetButton("DOWN") == true) && currentSpeedX <= -maxSpeed) // over max speed going backwards
+            {
+                moveDirecX = Input.GetAxis("DOWN") * transform.forward;
+                momentumDirX = moveDirecX;
+                ramp();
+            }
+            else if ((Input.GetButton("UP") == true) && currentSpeedX < maxSpeed) // getting speed forward
+            {
+                moveDirecX = Input.GetAxis("UP") * transform.forward;
+                momentumDirX = moveDirecX;
+                ramp();
+            }
+            else if ((Input.GetButton("DOWN") == true) && currentSpeedX > -maxSpeed) // getting speed backwards
+            {
+                moveDirecX = Input.GetAxis("DOWN") * transform.forward;
+                momentumDirX = moveDirecX;
+                ramp();
+            }
+            //horizontal Z
+            if (((Input.GetButton("LEFT") == true) && Input.GetButton("RIGHT") == true) || ((Input.GetButton("LEFT") == false) && Input.GetButton("RIGHT") == false)) // if both inputed
+            {
+                ramp();
+            }
+            else if ((Input.GetButton("RIGHT") == true) && currentSpeedZ >= maxSpeed) // over max speed going right
+            {
+                moveDirecZ = -Input.GetAxis("RIGHT") * transform.right; //transform.right and Z
+                momentumDirZ = moveDirecZ;
+                ramp();
+            }
+            else if ((Input.GetButton("LEFT") == true) && currentSpeedZ <= -maxSpeed) // over max speed going left
+            {
+                moveDirecZ = Input.GetAxis("LEFT") * transform.right;
+                momentumDirZ = moveDirecZ;
+                ramp();
+            }
+            else if ((Input.GetButton("RIGHT") == true) && currentSpeedZ < maxSpeed) // getting speed right
+            {
+                moveDirecZ = -Input.GetAxis("RIGHT") * transform.right;
+                momentumDirZ = moveDirecZ;
+                ramp();
+            }
+            else if ((Input.GetButton("LEFT") == true) && currentSpeedZ > -maxSpeed) // getting speed left
+            {
+                moveDirecZ = Input.GetAxis("LEFT") * transform.right;
+                momentumDirZ = moveDirecZ;
+                ramp();
+            }
+        }
+    }
+
+    void moveLike()// Main way the player moves
+    {
+        //V2
+        if (GravityON == false) //if gravity is off you can only have knockback, no inputs allowed!
+        {
+            controller.Move(knockback * Time.deltaTime);
+        }
+        else if ((Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true))
+        {
+            controller.Move((((moveDirecX * currentSpeedX) + (moveDirecZ * currentSpeedZ)) + (knockback)) * Time.deltaTime);
+        }
+        else if (Input.GetButton("UP") == false && Input.GetButton("DOWN") == false && Input.GetButton("LEFT") == false && Input.GetButton("RIGHT") == false)
+        {
+            controller.Move((((momentumDirX * currentSpeedX) + (momentumDirZ * currentSpeedZ)) + (knockback)) * Time.deltaTime);
+        }
+    }
+
+    void ramp() // Used to make Accel and Deacell higher over time. MovementV2: Will also do the decrease and increase of current speeds
+    {
+
+        //V2
+        //vertical
+        if ((Input.GetButton("UP") == false && Input.GetButton("DOWN") == false && Input.GetButton("LEFT") == false && Input.GetButton("RIGHT") == false) && ((currentSpeedZ > speedZero || currentSpeedZ < speedZero) || (currentSpeedX > speedZero || currentSpeedX < speedZero)))
+        {
+            //// no input but X or Z still have speed. They decrease until set 0
+            if (currentSpeedX > speedZero || currentSpeedX < speedZero)
+            {
+                if (currentSpeedX < (0.5f + maxAccel) && currentSpeedX > (-0.5f + -maxDeaccel))
+                {
+                    currentSpeedX = 0;
+                }
+                else
+                {
+                    if (currentSpeedX > speedZero)
+                    {
+                        currentSpeedAccelX = speedAccelOrig;
+                        currentSpeedX -= currentSpeedDeaccelX;
+                        if (currentSpeedX > speedZero)
+                        {
+                            currentSpeedX = 0;
+                        }
+                        else if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                        {
+                            currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
+                        }
+                    }
+                    else if (currentSpeedX < speedZero)
+                    {
+                        currentSpeedDeaccelX = speedDeaccelOrig;
+                        currentSpeedX += currentSpeedAccelX;
+                        if (currentSpeedX < speedZero) 
+                        {
+                            currentSpeedX = 0;
+                        } 
+                        else if (currentSpeedAccelX < maxAccel) //Aceel ramp
+                        {
+                            currentSpeedAccelX += speedAccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+            if (currentSpeedZ > speedZero || currentSpeedZ < speedZero)
+            {
+                if ((currentSpeedZ < (0.5f + maxAccel)) && (currentSpeedZ > (-0.5f + -maxDeaccel)))
+                {
+                    currentSpeedZ = 0;
+                }
+                else
+                {
+                    if (currentSpeedZ > speedZero)
+                    {
+                        currentSpeedAccelZ = speedAccelOrig;
+                        currentSpeedZ -= currentSpeedDeaccelZ;
+                        if (currentSpeedZ > speedZero)
+                        {
+                            currentSpeedZ = 0;
+                        }
+                        else if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                        {
+                            currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
+                        }
+                    }
+                    else if (currentSpeedZ < speedZero)
+                    {
+                        currentSpeedDeaccelZ = speedDeaccelOrig;
+                        currentSpeedZ += currentSpeedAccelZ;
+                        if (currentSpeedZ < speedZero)
+                        {
+                            currentSpeedZ = 0;
+                        }
+                        else if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                        {
+                            currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
+                        }
+                    }
                 }
             }
         }
-        currDashSpeed = 0;
-        is_dashing = false;
-    }
-    void DashEnd()// ends dash
-    {
-        if (Dashtimer >= DashLength || knockbacked)
+        else // if there's a input
         {
-            StopCoroutine(dashwait(MomentumDir * currDashSpeed * Time.deltaTime));
-            DashMomentum();
+            if (((Input.GetButton("UP") == true) && Input.GetButton("DOWN") == true) || ((Input.GetButton("UP") == false) && Input.GetButton("DOWN") == false)) // if both inputed or neither, nothing happens direction wise but you slow down all the same.
+            {
+                if (currentSpeedX > speedZero || currentSpeedX < speedZero)
+                {
+                    if (currentSpeedX < (0.5f + maxAccel) && currentSpeedX > (-0.5f + -maxDeaccel))
+                    {
+                        currentSpeedX = 0;
+                    }
+                    else
+                    {
+                        if (currentSpeedX > speedZero)
+                        {
+                            currentSpeedAccelX = speedAccelOrig;
+                            currentSpeedX -= currentSpeedDeaccelX;
+                            if (currentSpeedX > speedZero)
+                            {
+                                currentSpeedX = 0;
+                            }
+                            else if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                            {
+                                currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
+                            }
+                        }
+                        else if (currentSpeedX < speedZero)
+                        {
+                            currentSpeedDeaccelX = speedDeaccelOrig;
+                            currentSpeedX += currentSpeedAccelX;
+                            if (currentSpeedX < speedZero)
+                            {
+                                currentSpeedX = 0;
+                            }
+                            else if (currentSpeedAccelX < maxAccel) //Aceel ramp
+                            {
+                                currentSpeedAccelX += speedAccelRate * Time.deltaTime;
+                            }
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("UP") == true) && currentSpeedX >= maxSpeed) // over max speed going forward, you slow down and it ramps up until you reach your normal max speed
+            {
+                if (currentSpeedX > maxSpeed && Input.GetButton("Shift") == false)
+                {
+                    if (currentSpeedX > maxSpeed + 1)
+                    {
+                        currentSpeedX -= currentSpeedDeaccelX * Time.deltaTime;
+                        if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                        {
+                            currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("DOWN") == true) && currentSpeedX <= -maxSpeed) // over max speed going backwards, you slow down and it ramps up until you reach your normal NEGATIVE max speed
+            {
+                if (currentSpeedX < -maxSpeed && Input.GetButton("Shift") == false)
+                {
+                    if (currentSpeedX < -maxSpeed - 1)
+                    {
+                        currentSpeedX += currentSpeedAccelX * Time.deltaTime;
+                        if (currentSpeedAccelX < maxAccel) //Aceel ramp
+                        {
+                            currentSpeedAccelX += speedAccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("UP") == true) && currentSpeedX < maxSpeed) // getting speed forward
+            {
+                if (currentSpeedX > -minSpeed && currentSpeedX < minSpeed)
+                {
+                    currentSpeedX = minSpeed;
+                }
+                currentSpeedDeaccelX = speedDeaccelOrig;
+                currentSpeedX += currentSpeedAccelX * Time.deltaTime;
+                if (currentSpeedAccelX < maxAccel) //Aceel ramp
+                {
+                    currentSpeedAccelX += speedAccelRate * Time.deltaTime;
+                }
+            }
+            else if ((Input.GetButton("DOWN") == true) && currentSpeedX > -maxSpeed) // getting speed backwards
+            {
+                if (currentSpeedX > -minSpeed && currentSpeedX < minSpeed)
+                {
+                    currentSpeedX = -minSpeed;
+                }
+                currentSpeedAccelX = speedAccelOrig;
+                currentSpeedX -= currentSpeedDeaccelX * Time.deltaTime;
+                if (currentSpeedDeaccelX < maxDeaccel) //Deaccel ramp
+                {
+                    currentSpeedDeaccelX += speedDeaccelRate * Time.deltaTime;
+                }
+            }
+            //horizontal
+            if (((Input.GetButton("LEFT") == true) && Input.GetButton("RIGHT") == true) || ((Input.GetButton("LEFT") == false) && Input.GetButton("RIGHT") == false)) // if both inputed or neither
+            {
+                if (currentSpeedZ > speedZero || currentSpeedZ < speedZero)
+                {
+                    if ((currentSpeedZ < (0.5f + maxAccel)) && (currentSpeedZ > (-0.5f + -maxDeaccel)))
+                    {
+                        currentSpeedZ = 0;
+                    }
+                    else
+                    {
+                        if (currentSpeedZ > speedZero)
+                        {
+                            currentSpeedAccelZ = speedAccelOrig;
+                            currentSpeedZ -= currentSpeedDeaccelZ;
+                            if (currentSpeedZ > speedZero)
+                            {
+                                currentSpeedZ = 0;
+                            }
+                            else if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                            {
+                                currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
+                            }
+                        }
+                        else if (currentSpeedZ < speedZero)
+                        {
+                            currentSpeedDeaccelZ = speedDeaccelOrig;
+                            currentSpeedZ += currentSpeedAccelZ;
+                            if (currentSpeedZ < speedZero)
+                            {
+                                currentSpeedZ = 0;
+                            }
+                            else if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                            {
+                                currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
+                            }
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("RIGHT") == true) && currentSpeedZ >= maxSpeed) // over max speed going right
+            {
+                if (currentSpeedX > maxSpeed && Input.GetButton("Shift") == false)
+                {
+                    if (currentSpeedZ > maxSpeed + 1)
+                    {
+                        currentSpeedZ -= currentSpeedDeaccelZ * Time.deltaTime;
+                        if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                        {
+                            currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("LEFT") == true) && currentSpeedZ <= -maxSpeed) // over max speed going left
+            {
+                if (currentSpeedZ < -maxSpeed && Input.GetButton("Shift") == false)
+                {
+                    if (currentSpeedZ < -maxSpeed - 1)
+                    {
+                        currentSpeedZ += currentSpeedAccelZ * Time.deltaTime;
+                        if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                        {
+                            currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
+                        }
+                    }
+                }
+            }
+            else if ((Input.GetButton("RIGHT") == true) && currentSpeedZ < maxSpeed) // getting speed right
+            {
+                if (currentSpeedZ > -minSpeed && currentSpeedZ < minSpeed)
+                {
+                    currentSpeedZ = minSpeed;
+                }
+                currentSpeedDeaccelZ = speedDeaccelOrig;
+                currentSpeedZ += currentSpeedAccelZ * Time.deltaTime;
+                if (currentSpeedAccelZ < maxAccel) //Aceel ramp
+                {
+                    currentSpeedAccelZ += speedAccelRate * Time.deltaTime;
+                }
+            }
+            else if ((Input.GetButton("LEFT") == true) && currentSpeedZ > -maxSpeed) // getting speed left
+            {
+                if (currentSpeedZ > -minSpeed && currentSpeedZ < minSpeed)
+                {
+                    currentSpeedZ = -minSpeed;
+                }
+                currentSpeedAccelZ = speedAccelOrig;
+                currentSpeedZ -= currentSpeedDeaccelZ * Time.deltaTime;
+                if (currentSpeedDeaccelZ < maxDeaccel) //Deaccel ramp
+                {
+                    currentSpeedDeaccelZ += speedDeaccelRate * Time.deltaTime;
+                }
+            }
+        }
+
+    }
+
+    void dash() // Dash in a direction. Bool for if you want dash to increase your movement speed
+    {
+        //v2
+        if (Input.GetButton("Shift") && (Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true) && isClimbing == false && isInRagdoll == false && GravityON)
+        {
+
+            if (dashCooldownTimer >= dashCooldown)
+            {
+                isDashing = true;
+                dashCooldownTimer = 0.0f;
+                dashTimer = 0.0f;
+                if (Input.GetButton("UP") == true && Input.GetButton("DOWN") == true)
+                {
+                    currentDashSpeedX = 0;
+                }
+                else if (Input.GetButton("UP") == true)
+                {
+                    currentDashSpeedX = dashSpeed;
+                }
+                else if (Input.GetButton("DOWN") == true)
+                {
+                    currentDashSpeedX = -dashSpeed;
+                }
+                if (Input.GetButton("LEFT") == true && Input.GetButton("RIGHT") == true)
+                {
+                    currentDashSpeedZ = 0;
+                }
+                else if (Input.GetButton("LEFT") == true)
+                {
+                    currentDashSpeedZ = -dashSpeed;
+                }
+                else if (Input.GetButton("RIGHT") == true)
+                {
+                    currentDashSpeedZ = dashSpeed;
+                }
+                StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
+            }
         }
     }
-    IEnumerator dashwait(Vector3 move) //used to make dash function
+
+    void dashMomentum() // Makes the dash add to the player's speed
     {
-        Dashtimer = 0;
-        while (Dashtimer < DashLength)
+        //if (dashCarryOver)
+        //{
+        //    if (currentSpeed < maxSpeed)
+        //    {
+        //        if (currentSpeed + currentDashSpeed > maxSpeed)
+        //        {
+        //            currentSpeed = maxSpeed;
+        //        }
+        //        else
+        //        {
+        //            currentSpeed += currentDashSpeed;
+        //        }
+        //    }
+        //}
+        //currentDashSpeed = 0;
+        //isDashing = false;
+        //v2
+        if (dashCarryOver)
         {
-            Dashtimer += Time.deltaTime;
+            //Dash on X axis
+            if (currentDashSpeedX > 0) // if dash on X was postive
+            {
+                if (currentSpeedX < maxSpeed)
+                {
+                    if (currentSpeedX + currentDashSpeedX > maxSpeed)
+                    {
+                        currentSpeedX = maxSpeed;
+                    }
+                    else
+                    {
+                        currentSpeedX += currentDashSpeedX;
+                    }
+                }
+            }
+            else // if dash on X was negative
+            {
+                if (currentSpeedX > -maxSpeed)
+                {
+                    if (currentSpeedX + currentDashSpeedX < -maxSpeed)
+                    {
+                        currentSpeedX = -maxSpeed;
+                    }
+                    else
+                    {
+                        currentSpeedX += currentDashSpeedX;
+                    }
+                }
+            }
+            // Dash on Z axis
+            if (currentDashSpeedZ > 0) // if dash on Z was postive
+            {
+                if (currentSpeedZ < maxSpeed)
+                {
+                    if (currentSpeedZ + currentDashSpeedZ > maxSpeed)
+                    {
+                        currentSpeedZ = maxSpeed;
+                    }
+                    else
+                    {
+                        currentSpeedZ += currentDashSpeedZ;
+                    }
+                }
+            }
+            else // if dash on Z was negative
+            {
+                if (currentSpeedZ > -maxSpeed)
+                {
+                    if (currentSpeedZ + currentDashSpeedZ < -maxSpeed)
+                    {
+                        currentSpeedZ = -maxSpeed;
+                    }
+                    else
+                    {
+                        currentSpeedZ += currentDashSpeedZ;
+                    }
+                }
+            }
+        }
+        currentDashSpeedX = 0;
+        currentDashSpeedZ = 0;
+        isDashing = false;
+    }
+
+    void dashEnd()// Ends dash
+    {
+        //if (dashTimer >= dashLength || knockbacked)
+        //{
+        //    StopCoroutine(dashWait(momentumDir * currentDashSpeed * Time.deltaTime));
+        //    dashMomentum();
+        //}
+        //v2
+        if (dashTimer >= dashLength || knockbacked || GameManager.instance.isPaused)
+        {
+            StopCoroutine(dashWait((momentumDirX * currentDashSpeedX) * Time.deltaTime + (momentumDirZ * currentDashSpeedZ) * Time.deltaTime));
+            dashMomentum();
+        }
+    }
+
+    IEnumerator dashWait(Vector3 move) // Used to make dash function
+    {
+        dashTimer = 0.0f;
+        while (dashTimer < dashLength)
+        {
+            dashTimer += Time.deltaTime;
             controller.Move(move);
             yield return null;
         }
     }
 
-    void Gravity()// made gravity a method for easier use 
+    void Gravity()// Made gravity a method for easier use 
     {
-        if (is_dashing == true)
+        if (isDashing == true)
         {
-            Debug.Log("Dashing or Jumping");
-            playerVel.y = 0;
+            //Debug.Log("Dashing or Jumping");
+            playerVel.y = 0.0f;
         }
         else if (isJumping == true)
         {
-            jumpCount++;
+            ++jumpCount;
             playerVel.y = jumpSpeed;
             isJumping = false;
         }
         else if (controller.isGrounded)
         {
-            Debug.Log("On Floor");
+            //Debug.Log("On Floor");
             playerVel.y = -(0.001f);
             jumpCount = 0;
         }
-        else if (is_dashing == false && isClimbing == false)
+        else if (isDashing == false && isClimbing == false)
         {
-            Debug.Log("Not Floor");
+            //Debug.Log("Not Floor");
             playerVel.y -= gravity * Time.deltaTime;
         }
-        controller.Move(playerVel * Time.deltaTime);
     }
+
     public void applyPushback(Vector3 direction)
     {
         pushBack += direction;
     }
-    void KnockbackMovement()
+
+    void knockbackMovement()
     {
-        //appying forces when hit
+        // Appying forces when hit
         if (isInRagdoll && knockbacked)
         {
-            MovementResetFULL();
+            movementResetFull();
             playerVel.y = pushBack.y;
-            Knockback.z = pushBack.z;
-            Knockback.x = pushBack.x;
-            knockbacktimer = 0;
+            knockback.z = pushBack.z;
+            knockback.x = pushBack.x;
+            knockbackTimer = 0;
             knockbacked = false;
             pushBack = Vector3.zero;
         }
         else if (knockbacked)
         {
             playerVel.y = pushBack.y;
-            Knockback.z = pushBack.z;
-            Knockback.x = pushBack.x;
-            knockbacktimer = 0;
+            knockback.z = pushBack.z;
+            knockback.x = pushBack.x;
+            knockbackTimer = 0;
             knockbacked = false;
             pushBack = Vector3.zero;
         }
-        //how to move the player based on your bool and if you're in ragdoll right now
-        if (Knockback_only && isInRagdoll)
+        // How to move the player based on your bool and if you're in ragdoll right now
+        if (knockbackOnly && isInRagdoll)
         {
-            controller.Move((Knockback) * Time.deltaTime); // knock back only
+            controller.Move((knockback) * Time.deltaTime); // knock back only
         }
         else if (isInRagdoll)
         {
-            controller.Move((MomentumDir + Knockback) * Time.deltaTime); // knock back is added to the last known input
+            controller.Move((momentumDirX + knockback) * Time.deltaTime + (momentumDirZ + knockback) * Time.deltaTime); // knock back is added to the last known input
         }
-        //mkaing knockback decrease
-        if (Mathf.Abs(Knockback.z) > 0.001f && knockbacktimer > 0.001f)
+        // Making knockback decrease
+        if (GravityON == true)
         {
-            Knockback.z -= (Knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
-            currentSpeed = 1;
-        }
-        if ((Mathf.Abs(Knockback.x)) > 0.001f && knockbacktimer > 0.001f)
-        {
-            Knockback.x -= (Knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
-            currentSpeed = 1;
+            if (Mathf.Abs(knockback.z) > 0.01f && knockbackTimer > 0.001f)
+            {
+                knockback.z -= (knockback.z > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
+            }
+            if ((Mathf.Abs(knockback.x)) > 0.01f && knockbackTimer > 0.001f)
+            {
+                knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime); 
+            }
         }
     }
-    void RagdollTimer()
+
+    void ragdollTimer()
     {
         if (controller.isGrounded && ragdollTimeLeft > 0f)
             ragdollTimeLeft = Mathf.Max(0f, ragdollTimeLeft - Time.deltaTime * 2f); // Recover twice as fast from ragdoll if you are on the ground
         else
             ragdollTimeLeft = Mathf.Max(0f, ragdollTimeLeft - Time.deltaTime);
+
         if (ragdollTimeLeft <= 0f)
         {
             isInRagdoll = false;
@@ -462,64 +1061,75 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isInRagdoll = true;
         }
     }
-    void MovementResetFULL() //used to reset player Movement values
+
+    void movementResetFull() // Used to reset player Movement values
     {
-        currentSpeed = Speed0;
-        currspeedAccel = MinAccel;
-        currspeedDeaccel = MinDeaccel;
-        speedDeaccelOrig = currspeedDeaccel;
-        speedAccelOrig = currspeedAccel;
+        currentSpeedX = speedZero;
+        currentSpeedZ = speedZero;
+        currentSpeedAccelX = minAccel;
+        currentSpeedDeaccelX = minDeaccel;
+        currentSpeedAccelZ = minAccel;
+        currentSpeedDeaccelZ = minDeaccel;
     }
 
-    public void ClearKnockback()
+    public void clearKnockback()
     {
         knockbacked = false;
-        Knockback = Vector3.zero;
+        knockback = Vector3.zero;
     }
-
-    public void GetGunStats(GunStats gun)
+    void Gravityoff() //checks if you changed gravity lockout and reset the timer.
     {
-        gunList.Add(gun);
-        gunListPos = gunList.Count - 1;
-
-        ChangeGun();
-    }
-
-    void ChangeGun()
-    {
-        shootDamage = gunList[gunListPos].shootDamage;
-        shootDist = gunList[gunListPos].shootDist;
-        shootRate = gunList[gunListPos].shootRate;
-
-        if(gunModel != null)
+        if (gravityOffTimer < gravityLockout)
         {
-            gunModel.GetComponent<MeshFilter>().sharedMesh = gunList[gunListPos].gunModel.GetComponent<MeshFilter>().sharedMesh;
-            gunModel.GetComponent<MeshRenderer>().sharedMaterial = gunList[gunListPos].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
+            GravityON = false;
+        }
+        else
+        {
+            GravityON = true;
         }
     }
 
-    void SelectGun()
+    void Frozen() //checks if you changed freeze lockout and reset the timer.
     {
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        if (freezeDelaytimer > freezeDelay)
         {
-            if (gunListPos < gunList.Count - 1)
-                gunListPos++;
+            if (freezeTimer < freezeLockout)
+            {
+                FrozenOn = true;
+            }
             else
-                gunListPos = 0;
-            ChangeGun();
+            {
+                FrozenOn = false;
+                freezeDelaytimer = 0;
+            }
         }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+    }
+    public void respawnPlayer(bool resetPlayer, bool resetHealth)
+    {
+        if (GameManager.instance.playerSpawn != null)
         {
-            if (gunListPos > 0)
-                gunListPos--;
-            else
-                gunListPos = gunList.Count - 1;
-            ChangeGun();
+
+            controller.enabled = false;
+            controller.transform.position = GameManager.instance.playerSpawn.transform.position;
+            controller.transform.rotation = GameManager.instance.playerSpawn.transform.localRotation;
+            controller.enabled = true;
+        }
+
+        if (resetPlayer)
+        {
+            knockbacked = false;
+            isInRagdoll = false;
+            knockbackTimer = 0f;
+            playerVel = Vector3.zero;
+        }
+
+        if (resetHealth)
+        {
+            HP = hpOrig;
+            // Reset UI Health function
         }
     }
 }
 
 //Gold's pile of possible features
 //add a new layer for dashing, this layer ignores enemy projectiles and would effectly make you invincible based on what it ignores
-
-

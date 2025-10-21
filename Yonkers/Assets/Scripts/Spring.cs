@@ -5,30 +5,32 @@ public class Spring : MonoBehaviour
 {
     [Range(0.2f, 100)][SerializeField] float SpringForce = 3;
     [SerializeField] GameObject emptySpringObject; //please use the empty object used to hold the spring and Teleport. It's is used for finding the Teleport object //only for non damaging springs
+    [SerializeField] bool SpringGravityDisable; //if spring disables gravity
+    [SerializeField] float disableGravityTime; //how long to disable Gravity
     Vector3 springDirection = Vector3.zero; 
     Vector3 minorTeleport = Vector3.zero;
     bool damagingSpring = false;
-    bool checkdelay = true;
+    bool checkforTeleportobject = true;
 
     private void Start()
     {
         damagingSpring = gameObject.GetComponent<Damage>();
-        if (!checkdelay) //I have to delay the change to the real teleport location object to not cause a null ref. It works.
-        {
-            emptySpringObject = emptySpringObject.transform.Find("TpLocation").gameObject;
-        }
-        else
-        {
-            checkdelay = false;
-        }
     }
 
     private void Update()
     {//all in update in case you want to try adding springs to moving platforms.
-        if (!damagingSpring) 
+        if (!damagingSpring)
         {
             springDirection = transform.up.normalized;
-            Debug.DrawRay(emptySpringObject.transform.position, springDirection * (((SpringForce * SpringForce) / 70) * 2), Color.red);
+            if (!checkforTeleportobject)
+            {
+                Debug.DrawRay(emptySpringObject.transform.position, springDirection * (((SpringForce * SpringForce) / 70) * 2), Color.red);
+            }
+            else if (emptySpringObject.transform.Find("TpLocation") != null)
+            {
+                emptySpringObject = emptySpringObject.transform.Find("TpLocation").gameObject;
+                checkforTeleportobject = false; 
+            }
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -69,20 +71,25 @@ public class Spring : MonoBehaviour
                 }
                 if (other.GetComponentInParent<PlayerController>() != null)
                 {
-                    other.GetComponentInParent<PlayerController>().knockbacked = true;
-                    GameManager.instance.playerScript.isInRagdoll = true;
-                    float lockTime = Mathf.Max(GameManager.instance.playerScript.MinRagdollTime(), springDirection.magnitude * GameManager.instance.playerScript.RagdollPerSpeed());
-                    GameManager.instance.playerScript.ragdollTimeLeft = Mathf.Max(GameManager.instance.playerScript.ragdollTimeLeft, lockTime);
+                    other.GetComponentInParent<PlayerController>().Knockbacked = true;
+                    GameManager.instance.playerScript.IsInRagdoll = true;
+                    float lockTime = Mathf.Max(GameManager.instance.playerScript.MinRagdollTime, springDirection.magnitude * GameManager.instance.playerScript.RagdollPerSpeed);
+                    GameManager.instance.playerScript.RagdollTimeLeft = Mathf.Max(GameManager.instance.playerScript.RagdollTimeLeft, lockTime);
                 }
             }
         }
         else //else normal spring logic
         {
+            if (SpringGravityDisable)
+            {
+                GameManager.instance.playerScript.gravityOffTimer = 0;
+                GameManager.instance.playerScript.gravityLockout = disableGravityTime;
+            }
             springDirection = transform.up.normalized;
             minorTeleport = emptySpringObject.transform.position;
             if (other.CompareTag("Player"))
             {
-                minorTeleport.y = other.GetComponent<CharacterController>().height + 0.5f;
+                minorTeleport.y = other.GetComponent<CharacterController>().height + 1.5f;
                 other.enabled = false;
                 other.transform.position = minorTeleport;
                 Debug.Log("Teleport");
@@ -93,7 +100,7 @@ public class Spring : MonoBehaviour
                 }
                 if (other.GetComponentInParent<PlayerController>() != null)
                 {
-                    other.GetComponentInParent<PlayerController>().knockbacked = true;
+                    other.GetComponentInParent<PlayerController>().Knockbacked = true;
                 }
             }
         }

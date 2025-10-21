@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4909106797720894080}
+  - component: {fileID: 1571541062556508145}
   - component: {fileID: 1606420872048753344}
   - component: {fileID: 6910883334449192257}
   - component: {fileID: 3872176811049773830}
   - component: {fileID: 6830490414580953242}
   - component: {fileID: 7079760233747805049}
-  - component: {fileID: 3138434720027810420}
   m_Layer: 6
   m_Name: Ranged Enemy (Temp)
   m_TagString: Untagged
@@ -37,6 +37,48 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1571541062556508145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535497093919512893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e456ad41c447ab438f3ac6d14ba0b76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
+  model: {fileID: 6910883334449192257}
+  agent: {fileID: 7079760233747805049}
+  HP: 2
+  FOV: 180
+  baseMoveSpeed: 5
+  canMove: 1
+  canRotate: 1
+  canRoam: 1
+  alwaysRoaming: 0
+  randomizeRoamTime: 1
+  facingWhileRoaming: 0
+  approachWhenShot: 1
+  damageWhenDelayed: 1
+  damageWhenUndetected: 1
+  enragesWhenDamaged: 0
+  explodesOnDeath: 0
+  faceTargetSpeed: 5
+  stoppingDistance: 10
+  roamDist: 25
+  roamPauseTime: 2
+  randomMinRoamTime: 1
+  randomMaxRoamTime: 2
+  initialAttackDelay: 1
+  attackDelay: 1
+  enrageSpeedIncrease: 0
+  explosionPrefab: {fileID: 0}
+  explosionDamage: 0
+  projectile: {fileID: 8535815344353667313, guid: 3132d7eb14a37164aa72052dd6e68a26, type: 3}
+  shootPos: {fileID: 4909106797720894080}
+  delayBetweenShots: 1
 --- !u!33 &1606420872048753344
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -70,7 +112,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: afd45fb8e12fa824ab72e19bdc1a8e02, type: 2}
+  - {fileID: 2100000, guid: 2a14a25216d6a404ca64f45f8d563e64, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -133,7 +175,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 20
+  m_Radius: 15
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!195 &7079760233747805049
 NavMeshAgent:
@@ -157,35 +199,3 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &3138434720027810420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1535497093919512893}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b736e71eec137e4fba3c2e6aaf0e3ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
-  model: {fileID: 6910883334449192257}
-  agent: {fileID: 7079760233747805049}
-  HP: 3
-  faceTargetSpeed: 5
-  FOV: 180
-  roamDist: 25
-  roamPauseTime: 3
-  baseMoveSpeed: 1
-  canMove: 1
-  canRotate: 1
-  canFly: 0
-  canDodge: 0
-  enragesWhenDamaged: 0
-  enrageSpeedIncrease: 0
-  explodesOnDeath: 0
-  explosionPrefab: {fileID: 0}
-  explosionDamage: 0
-  projectile: {fileID: 8535815344353667313, guid: 3132d7eb14a37164aa72052dd6e68a26, type: 3}
-  shootPos: {fileID: 4909106797720894080}
-  delayBetweenShots: 1

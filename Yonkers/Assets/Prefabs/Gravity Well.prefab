@@ -68,3 +68,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GravityWell
   pullStrength: 4
   trigger: {fileID: 1625328917984169484}
+  canBeEscapedByDashing: 1
+  dashGracePeriod: 1.5

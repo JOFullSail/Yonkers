@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class RangedEnemy : EnemyAI
 {
+    [Header("Ranged Enemy Parameters")]
     [SerializeField] GameObject projectile;
     [SerializeField] Transform shootPos;
     [SerializeField] float delayBetweenShots;
@@ -15,10 +16,10 @@ public class RangedEnemy : EnemyAI
     {
         shotTimer += Time.deltaTime;
 
-        roamRoutine();
-
-        if (canSeePlayer())
-        {
+        enemyRoutine(); // roamRoutine();
+        if (playerDetected && (firstTimeMet && initialAttackDelay <= 0.0f ||
+            !firstTimeMet && attackDelayTimer <= 0.0f))
+        { 
             if (shotTimer > delayBetweenShots)
                 shoot();
         }

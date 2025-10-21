@@ -74,11 +74,11 @@ public class Explosion : MonoBehaviour
 
                 if (col.CompareTag("Player"))
                 {
-                    GameManager.instance.playerScript.isInRagdoll = true;
-                    GameManager.instance.playerScript.knockbacked = true;
+                    GameManager.instance.playerScript.IsInRagdoll = true;
+                    GameManager.instance.playerScript.Knockbacked = true;
 
-                    float lockTime = Mathf.Max(GameManager.instance.playerScript.MinRagdollTime(), direction.magnitude * GameManager.instance.playerScript.RagdollPerSpeed());
-                    GameManager.instance.playerScript.ragdollTimeLeft = Mathf.Max(GameManager.instance.playerScript.ragdollTimeLeft, lockTime);
+                    float lockTime = Mathf.Max(GameManager.instance.playerScript.MinRagdollTime, direction.magnitude * GameManager.instance.playerScript.RagdollPerSpeed);
+                    GameManager.instance.playerScript.RagdollTimeLeft = Mathf.Max(GameManager.instance.playerScript.RagdollTimeLeft, lockTime);
                 }
             }
 

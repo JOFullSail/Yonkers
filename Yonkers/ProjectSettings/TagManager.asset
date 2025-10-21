@@ -8,6 +8,8 @@ TagManager:
   - NoClimb
   - Slope
   - Hazard
+  - Goal
+  - PlayerSpawn
   layers:
   - Default
   - TransparentFX
@@ -19,7 +21,7 @@ TagManager:
   - Enemy Projectile
   - Player Projectile
   - Ground
-  - 
+  - GunCam
   - 
   - 
   - 
