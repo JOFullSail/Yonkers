@@ -27,6 +27,7 @@ public class RangedEnemy : EnemyAI
 
     void shoot()
     {
+        animator.SetTrigger("Shoot");
         shotTimer = 0;
 
         Instantiate(projectile, shootPos.position, transform.rotation);

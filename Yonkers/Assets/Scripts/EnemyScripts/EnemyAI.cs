@@ -6,6 +6,8 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 {
     [SerializeField] Renderer model;
 
+    public Animator animator;
+
     [SerializeField] NavMeshAgent agent;
 
     [SerializeField] int HP = 2;
@@ -88,7 +90,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     Color colorOrig;
 
-    [Tooltip("Will be true if an enemy has not met the player yet," + 
+    [Tooltip("Will be true if an enemy has not met the player yet," +
         " turning false once canSeePlayer() returns true.")]
     protected bool firstTimeMet = true;
     [Tooltip("Will be true if the enemy spots the player.")]
@@ -105,6 +107,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     protected float attackDelayTimer;
     protected float stoppingDistanceOrig;
     protected float originalMoveSpeed;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -171,6 +174,9 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     protected void enemyRoutine() // roamRoutine();
     {
+
+        animator.SetFloat("Speed", agent.velocity.normalized.magnitude);
+
         timers();
 
         if (playerInRange && !canSeePlayer() && canRoam)
@@ -339,7 +345,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
                 return playerDetected;
             }
         }
-        
+
         attackDelayTimer = attackDelay;
         agent.stoppingDistance = 0;
         playerDetected = false;

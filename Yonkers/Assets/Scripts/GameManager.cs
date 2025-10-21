@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (menuActive == mainMenu && Input.GetKeyDown(KeyCode.Space))
-                stateUnpause();
+            stateUnpause();
 
         if (Input.GetButtonDown("Cancel"))
         {
