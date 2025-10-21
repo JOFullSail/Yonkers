@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     RaycastHit hit;
 
+
     int gunListIdx;
     int jumpCount;
     int hpOrig;
@@ -179,9 +180,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
 
-        timers();
-        shoot();
-        playerMovement();
+        if(!GameManager.instance.isPaused)
+        {
+            timers();
+            shoot();
+            playerMovement();
+        }
     }
 
     void playerMovement()
@@ -304,11 +308,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
             {
                 gunList.RemoveAt(gunListIdx);
+                gunListIdx = 0;
                 if (gunList.Count > 0)
                 {
-                    gunListIdx = 0;
                     changeGun();
                 }
+                else
+                {
+                    gunModel.GetComponent<MeshFilter>().sharedMesh = null;
+                    gunModel.GetComponent<MeshRenderer>().sharedMaterial = null;
+                }
+
             }
         }
 
@@ -345,6 +355,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
         if (gunModel != null)
         {
+            gunModel.transform.localScale = gunList[gunListIdx].scaleWhenHeld;
+            gunModel.transform.localRotation = Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld);
+            gunModel.transform.localPosition = gunList[gunListIdx].positionWhenHeld;
+
             gunModel.GetComponent<MeshFilter>().sharedMesh = gunList[gunListIdx].gunModel.GetComponent<MeshFilter>().sharedMesh;
             gunModel.GetComponent<MeshRenderer>().sharedMaterial = gunList[gunListIdx].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
         }
