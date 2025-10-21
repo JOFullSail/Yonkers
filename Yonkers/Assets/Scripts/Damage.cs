@@ -12,6 +12,9 @@ public class Damage : MonoBehaviour
     [Tooltip("Checking this will do nothing if damage type is set to DOT")]
     [SerializeField] bool isExplosive;
 
+    [Tooltip("Respawns the player if they take damage.")]
+    [SerializeField] bool respawnUponTouch;
+
     [Tooltip("Used only if damage is set as being explosive. Be aware that BOTH this and the regular damage will be applied.")]
     [SerializeField] int splashDamageAmount;
 
@@ -76,6 +79,10 @@ public class Damage : MonoBehaviour
             {
                 dmg.takeDamage(damageAmount);
 
+                if (respawnUponTouch)
+                {
+                    GameManager.instance.playerScript.respawnPlayer(true, false);
+                }
             }
         }
 
