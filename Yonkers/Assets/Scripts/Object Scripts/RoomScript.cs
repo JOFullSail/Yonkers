@@ -33,7 +33,6 @@ public class RoomScript : MonoBehaviour
                 spawn();
             }
         }
-        UpdateEnemyCount(1);
 
     }
     void spawn()
