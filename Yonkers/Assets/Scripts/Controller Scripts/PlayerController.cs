@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 
 public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 {
@@ -227,8 +228,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     }
 
     void playerMovement()
-    {
+    {        
         _Invincibility_();
+        knockbackMovement();
         Frozen(); //checking if you're frozen
         if (FrozenOn == false) // long as you're not frozen you can do all your usual movement
         {
@@ -238,7 +240,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             dashEnd();
             jump();
         }
-        knockbackMovement();
         controller.Move(playerVel * Time.deltaTime); // Used here to apply gravity correctly
         Gravityoff(); //checking if you disabled gravity first
         if (GravityON)
@@ -312,8 +313,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     public void takeDamage(int amount)
     {
-        HP -= amount;
-        InvincibilityTimer = 0;
+        if(GameManager.instance.player.layer == 3)
+        {
+            HP -= amount;
+            InvincibilityTimer = 0;
+        }
+
         if (HP <= 0)
         {
             GameManager.instance.youDied();
@@ -1003,31 +1008,33 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     public void applyPushback(Vector3 direction)
     {
-        pushBack += direction;
+        pushBack = direction;
     }
 
     void knockbackMovement()
     {
-        // Appying forces when hit
-        if (isInRagdoll && knockbacked)
-        {
-            movementResetFull();
-            playerVel.y = pushBack.y;
-            knockback.z = pushBack.z;
-            knockback.x = pushBack.x;
-            knockbackTimer = 0;
-            knockbacked = false;
-            pushBack = Vector3.zero;
-        }
-        else if (knockbacked)
-        {
-            playerVel.y = pushBack.y;
-            knockback.z = pushBack.z;
-            knockback.x = pushBack.x;
-            knockbackTimer = 0;
-            knockbacked = false;
-            pushBack = Vector3.zero;
-        }
+
+                if (isInRagdoll && knockbacked)
+            {
+                movementResetFull();
+                playerVel.y = pushBack.y;
+                knockback.z = pushBack.z;
+                knockback.x = pushBack.x;
+                knockbackTimer = 0;
+                knockbacked = false;
+                pushBack = Vector3.zero;
+            }
+            else if (knockbacked)
+            {
+                playerVel.y = pushBack.y;
+                knockback.z = pushBack.z;
+                knockback.x = pushBack.x;
+                knockbackTimer = 0;
+                knockbacked = false;
+                pushBack = Vector3.zero;
+            }
+            // Appying forces when hit
+
         // How to move the player based on your bool and if you're in ragdoll right now
         if (knockbackOnly && isInRagdoll)
         {
@@ -1046,7 +1053,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             }
             if ((Mathf.Abs(knockback.x)) > 0.01f && knockbackTimer > 0.001f)
             {
-                knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime); 
+                knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
+            }
+            if(knockback.z < 0.5f && knockback.z > -0.5f)
+            {
+                knockback.z = 0;
+            }
+            if (knockback.x < 0.5f && knockback.x > -0.5f)
+            {
+                knockback.x = 0;
             }
         }
     }
