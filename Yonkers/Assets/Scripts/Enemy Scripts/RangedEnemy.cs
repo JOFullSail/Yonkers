@@ -6,7 +6,6 @@ public class RangedEnemy : EnemyAI
     [SerializeField] GameObject projectile;
     [SerializeField] Transform shootPos;
     [SerializeField] float delayBetweenShots;
-
     float shotTimer;
 
     bool playerInWeaponRange;
@@ -15,7 +14,6 @@ public class RangedEnemy : EnemyAI
     void Update()
     {
         shotTimer += Time.deltaTime;
-
         enemyRoutine(); // roamRoutine();
         if (playerDetected && (firstTimeMet && initialAttackDelay <= 0.0f ||
             !firstTimeMet && attackDelayTimer <= 0.0f))
@@ -29,7 +27,6 @@ public class RangedEnemy : EnemyAI
     {
         animator.SetTrigger("Shoot");
         shotTimer = 0;
-
         Instantiate(projectile, shootPos.position, transform.rotation);
     }
 }

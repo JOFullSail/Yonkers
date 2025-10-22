@@ -103,6 +103,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     Vector3 playerDir;
     Vector3 startPos;
+    public RoomScript room;
 
     float roamTimer = 0f;
     float angleToPlayer;
@@ -114,6 +115,10 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (room != null)
+        {
+            room.UpdateEnemyCount(1);
+        }
         if (canMove)
         {
             originalMoveSpeed = baseMoveSpeed;
@@ -258,7 +263,10 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
                 if (expl != null)
                     expl.TriggerExplosion(transform.position, explosionDamage);
             }
-
+            if (room != null)
+            {
+                room.UpdateEnemyCount(-1);
+            }
             Destroy(gameObject);
 
         }
