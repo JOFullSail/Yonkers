@@ -177,7 +177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Damage
   type: 1
   rb: {fileID: 0}
-  damageAmount: 10
+  damageAmount: 1
   isExplosive: 0
   respawnUponTouch: 0
   splashDamageAmount: 0
