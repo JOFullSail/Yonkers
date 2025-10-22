@@ -6,16 +6,21 @@ public class MeleeEnemy : EnemyAI
 {
     [Header("Melee Attributes")]
     [SerializeField] Transform enemyPOS;// Enemy transfrom
-    [SerializeField] float upwardforce; //
+    [SerializeField] float pushForce; //
     [SerializeField] int meleeDamage;
     [SerializeField] float meleeDelay;
-    [SerializeField] float dashDistance;
     [SerializeField] float dashSpeed;
-    [SerializeField] float targetDistance;
-    [SerializeField] float reach;
+    [SerializeField] float targetDistance; //This is how far the enemy raycast will be to detect the player's last position
+    [SerializeField] float damageReach;
+    [SerializeField] bool diesonimpact;
+    [SerializeField] AudioSource aud;
+    [SerializeField] AudioClip[] audPunch;
+    [Range(0, 1)][SerializeField] float audPunchVol;
 
     //bool collide;
     //bool attackRange;
+    bool Die;
+    bool punched;
     float attackTimer;
     Vector3 playerPosition;
     Vector3 newPushPosition;
@@ -25,18 +30,25 @@ public class MeleeEnemy : EnemyAI
     {
         playerPosition = GameManager.instance.player.transform.position - transform.position;
         attackTimer += Time.deltaTime;
+
+
+
         enemyRoutine(); // roamRoutine()
         if (playerDetected && (firstTimeMet && initialAttackDelay <= 0.0f ||
-            !firstTimeMet && attackDelayTimer <= 0.0f))
+           !firstTimeMet && attackDelayTimer <= 0.0f))
         {
 
             if (attackTimer > meleeDelay)
             {
                 dashattack();
-
                 transform.position = Vector3.Lerp(transform.position, newPushPosition, Time.deltaTime * dashSpeed);
-                punch(upwardforce, (GameManager.instance.player.transform.position - transform.position));
+                punch(pushForce, (GameManager.instance.player.transform.position - transform.position));
 
+                
+            }
+            if(punched == true && diesonimpact == true)
+            {
+                Destroy(gameObject);
             }
 
         }
@@ -48,12 +60,14 @@ public class MeleeEnemy : EnemyAI
         dir = dir.normalized;
         Vector3 totalPunch = dir * Force;
 
-        if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= Reach) {
-            GameManager.instance.playerScript.knockbacked = true;
-            GameManager.instance.playerScript.applyPushback(TotalPunch);
-            GameManager.instance.playerScript.takeDamage(MeleeDamage);
-            AttackTimer = 0;
+        if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= damageReach) {
+            GameManager.instance.playerScript.Knockbacked = true;
+            GameManager.instance.playerScript.applyPushback(totalPunch);
+            GameManager.instance.playerScript.takeDamage(meleeDamage);
+            punched = true;
+            attackTimer = 0;
         }
+       
 
     }
 
@@ -63,12 +77,13 @@ public class MeleeEnemy : EnemyAI
         Debug.DrawRay(transform.position, playerPosition, color: Color.blue);
         if (Physics.Raycast(transform.position, (playerPosition).normalized, out detected, targetDistance))
         {
-            if (Detected.collider.CompareTag("Player"))
+            if (detected.collider.CompareTag("Player"))
             {
-                Dir = transform.forward;
-                NewPushPosition = new Vector3 (GameManager.instance.player.transform.position.x, transform.position.y, GameManager.instance.player.transform.position.z);
+                dir = transform.forward;
+                newPushPosition = new Vector3 (GameManager.instance.player.transform.position.x, transform.position.y, GameManager.instance.player.transform.position.z);
             }
 
         }
     }
 }
+    

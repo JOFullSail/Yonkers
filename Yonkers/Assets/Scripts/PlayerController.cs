@@ -93,14 +93,16 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool isInRagdoll;
     bool knockbacked; 
     bool GravityON; //true = gravity active // false = gravity disabled *MAINLY FOR SPRINGS DON'T USE FOR KNOCKBACK THINGS*
-    bool FrozenOn; //false = not frozen //true = frozen
+    bool frozenOn; //false = not frozen //true = frozen
     //Floats
     public float gravityOffTimer; // Used to time a duration of having no gravity.
     public float gravityLockout = 0; //amount of time gravity is disabled
-    float freezeTimer; // Used to time a duration of being frozen.      < HEY BROLY CHECK SPRING CODE FOR AN EXAMPLE OF HOW TO USE THIS
-    float freezeLockout = 0;//amount of time player is disabled         <
+    public float freezeTimer; // Used to time a duration of being frozen.      < HEY BROLY CHECK SPRING CODE FOR AN EXAMPLE OF HOW TO USE THIS
+    public float freezeLockout = 0;//amount of time player is disabled         <
     float freezeDelaytimer; //used to know when you can be frozen again. 
     float knockbackTimer;      // Used to know when to start losing knockback.
+
+    public float blindDuration;
 
 
     float jumpTimer;
@@ -190,6 +192,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         get { return isDashing; }
     }
 
+    public bool FrozenOn
+    {
+        get { return frozenOn; }
+        set { frozenOn = value; }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -227,7 +235,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void playerMovement()
     {
         Frozen(); //checking if you're frozen
-        if (FrozenOn == false) // long as you're not frozen you can do all your usual movement
+        if (frozenOn == false) // long as you're not frozen you can do all your usual movement
         {
             climb();
             dash();
@@ -1089,7 +1097,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
     }
 
-    void Frozen() //checks if you changed freeze lockout and reset the timer.
+
+    public void Frozen() //checks if you changed freeze lockout and reset the timer.
     {
         if (freezeDelaytimer > freezeDelay)
         {
@@ -1103,7 +1112,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 freezeDelaytimer = 0;
             }
         }
+
+
     }
+
     public void respawnPlayer(bool resetPlayer, bool resetHealth)
     {
         if (GameManager.instance.playerSpawn != null)
@@ -1129,7 +1141,22 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             // Reset UI Health function
         }
     }
+
+    public void Blind()
+    {
+        StartCoroutine(BlindTime());
+    }
+
+    IEnumerator BlindTime()
+    {
+        GameManager.instance.blindScreen.SetActive(true);
+        yield return new WaitForSeconds(blindDuration);
+        GameManager.instance.blindScreen.SetActive(false);
+    }
 }
+
+
+
 
 //Gold's pile of possible features
 //add a new layer for dashing, this layer ignores enemy projectiles and would effectly make you invincible based on what it ignores

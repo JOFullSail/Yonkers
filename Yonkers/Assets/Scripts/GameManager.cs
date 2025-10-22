@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public PlayerController playerScript;
     public GameObject goalObject;
+    public GameObject blindScreen;
 
     public bool isPaused;
 

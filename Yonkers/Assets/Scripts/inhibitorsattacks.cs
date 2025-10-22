@@ -20,7 +20,6 @@ public class NewMonoBehaviourScript : MonoBehaviour
     {
         Destroy(gameObject, destroytime);
         rb.linearVelocity = transform.forward * speed;
-        
     }
 
     // Update is called once per frame
@@ -40,8 +39,10 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
             if(Inhibitor == InhibitType.freeze)
             {
+                GameManager.instance.playerScript.freezeTimer = 0;
+                GameManager.instance.playerScript.freezeLockout = InhibitDuration;
                 Debug.Log("Froze Player");
-                StartCoroutine(frozeTime());
+
                 //Zero player movement - What I want is to have access to the players movement and turing it to zero or stop him from moving for a small while.
             }
 
@@ -50,18 +51,12 @@ public class NewMonoBehaviourScript : MonoBehaviour
                 //divide playermovement by two - Take the player speed and divide it by two to slow him down.
             }
 
-            if(Inhibitor == InhibitType.invert)
-            {
-                //invert player movement - invert when the character is moving.
-            }
-
             if(Inhibitor == InhibitType.blind)
             {
+               // GameManager.instance.playerScript.Blind();
                 //Activate a panel for a few seconds to blind the player
             }
-            else
-            
-                Debug.Log("Inhibitor not implemented:(");
+         
             
 
 
@@ -70,15 +65,6 @@ public class NewMonoBehaviourScript : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void Frozen()
-    {
-       
-    }
 
-    IEnumerator frozeTime()
-    {
-        GameManager.instance.playerScript.isInRagdoll = true;
-        yield return new WaitForSeconds(InhibitDuration);
-        GameManager.instance.playerScript.isInRagdoll = false;
-    }
+   
 }
