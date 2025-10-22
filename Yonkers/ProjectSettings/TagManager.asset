@@ -10,6 +10,7 @@ TagManager:
   - Hazard
   - Goal
   - PlayerSpawn
+  - EnemySpawn
   layers:
   - Default
   - TransparentFX
