@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] int HP = 10;
     //[SerializeField] int speed = 12; // Left here since the use of the movement speed have not been decided.
     [SerializeField] float freezeDelay = 0.5f; //used to know when the player can be frozen again.
+    [SerializeField] float InvincibilityDuration = 0.5f;
 
     [Header("Jumping")]
     [SerializeField] int jumpSpeed = 12;
@@ -97,8 +98,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //Floats
     public float gravityOffTimer; // Used to time a duration of having no gravity.
     public float gravityLockout = 0; //amount of time gravity is disabled
-    float freezeTimer; // Used to time a duration of being frozen.      < HEY BROLY CHECK SPRING CODE FOR AN EXAMPLE OF HOW TO USE THIS
-    float freezeLockout = 0;//amount of time player is disabled         <
+    float freezeTimer; // Used to time a duration of being frozen.      
+    float freezeLockout = 0;//amount of time player is disabled         
     float freezeDelaytimer; //used to know when you can be frozen again. 
     float knockbackTimer;      // Used to know when to start losing knockback.
 
@@ -111,6 +112,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     float speedDeaccelOrig;
     float speedAccelOrig;
     float speedZero = 0.0f;
+    float InvincibilityTimer;
 
 
 
@@ -226,6 +228,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void playerMovement()
     {
+        _Invincibility_();
         Frozen(); //checking if you're frozen
         if (FrozenOn == false) // long as you're not frozen you can do all your usual movement
         {
@@ -310,7 +313,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     public void takeDamage(int amount)
     {
         HP -= amount;
-
+        InvincibilityTimer = 0;
         if (HP <= 0)
         {
             GameManager.instance.youDied();
@@ -328,6 +331,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         gravityOffTimer += Time.deltaTime;
         freezeTimer += Time.deltaTime;
         freezeDelaytimer += Time.deltaTime;
+        InvincibilityTimer += Time.deltaTime;
     }
 
     void shoot()
@@ -1129,6 +1133,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             HP = hpOrig;
             // Reset UI Health function
+        }
+    }
+    void _Invincibility_()
+    {
+        if (InvincibilityTimer < InvincibilityDuration)
+        {
+            GameManager.instance.player.layer = 11;
+        }
+        else
+        {
+            GameManager.instance.player.layer = 3;
         }
     }
 }
