@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     public bool isPaused;
 
     float timeScaleOrig;
-    GameObject playerSpawnOrig;
+    public GameObject playerSpawnOrig;
 
     int gameGoalCount;
 
