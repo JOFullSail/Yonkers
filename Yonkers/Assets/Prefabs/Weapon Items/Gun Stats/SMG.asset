@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: SMG
   m_EditorClassIdentifier: Assembly-CSharp::GunStats
   gunModel: {fileID: 302068756496654038, guid: 23c3e148841aa3048849b2a3ae6f3e6c, type: 3}
-  shootDamage: 1
-  shootDist: 15
   shootRate: 3
   ammoCurrent: 30
   ammoMax: 30
@@ -22,8 +20,13 @@ MonoBehaviour:
   recoilToCamera: 0.5
   recoilToUser: 0
   isSpecial: 0
-  isExplosive: 0
-  projectileExplosionPrefab: {fileID: 0}
-  hitEffect: {fileID: 0}
+  projectile: {fileID: 0}
+  isHitscan: 1
+  hitscanShootDamage: 1
+  hitscanShootDist: 50
+  hitEffect: {fileID: 5396372950321188654, guid: fcb74f28d107e284e80af037bfec14ca, type: 3}
   shootSound: []
   shootSoundVol: 0
+  positionWhenHeld: {x: 0.2850304, y: -0.2229996, z: 0.4335518}
+  rotationWhenHeld: {x: -89.98, y: 0, z: 0}
+  scaleWhenHeld: {x: 100, y: 100, z: 100}

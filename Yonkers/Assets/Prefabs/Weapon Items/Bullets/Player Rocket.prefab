@@ -285,9 +285,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Damage
   type: 0
   rb: {fileID: 91128310120046435}
-  damageAmount: 2
+  damageAmount: 3
   isExplosive: 1
-  splashDamageAmount: 3
+  respawnUponTouch: 0
+  splashDamageAmount: 7
   damageRate: 0
   speed: 35
   destroyTime: 3

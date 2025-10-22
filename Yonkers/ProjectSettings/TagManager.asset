@@ -10,6 +10,7 @@ TagManager:
   - Hazard
   - Goal
   - PlayerSpawn
+  - EnemySpawn
   layers:
   - Default
   - TransparentFX
@@ -22,8 +23,8 @@ TagManager:
   - Player Projectile
   - Ground
   - GunCam
-  - 
-  - 
+  - Invincibility
+  - RoomGround
   - 
   - 
   - 

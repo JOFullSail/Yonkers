@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3055553172968508155}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Spike
   m_TagString: Hazard
   m_Icon: {fileID: 0}
@@ -160,6 +160,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Spring
   SpringForce: 45
   emptySpringObject: {fileID: 4786166212392661791}
+  SpringGravityDisable: 0
+  disableGravityTime: 0
+  springDelay: 0.5
 --- !u!114 &1945986269728674660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,8 +177,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Damage
   type: 1
   rb: {fileID: 0}
-  damageAmount: 10
+  damageAmount: 1
   isExplosive: 0
+  respawnUponTouch: 0
   splashDamageAmount: 0
   damageRate: 0
   speed: 0

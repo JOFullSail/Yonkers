@@ -426,7 +426,7 @@ GameObject:
   - component: {fileID: 3204562767139973579}
   - component: {fileID: 8963500617789923217}
   m_Layer: 0
-  m_Name: Flag
+  m_Name: Flag1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -531,7 +531,7 @@ Transform:
   m_GameObject: {fileID: 3935858485702614302}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.01748362, y: -0.020000624, z: -4.285714}
+  m_LocalPosition: {x: 0.843, y: 0.047, z: -3.66}
   m_LocalScale: {x: 0.64516133, y: 0.43478253, z: 1.4285713}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -625,7 +625,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8945952241186597599}
-  - component: {fileID: 6039938281769674073}
+  - component: {fileID: -7247997058439046014}
   - component: {fileID: 685218456068370163}
   - component: {fileID: 7615978958632682496}
   - component: {fileID: 7253644613564546440}
@@ -656,7 +656,7 @@ Transform:
   - {fileID: 4203953672085592512}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6039938281769674073
+--- !u!114 &-7247997058439046014
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -665,17 +665,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5768369631922602247}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c71ede7a758f55b4d93f5501cb1e712f, type: 3}
+  m_Script: {fileID: 11500000, guid: 3f0f6390e41e9844b800f9be85a647ea, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
-  spawnPos: {fileID: 400310729633354431}
-  objects:
-  - {fileID: 7190851151776844575}
-  - {fileID: 8963500617789923217}
-  - {fileID: 6050583258555062114}
-  newMaterial: {fileID: 2100000, guid: aad994bd4b0baf6408cbc6b8f54b8bfe, type: 2}
-  canRevertMaterial: 0
-  materialDuration: 2
+  m_EditorClassIdentifier: Assembly-CSharp::checkpoint
+  MainFlagObject: {fileID: 5768369631922602247}
 --- !u!33 &685218456068370163
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -765,7 +758,7 @@ GameObject:
   - component: {fileID: 7544200991160162405}
   - component: {fileID: 6050583258555062114}
   m_Layer: 0
-  m_Name: Flag
+  m_Name: Flag2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
