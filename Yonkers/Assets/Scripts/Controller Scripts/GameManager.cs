@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public PlayerController playerScript;
     public GameObject goalObject;
+    public GameObject MainCamera;
+    public CameraController CameraScript;
 
     public bool isPaused;
 
@@ -37,8 +39,10 @@ public class GameManager : MonoBehaviour
         playerSpawn = GameObject.FindWithTag("PlayerSpawn");
         playerSpawnOrig = playerSpawn;
         goalObject = GameObject.FindWithTag("Goal");
+        MainCamera = GameObject.FindWithTag("MainCamera");
+        CameraScript = MainCamera.GetComponent<CameraController>();
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (playerScript.DebugSpawnAtCamera)
         {
             if (playerSpawn != null)
