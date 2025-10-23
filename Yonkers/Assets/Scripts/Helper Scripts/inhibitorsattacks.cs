@@ -3,7 +3,7 @@ using System.Collections;
 
 public class NewMonoBehaviourScript : MonoBehaviour
 {
-    enum InhibitType { freeze, slowdown, invert, blind}
+    enum InhibitType { freeze, invert, blind}
 
     [SerializeField] InhibitType Inhibitor;
     [SerializeField] Rigidbody rb;
@@ -12,10 +12,6 @@ public class NewMonoBehaviourScript : MonoBehaviour
     [SerializeField] float delay;
     [SerializeField] float InhibitDuration;
 
-
-
-    int inhibitTime;
-    int inhitbitmax;
     void Start()
     {
         Destroy(gameObject, destroytime);
@@ -41,19 +37,20 @@ public class NewMonoBehaviourScript : MonoBehaviour
             {
                 GameManager.instance.playerScript.freezeTimer = 0;
                 GameManager.instance.playerScript.freezeLockout = InhibitDuration;
-                Debug.Log("Froze Player");
 
                 //Zero player movement - What I want is to have access to the players movement and turing it to zero or stop him from moving for a small while.
             }
 
-            if(Inhibitor == InhibitType.slowdown)
+            if(Inhibitor == InhibitType.invert)
             {
+                GameManager.instance.playerScript.invert();
                 //divide playermovement by two - Take the player speed and divide it by two to slow him down.
             }
 
             if(Inhibitor == InhibitType.blind)
             {
-               // GameManager.instance.playerScript.Blind();
+                 GameManager.instance.playerScript.Blind();
+                Debug.Log("Blinded");
                 //Activate a panel for a few seconds to blind the player
             }
          

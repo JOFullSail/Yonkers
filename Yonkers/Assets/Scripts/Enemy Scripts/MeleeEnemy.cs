@@ -11,7 +11,7 @@ public class MeleeEnemy : EnemyAI
     [SerializeField] float meleeDelay;
     [SerializeField] float dashSpeed;
     [SerializeField] float targetDistance; //This is how far the enemy raycast will be to detect the player's last position
-    [SerializeField] float damageReach;
+    [SerializeField] float reach;
     [SerializeField] bool diesonimpact;
     [SerializeField] AudioSource aud;
     [SerializeField] AudioClip[] audPunch;

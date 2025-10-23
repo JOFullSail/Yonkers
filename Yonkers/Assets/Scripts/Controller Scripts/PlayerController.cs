@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+
 
 public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 {
@@ -96,6 +96,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool knockbacked; 
     bool GravityON; //true = gravity active // false = gravity disabled *MAINLY FOR SPRINGS DON'T USE FOR KNOCKBACK THINGS*
     bool frozenOn; //false = not frozen //true = frozen
+    public bool invertMove;
     //Floats
     public float gravityOffTimer; // Used to time a duration of having no gravity.
     public float gravityLockout = 0; //amount of time gravity is disabled
@@ -103,8 +104,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     public float freezeLockout = 0;//amount of time player is disabled         <
     float freezeDelaytimer; //used to know when you can be frozen again. 
     float knockbackTimer;      // Used to know when to start losing knockback.
-
     public float blindDuration;
+    public float invertDuration;
 
 
     float jumpTimer;
@@ -549,6 +550,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void moveLike()// Main way the player moves
     {
         //V2
+        if(invertMove == true)
+        {
+            currentSpeedX = -currentSpeedX;
+            currentSpeedZ = -currentSpeedZ;
+        }
+
         if (GravityON == false) //if gravity is off you can only have knockback, no inputs allowed!
         {
             controller.Move(knockback * Time.deltaTime);
@@ -560,6 +567,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         else if (Input.GetButton("UP") == false && Input.GetButton("DOWN") == false && Input.GetButton("LEFT") == false && Input.GetButton("RIGHT") == false)
         {
             controller.Move((((momentumDirX * currentSpeedX) + (momentumDirZ * currentSpeedZ)) + (knockback)) * Time.deltaTime);
+        }
+
+        if (invertMove == true)
+        {
+            currentSpeedX = -currentSpeedX;
+            currentSpeedZ = -currentSpeedZ;
         }
     }
 
@@ -1125,10 +1138,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             if (freezeTimer < freezeLockout)
             {
+                GameManager.instance.webScreen.SetActive(true);
                 FrozenOn = true;
             }
             else
             {
+                GameManager.instance.webScreen.SetActive(false);
                 FrozenOn = false;
                 freezeDelaytimer = 0;
             }
@@ -1173,6 +1188,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         GameManager.instance.blindScreen.SetActive(true);
         yield return new WaitForSeconds(blindDuration);
         GameManager.instance.blindScreen.SetActive(false);
+    }
     void _Invincibility_()
     {
         if (InvincibilityTimer < InvincibilityDuration)
@@ -1183,6 +1199,20 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             GameManager.instance.player.layer = 3;
         }
+    }
+
+    public void invert()
+    {
+        StartCoroutine(InvertTime());
+    }
+
+    IEnumerator InvertTime()
+    {
+        invertMove = true;
+        GameManager.instance.hypnoScreen.SetActive(true);
+        yield return new WaitForSeconds(invertDuration);
+        invertMove = false;
+        GameManager.instance.hypnoScreen.SetActive(false);
     }
 }
 

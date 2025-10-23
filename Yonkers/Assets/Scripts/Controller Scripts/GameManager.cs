@@ -18,9 +18,11 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public PlayerController playerScript;
     public GameObject goalObject;
-    public GameObject blindScreen;
     public GameObject MainCamera;
     public CameraController CameraScript;
+    public GameObject blindScreen;
+    public GameObject hypnoScreen;
+    public GameObject webScreen;
 
     public bool isPaused;
 
