@@ -25,7 +25,8 @@ MonoBehaviour:
   hitscanShootDamage: 5
   hitscanShootDist: 1000
   hitEffect: {fileID: 1301697207402410478, guid: 39f852c28f9c3fd45a427c24f3564ba7, type: 3}
-  shootSound: []
+  shootSound:
+  - {fileID: 8300000, guid: 6b7dceaee6092bb4d8db21f821387f08, type: 3}
   shootSoundVol: 0
   positionWhenHeld: {x: 0.2850304, y: -0.2229996, z: 0.4335518}
   rotationWhenHeld: {x: -89.98, y: 0, z: 0}

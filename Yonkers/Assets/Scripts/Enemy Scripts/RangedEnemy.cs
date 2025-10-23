@@ -6,6 +6,9 @@ public class RangedEnemy : EnemyAI
     [SerializeField] GameObject projectile;
     [SerializeField] Transform shootPos;
     [SerializeField] float delayBetweenShots;
+    [SerializeField] AudioSource audEn;
+    [SerializeField] AudioClip[] audShoot;
+    [Range(0, 1)][SerializeField] float audShootVol;
     float shotTimer;
 
     bool playerInWeaponRange;
@@ -28,5 +31,6 @@ public class RangedEnemy : EnemyAI
         animator.SetTrigger("Shoot");
         shotTimer = 0;
         Instantiate(projectile, shootPos.position, transform.rotation);
+        audEn.PlayOneShot(audShoot[Random.Range(0, audShoot.Length)], audShootVol);
     }
 }

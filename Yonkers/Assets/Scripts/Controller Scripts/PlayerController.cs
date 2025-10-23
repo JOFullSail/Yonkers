@@ -82,6 +82,21 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] bool debugFastClimb;
     [Tooltip("Sets the player's climb speed.\n\n- Gravity will not pull you down as fast with high values.")]
     [SerializeField] float debugClimbSpeed = 50f;
+
+    [Header("Audio")]
+    [SerializeField] AudioSource aud;
+    [SerializeField] AudioClip[] audJump;
+    [Range(0, 1)][SerializeField] float audJumpVol;
+    [SerializeField] AudioClip[] audHurt;
+    [Range(0, 1)][SerializeField] float audHurtVol;
+    [SerializeField] AudioClip[] audSteps;
+    [Range(0, 1)][SerializeField] float audStepsVol;
+    [SerializeField] AudioClip[] audDash;
+    [Range(0, 1)][SerializeField] float audDashVol;
+    [SerializeField] AudioClip[] audSpawn;
+    [Range(0, 1)][SerializeField] float audSpawnVol;
+    [SerializeField] AudioClip[] audGun; //mainly for the reload since it's player side //NEW NOTE: this could be a gun specific thing!
+    [Range(0, 1)][SerializeField] float audGunVol;
     //RayCast
     RaycastHit hit;
     //Ints
@@ -97,6 +112,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool GravityON; //true = gravity active // false = gravity disabled *MAINLY FOR SPRINGS DON'T USE FOR KNOCKBACK THINGS*
     bool frozenOn; //false = not frozen //true = frozen
     public bool invertMove;
+    bool isplayingsteps;
     //Floats
     public float gravityOffTimer; // Used to time a duration of having no gravity.
     public float gravityLockout = 0; //amount of time gravity is disabled
@@ -219,6 +235,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         speedAccelOrig = currentSpeedAccelX;
         isDashing = false;
         GravityON = true;
+        isplayingsteps = false;
+        invertMove = false;
         if (debugFastClimb) climbSpeed = debugClimbSpeed;
     }
 
@@ -295,7 +313,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 ++jumpCount;
             }
-
+            aud.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
             isJumping = true;
         }
     }
@@ -353,7 +371,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (Input.GetButton("Fire1") && gunList.Count > 0 && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate)
         {
             shootApplyDamage();
-
+            aud.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
             // For special guns
             if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
             {
@@ -381,9 +399,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         if (Input.GetButtonDown("Reload") && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0)
         {
+            aud.PlayOneShot(audGun[Random.Range(0, audGun.Length)], audGunVol);
             int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
             gunList[gunListIdx].ammoReserves -= (gunList[gunListIdx].ammoMax - gunList[gunListIdx].ammoCurrent);
             gunList[gunListIdx].ammoCurrent = ammoToLoad;
+
+
         }
     }
 
@@ -885,6 +906,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     currentDashSpeedZ = dashSpeed;
                 }
+                aud.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
                 StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
             }
         }
@@ -1017,6 +1039,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         else if (controller.isGrounded)
         {
             //Debug.Log("On Floor");
+            if (((currentSpeedX > 1 || currentSpeedX < -1) || ( currentSpeedZ > 1 || currentSpeedZ < -1)) && isplayingsteps == false)
+            {
+                StartCoroutine(playStep());
+            }
+
             playerVel.y = -(0.001f);
             jumpCount = 0;
         }
@@ -1160,6 +1187,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             controller.enabled = false;
             controller.transform.position = GameManager.instance.playerSpawn.transform.position;
             controller.transform.rotation = GameManager.instance.playerSpawn.transform.localRotation;
+            aud.PlayOneShot(audSpawn[Random.Range(0, audSpawn.Length)], audSpawnVol);
             controller.enabled = true;
         }
 
@@ -1213,6 +1241,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         yield return new WaitForSeconds(invertDuration);
         invertMove = false;
         GameManager.instance.hypnoScreen.SetActive(false);
+    }
+    IEnumerator playStep()
+    {
+        isplayingsteps = true;
+        aud.PlayOneShot(audSteps[Random.Range(0, audSteps.Length)], audStepsVol);
+
+            yield return new WaitForSeconds(0.3f);
+
+        isplayingsteps = false;
     }
 }
 
