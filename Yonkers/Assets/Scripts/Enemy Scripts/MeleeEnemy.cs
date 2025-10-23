@@ -66,7 +66,6 @@ public class MeleeEnemy : EnemyAI
 
             animator.SetTrigger("Attack");
             Debug.Log("Ouch!!!");
-            aud.PlayOneShot(audPunch[Random.Range(0, audPunch.Length)], audPunchVol);
             GameManager.instance.playerScript.Knockbacked = true;
             audEn.PlayOneShot(audPunch[Random.Range(0, audPunch.Length)], audPunchVol);
             GameManager.instance.playerScript.applyPushback(totalPunch);
