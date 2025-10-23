@@ -485,14 +485,17 @@ MonoBehaviour:
   explosionPrefab: {fileID: 0}
   explosionDamage: 0
   room: {fileID: 0}
-  enemyPOS: {fileID: 3190504052256248743, guid: 11760a919a702ba4581e3fe10da7af0a, type: 3}
-  upwardforce: 40
+  enemyPOS: {fileID: 0}
+  pushForce: 30
   meleeDamage: 1
   meleeDelay: 2
-  dashDistance: 10
   dashSpeed: 8
   targetDistance: 25
   reach: 2
+  diesonimpact: 0
+  aud: {fileID: 0}
+  audPunch: []
+  audPunchVol: 0
 --- !u!135 &8694716728194900333
 SphereCollider:
   m_ObjectHideFlags: 0
