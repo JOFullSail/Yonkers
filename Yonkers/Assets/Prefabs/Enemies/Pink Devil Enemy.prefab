@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 6481507201461103199}
   m_Layer: 6
   m_Name: Pink Devil Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -50,7 +50,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   model: {fileID: 9211244660900718742}
+  animator: {fileID: 0}
   agent: {fileID: 6481507201461103199}
+  headPos: {fileID: 0}
   HP: 6
   FOV: 180
   baseMoveSpeed: 15
@@ -76,6 +78,7 @@ MonoBehaviour:
   enrageSpeedIncrease: 0
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
   explosionDamage: 0
+  room: {fileID: 0}
   projectile: {fileID: 4092872357349286730, guid: 94706be9cfa2f2d4b8593c6576516cee, type: 3}
   shootPos: {fileID: 7444368081967920542}
   delayBetweenShots: 1

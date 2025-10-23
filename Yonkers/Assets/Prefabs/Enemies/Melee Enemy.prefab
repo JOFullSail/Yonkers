@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 5674799451293093876}
   m_Layer: 0
   m_Name: Melee Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -464,7 +464,7 @@ MonoBehaviour:
   baseMoveSpeed: 10
   canMove: 1
   canRotate: 1
-  canRoam: 0
+  canRoam: 1
   alwaysRoaming: 0
   randomizeRoamTime: 0
   facingWhileRoaming: 0
@@ -484,6 +484,7 @@ MonoBehaviour:
   enrageSpeedIncrease: 0
   explosionPrefab: {fileID: 0}
   explosionDamage: 0
+  room: {fileID: 0}
   enemyPOS: {fileID: 3190504052256248743, guid: 11760a919a702ba4581e3fe10da7af0a, type: 3}
   upwardforce: 40
   meleeDamage: 1

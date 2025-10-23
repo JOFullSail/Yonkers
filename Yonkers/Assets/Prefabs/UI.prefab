@@ -3176,7 +3176,13 @@ MonoBehaviour:
   player: {fileID: 0}
   playerScript: {fileID: 0}
   goalObject: {fileID: 0}
+  MainCamera: {fileID: 0}
+  CameraScript: {fileID: 0}
+  blindScreen: {fileID: 8776983562900730942, guid: 65253a87d55477d4b95f3c38e3b9e852, type: 3}
+  hypnoScreen: {fileID: 5658346767865897733, guid: eef845be00cd7f242b1f4986a0f031d9, type: 3}
+  webScreen: {fileID: 7526445377226203194, guid: c1c5751dbdf0e2a41bba900676451d1c, type: 3}
   isPaused: 0
+  playerSpawnOrig: {fileID: 0}
 --- !u!1 &8222915305709388943
 GameObject:
   m_ObjectHideFlags: 0

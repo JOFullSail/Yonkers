@@ -4,9 +4,9 @@ public class RoomScript : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    [SerializeField] GameObject door1;
+    public GameObject door1;
     [SerializeField] GameObject[] Enemy;
-    [SerializeField] GameObject InvisWalls;
+    public GameObject InvisWalls;
     [SerializeField] int MaxEnemy;
     [SerializeField] float spawnRate;
     [SerializeField] Transform[] spawnPos;
@@ -37,10 +37,12 @@ public class RoomScript : MonoBehaviour
     }
     void spawn()
     {
-        int SpawnarrayPos = Random.Range(0, spawnPos.Length);
+        int SpawnarrayPos = Random.Range(0, spawnPos.Length); 
         int EnemyarrayPos = Random.Range(0, Enemy.Length);
         GameObject EnemyClone = Instantiate(Enemy[EnemyarrayPos], spawnPos[SpawnarrayPos].position, spawnPos[SpawnarrayPos].rotation);
         EnemyClone.GetComponent<EnemyAI>().room = this;
+
+
         spawnTimer = 0;
         enemyCounttotal++;
     }
@@ -55,8 +57,14 @@ public class RoomScript : MonoBehaviour
     }
     void RoomState(bool state)
     {
+        if(door1!= null)
+        {
         door1.SetActive(state);
+        }
+        if(InvisWalls != null)
+        {
         InvisWalls.SetActive(state);
+        }
     }
     public void UpdateEnemyCount(int amount)
     {
