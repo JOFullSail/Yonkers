@@ -13,7 +13,7 @@ public class MeleeEnemy : EnemyAI
     [SerializeField] float targetDistance; //This is how far the enemy raycast will be to detect the player's last position
     [SerializeField] float reach;
     [SerializeField] bool diesonimpact;
-    [SerializeField] AudioSource aud;
+    [SerializeField] AudioSource audEn;
     [SerializeField] AudioClip[] audPunch;
     [Range(0, 1)][SerializeField] float audPunchVol;
 
@@ -66,8 +66,8 @@ public class MeleeEnemy : EnemyAI
 
             animator.SetTrigger("Attack");
             Debug.Log("Ouch!!!");
-            aud.PlayOneShot(audPunch[Random.Range(0, audPunch.Length)], audPunchVol);
             GameManager.instance.playerScript.Knockbacked = true;
+            audEn.PlayOneShot(audPunch[Random.Range(0, audPunch.Length)], audPunchVol);
             GameManager.instance.playerScript.applyPushback(totalPunch);
             GameManager.instance.playerScript.takeDamage(meleeDamage);
             punched = true;

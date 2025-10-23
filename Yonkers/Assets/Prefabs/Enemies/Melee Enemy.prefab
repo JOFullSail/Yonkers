@@ -494,7 +494,7 @@ MonoBehaviour:
   targetDistance: 25
   reach: 2
   diesonimpact: 0
-  aud: {fileID: -1201055083429867957}
+  audEn: {fileID: -1201055083429867957}
   audPunch:
   - {fileID: 8300000, guid: b8cc333d7b8157346bf7df9953079973, type: 3}
   audPunchVol: 0.6

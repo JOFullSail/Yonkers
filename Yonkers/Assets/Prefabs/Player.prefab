@@ -92,7 +92,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1023
+    m_Bits: 15359
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -341,9 +341,9 @@ MonoBehaviour:
   ignoreClimbing:
     serializedVersion: 2
     m_Bits: 472
-  HP: 4
+  HP: 10
   freezeDelay: 0.5
-  InvincibilityDuration: 2.5
+  InvincibilityDuration: 0.5
   jumpSpeed: 12
   jumpMaxCount: 2
   jumpGracePeriod: 0.175
@@ -365,7 +365,7 @@ MonoBehaviour:
   minDeaccel: 50
   maxDeaccel: 50
   speedDeaccelRate: 50
-  dashCarryOver: 1
+  dashCarryOver: 0
   dashSpeed: 20
   dashLength: 0.3
   dashCooldown: 1

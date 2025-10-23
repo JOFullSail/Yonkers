@@ -10,6 +10,9 @@ public class RoomScript : MonoBehaviour
     [SerializeField] int MaxEnemy;
     [SerializeField] float spawnRate;
     [SerializeField] Transform[] spawnPos;
+    AudioSource AudDoorSource; //make sure door has audio source that's 3D!
+    [SerializeField] AudioClip[] audDoor; 
+    [Range(0, 1)][SerializeField] float audDoorVol;
     int currenemyCount;
     int enemyCounttotal;
     float spawnTimer;
@@ -20,6 +23,7 @@ public class RoomScript : MonoBehaviour
     {
         startspawning = false;
         hasentered = false;
+        AudDoorSource = door1.GetComponent(typeof(AudioSource)) as AudioSource;
     }
 
     // Update is called once per frame
@@ -71,6 +75,7 @@ public class RoomScript : MonoBehaviour
         currenemyCount += amount;
         if (currenemyCount <= 0)
         {
+            AudDoorSource.PlayOneShot(audDoor[Random.Range(0, audDoor.Length)], audDoorVol);
             RoomState(false);
             startspawning = false;
         }
