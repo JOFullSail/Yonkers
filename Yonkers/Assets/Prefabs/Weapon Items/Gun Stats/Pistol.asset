@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GunStats
   gunModel: {fileID: 4873880299464486465, guid: 195c32f0d92a8b6448eaeef2bdff01a7, type: 3}
   shootRate: 0.5
-  ammoCurrent: 0
+  ammoCurrent: 3
   ammoMax: 10
-  ammoReserves: 999
+  ammoReserves: 953
   recoilToCamera: 0
   recoilToUser: 0
   isSpecial: 0

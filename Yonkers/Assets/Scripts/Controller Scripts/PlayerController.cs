@@ -3,7 +3,6 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-
 public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 {
     [SerializeField] CharacterController controller;
@@ -108,7 +107,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool isClimbing;
     bool isJumping;
     bool isInRagdoll;
-    bool knockbacked; 
+    bool knockbacked;
     bool GravityON; //true = gravity active // false = gravity disabled *MAINLY FOR SPRINGS DON'T USE FOR KNOCKBACK THINGS*
     bool frozenOn; //false = not frozen //true = frozen
     public bool invertMove;
@@ -246,7 +245,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
 
-        if(!GameManager.instance.isPaused)
+        if (!GameManager.instance.isPaused)
         {
             timers();
             shoot();
@@ -255,7 +254,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     }
 
     void playerMovement()
-    {        
+    {
         _Invincibility_();
         knockbackMovement();
         Frozen(); //checking if you're frozen
@@ -334,22 +333,45 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 dmg.takeDamage(shootDmg);
             }
         }
-        else if(projectile != null && !weaponIsHitscan)
+        else if (projectile != null && !weaponIsHitscan)
             Instantiate(projectile, Camera.main.transform.position, Camera.main.transform.rotation);
     }
 
     public void takeDamage(int amount)
     {
-        if(GameManager.instance.player.layer == 3)
-        {
+        if (GameManager.instance.player.layer == 3)
+        { 
             HP -= amount;
             InvincibilityTimer = 0;
+            updatePlayerUI();
+            StartCoroutine(flashDmgScreen());
+            aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
         }
 
         if (HP <= 0)
         {
             GameManager.instance.youDied();
         }
+    }
+
+    IEnumerator flashDmgScreen()
+    {
+        float dmgScreenTimer = 0f;
+
+        Color colorOrig = GameManager.instance.playerDamageScreen.color;
+
+        colorOrig = GameManager.instance.playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0.3922f);
+
+        while (dmgScreenTimer < InvincibilityDuration)
+        {
+            float a = Mathf.Lerp(0.3922f, 0f, dmgScreenTimer / InvincibilityDuration);
+
+            GameManager.instance.playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, a);
+            dmgScreenTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        GameManager.instance.playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0f);
     }
 
     void timers()
@@ -388,6 +410,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 }
 
             }
+
+            updatePlayerUI();
         }
 
 
@@ -404,7 +428,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             gunList[gunListIdx].ammoReserves -= (gunList[gunListIdx].ammoMax - gunList[gunListIdx].ammoCurrent);
             gunList[gunListIdx].ammoCurrent = ammoToLoad;
 
-
+            updatePlayerUI();
         }
     }
 
@@ -433,6 +457,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             gunModel.GetComponent<MeshFilter>().sharedMesh = gunList[gunListIdx].gunModel.GetComponent<MeshFilter>().sharedMesh;
             gunModel.GetComponent<MeshRenderer>().sharedMaterial = gunList[gunListIdx].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
         }
+
+        updatePlayerUI();
     }
 
     void switchGun()
@@ -571,7 +597,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void moveLike()// Main way the player moves
     {
         //V2
-        if(invertMove == true)
+        if (invertMove == true)
         {
             currentSpeedX = -currentSpeedX;
             currentSpeedZ = -currentSpeedZ;
@@ -630,10 +656,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     {
                         currentSpeedDeaccelX = speedDeaccelOrig;
                         currentSpeedX += currentSpeedAccelX;
-                        if (currentSpeedX < speedZero) 
+                        if (currentSpeedX < speedZero)
                         {
                             currentSpeedX = 0;
-                        } 
+                        }
                         else if (currentSpeedAccelX < maxAccel) //Aceel ramp
                         {
                             currentSpeedAccelX += speedAccelRate * Time.deltaTime;
@@ -1039,7 +1065,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         else if (controller.isGrounded)
         {
             //Debug.Log("On Floor");
-            if (((currentSpeedX > 1 || currentSpeedX < -1) || ( currentSpeedZ > 1 || currentSpeedZ < -1)) && isplayingsteps == false)
+            if (((currentSpeedX > 1 || currentSpeedX < -1) || (currentSpeedZ > 1 || currentSpeedZ < -1)) && isplayingsteps == false)
             {
                 StartCoroutine(playStep());
             }
@@ -1062,26 +1088,26 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void knockbackMovement()
     {
 
-                if (isInRagdoll && knockbacked)
-            {
-                movementResetFull();
-                playerVel.y = pushBack.y;
-                knockback.z = pushBack.z;
-                knockback.x = pushBack.x;
-                knockbackTimer = 0;
-                knockbacked = false;
-                pushBack = Vector3.zero;
-            }
-            else if (knockbacked)
-            {
-                playerVel.y = pushBack.y;
-                knockback.z = pushBack.z;
-                knockback.x = pushBack.x;
-                knockbackTimer = 0;
-                knockbacked = false;
-                pushBack = Vector3.zero;
-            }
-            // Appying forces when hit
+        if (isInRagdoll && knockbacked)
+        {
+            movementResetFull();
+            playerVel.y = pushBack.y;
+            knockback.z = pushBack.z;
+            knockback.x = pushBack.x;
+            knockbackTimer = 0;
+            knockbacked = false;
+            pushBack = Vector3.zero;
+        }
+        else if (knockbacked)
+        {
+            playerVel.y = pushBack.y;
+            knockback.z = pushBack.z;
+            knockback.x = pushBack.x;
+            knockbackTimer = 0;
+            knockbacked = false;
+            pushBack = Vector3.zero;
+        }
+        // Appying forces when hit
 
         // How to move the player based on your bool and if you're in ragdoll right now
         if (knockbackOnly && isInRagdoll)
@@ -1103,7 +1129,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
             }
-            if(knockback.z < 0.5f && knockback.z > -0.5f)
+            if (knockback.z < 0.5f && knockback.z > -0.5f)
             {
                 knockback.z = 0;
             }
@@ -1202,7 +1228,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (resetHealth)
         {
             HP = hpOrig;
-            // Reset UI Health function
+            updatePlayerUI();
         }
     }
 
@@ -1247,9 +1273,21 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         isplayingsteps = true;
         aud.PlayOneShot(audSteps[Random.Range(0, audSteps.Length)], audStepsVol);
 
-            yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.3f);
 
         isplayingsteps = false;
+    }
+
+    public void updatePlayerUI()
+    {
+        GameManager.instance.playerHPBar.fillAmount = (float)HP / hpOrig;
+        GameManager.instance.playerHPLabel.text = HP.ToString("F0");
+
+        if (gunList.Count > 0)
+        {
+            GameManager.instance.ammoCurrent.text = gunList[gunListIdx].ammoCurrent.ToString("F0");
+            GameManager.instance.ammoMax.text = gunList[gunListIdx].ammoMax.ToString("F0");
+        }
     }
 }
 

@@ -55,3 +55,6 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 513
+  aud: {fileID: 0}
+  audExplode: []
+  audExplodeVol: 0
