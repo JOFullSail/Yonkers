@@ -3,8 +3,11 @@ using System.Collections;
 
 public class Explosion : MonoBehaviour
 {
-    [Header("VFX")]
+    [Header("FX")]
     [SerializeField] ParticleSystem explosionEffect;
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip[] explosionSound;
+    [Range(0,1)] [SerializeField] float explosionVolume;
 
     [Header("Blast Settings")]
     [SerializeField] float explosionRadius = 5f;
@@ -35,6 +38,15 @@ public class Explosion : MonoBehaviour
             mainModule.stopAction = ParticleSystemStopAction.Destroy;
             Instantiate(explosionEffect, explosionLocation, Quaternion.identity);
         }
+
+        if (audioSource)
+        {
+            int soundToPlay = Random.Range(0, explosionSound.Length);
+            audioSource.PlayOneShot(explosionSound[soundToPlay], explosionVolume);
+            StartCoroutine(cleanupExplosion(explosionSound[soundToPlay].length));
+        }
+        else
+            StartCoroutine(cleanupExplosion(0.5f));
 
         Collider[] cols = Physics.OverlapSphere(explosionLocation, explosionRadius, overlapMask, QueryTriggerInteraction.Ignore);
 
@@ -80,8 +92,12 @@ public class Explosion : MonoBehaviour
                     GameManager.instance.playerScript.RagdollTimeLeft = Mathf.Max(GameManager.instance.playerScript.RagdollTimeLeft, lockTime);
                 }
             }
-
-            Destroy(gameObject);
         }
+    }
+
+    IEnumerator cleanupExplosion(float soundLength)
+    {
+        yield return new WaitForSeconds(soundLength);
+        Destroy(gameObject);
     }
 }
