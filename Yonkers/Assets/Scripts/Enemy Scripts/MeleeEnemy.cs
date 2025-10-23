@@ -63,8 +63,10 @@ public class MeleeEnemy : EnemyAI
 
         if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= reach)
         {
+
             animator.SetTrigger("Attack");
             Debug.Log("Ouch!!!");
+            aud.PlayOneShot(audPunch[Random.Range(0, audPunch.Length)], audPunchVol);
             GameManager.instance.playerScript.Knockbacked = true;
             GameManager.instance.playerScript.applyPushback(totalPunch);
             GameManager.instance.playerScript.takeDamage(meleeDamage);

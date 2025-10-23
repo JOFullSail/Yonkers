@@ -33,7 +33,6 @@ public class Explosion : MonoBehaviour
             ParticleSystem.MainModule mainModule = explosionEffect.main;
 
             mainModule.stopAction = ParticleSystemStopAction.Destroy;
-
             Instantiate(explosionEffect, explosionLocation, Quaternion.identity);
         }
 

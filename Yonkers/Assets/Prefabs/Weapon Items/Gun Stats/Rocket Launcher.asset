@@ -27,7 +27,7 @@ MonoBehaviour:
   hitEffect: {fileID: 0}
   shootSound:
   - {fileID: 8300000, guid: 40e71b0f7bd610849b40f150553f4702, type: 3}
-  shootSoundVol: 0
+  shootSoundVol: 0.5
   positionWhenHeld: {x: 0.2, y: -0.28, z: -0.17}
   rotationWhenHeld: {x: -95.017, y: 15.203, z: -93.746}
   scaleWhenHeld: {x: 1, y: 1, z: 1}

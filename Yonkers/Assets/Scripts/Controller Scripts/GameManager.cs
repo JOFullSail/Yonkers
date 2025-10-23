@@ -1,5 +1,7 @@
+using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,6 +25,12 @@ public class GameManager : MonoBehaviour
     public GameObject blindScreen;
     public GameObject hypnoScreen;
     public GameObject webScreen;
+
+    public Image playerHPBar;
+    public TMP_Text playerHPLabel;
+    public GameObject checkpointLabel;
+    public Image playerDamageScreen;
+    public TMP_Text ammoCurrent, ammoMax;
 
     public bool isPaused;
 

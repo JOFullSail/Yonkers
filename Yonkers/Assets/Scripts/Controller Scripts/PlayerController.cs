@@ -3,7 +3,6 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-
 public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 {
     [SerializeField] CharacterController controller;
@@ -82,6 +81,21 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] bool debugFastClimb;
     [Tooltip("Sets the player's climb speed.\n\n- Gravity will not pull you down as fast with high values.")]
     [SerializeField] float debugClimbSpeed = 50f;
+
+    [Header("Audio")]
+    [SerializeField] AudioSource aud;
+    [SerializeField] AudioClip[] audJump;
+    [Range(0, 1)][SerializeField] float audJumpVol;
+    [SerializeField] AudioClip[] audHurt;
+    [Range(0, 1)][SerializeField] float audHurtVol;
+    [SerializeField] AudioClip[] audSteps;
+    [Range(0, 1)][SerializeField] float audStepsVol;
+    [SerializeField] AudioClip[] audDash;
+    [Range(0, 1)][SerializeField] float audDashVol;
+    [SerializeField] AudioClip[] audSpawn;
+    [Range(0, 1)][SerializeField] float audSpawnVol;
+    [SerializeField] AudioClip[] audGun; //mainly for the reload since it's player side //NEW NOTE: this could be a gun specific thing!
+    [Range(0, 1)][SerializeField] float audGunVol;
     //RayCast
     RaycastHit hit;
     //Ints
@@ -93,10 +107,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool isClimbing;
     bool isJumping;
     bool isInRagdoll;
-    bool knockbacked; 
+    bool knockbacked;
     bool GravityON; //true = gravity active // false = gravity disabled *MAINLY FOR SPRINGS DON'T USE FOR KNOCKBACK THINGS*
     bool frozenOn; //false = not frozen //true = frozen
     public bool invertMove;
+    bool isplayingsteps;
     //Floats
     public float gravityOffTimer; // Used to time a duration of having no gravity.
     public float gravityLockout = 0; //amount of time gravity is disabled
@@ -219,6 +234,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         speedAccelOrig = currentSpeedAccelX;
         isDashing = false;
         GravityON = true;
+        isplayingsteps = false;
+        invertMove = false;
         if (debugFastClimb) climbSpeed = debugClimbSpeed;
     }
 
@@ -228,7 +245,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
 
-        if(!GameManager.instance.isPaused)
+        if (!GameManager.instance.isPaused)
         {
             timers();
             shoot();
@@ -237,7 +254,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     }
 
     void playerMovement()
-    {        
+    {
         _Invincibility_();
         knockbackMovement();
         Frozen(); //checking if you're frozen
@@ -295,7 +312,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 ++jumpCount;
             }
-
+            aud.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
             isJumping = true;
         }
     }
@@ -316,22 +333,45 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 dmg.takeDamage(shootDmg);
             }
         }
-        else if(projectile != null && !weaponIsHitscan)
+        else if (projectile != null && !weaponIsHitscan)
             Instantiate(projectile, Camera.main.transform.position, Camera.main.transform.rotation);
     }
 
     public void takeDamage(int amount)
     {
-        if(GameManager.instance.player.layer == 3)
-        {
+        if (GameManager.instance.player.layer == 3)
+        { 
             HP -= amount;
             InvincibilityTimer = 0;
+            updatePlayerUI();
+            StartCoroutine(flashDmgScreen());
+            aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
         }
 
         if (HP <= 0)
         {
             GameManager.instance.youDied();
         }
+    }
+
+    IEnumerator flashDmgScreen()
+    {
+        float dmgScreenTimer = 0f;
+
+        Color colorOrig = GameManager.instance.playerDamageScreen.color;
+
+        colorOrig = GameManager.instance.playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0.3922f);
+
+        while (dmgScreenTimer < InvincibilityDuration)
+        {
+            float a = Mathf.Lerp(0.3922f, 0f, dmgScreenTimer / InvincibilityDuration);
+
+            GameManager.instance.playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, a);
+            dmgScreenTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        GameManager.instance.playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0f);
     }
 
     void timers()
@@ -352,8 +392,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         if (Input.GetButton("Fire1") && gunList.Count > 0 && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate)
         {
-            shootApplyDamage();
 
+            shootApplyDamage();
+            aud.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
             // For special guns
             if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
             {
@@ -370,6 +411,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 }
 
             }
+
+            updatePlayerUI();
         }
 
 
@@ -381,9 +424,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         if (Input.GetButtonDown("Reload") && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0)
         {
+            aud.PlayOneShot(audGun[Random.Range(0, audGun.Length)], audGunVol);
             int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
             gunList[gunListIdx].ammoReserves -= (gunList[gunListIdx].ammoMax - gunList[gunListIdx].ammoCurrent);
             gunList[gunListIdx].ammoCurrent = ammoToLoad;
+
+            updatePlayerUI();
         }
     }
 
@@ -412,6 +458,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             gunModel.GetComponent<MeshFilter>().sharedMesh = gunList[gunListIdx].gunModel.GetComponent<MeshFilter>().sharedMesh;
             gunModel.GetComponent<MeshRenderer>().sharedMaterial = gunList[gunListIdx].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
         }
+
+        updatePlayerUI();
     }
 
     void switchGun()
@@ -550,7 +598,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void moveLike()// Main way the player moves
     {
         //V2
-        if(invertMove == true)
+        if (invertMove == true)
         {
             currentSpeedX = -currentSpeedX;
             currentSpeedZ = -currentSpeedZ;
@@ -609,10 +657,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     {
                         currentSpeedDeaccelX = speedDeaccelOrig;
                         currentSpeedX += currentSpeedAccelX;
-                        if (currentSpeedX < speedZero) 
+                        if (currentSpeedX < speedZero)
                         {
                             currentSpeedX = 0;
-                        } 
+                        }
                         else if (currentSpeedAccelX < maxAccel) //Aceel ramp
                         {
                             currentSpeedAccelX += speedAccelRate * Time.deltaTime;
@@ -885,6 +933,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     currentDashSpeedZ = dashSpeed;
                 }
+                aud.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
                 StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
             }
         }
@@ -1017,6 +1066,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         else if (controller.isGrounded)
         {
             //Debug.Log("On Floor");
+            if (((currentSpeedX > 1 || currentSpeedX < -1) || (currentSpeedZ > 1 || currentSpeedZ < -1)) && isplayingsteps == false)
+            {
+                StartCoroutine(playStep());
+            }
+
             playerVel.y = -(0.001f);
             jumpCount = 0;
         }
@@ -1035,26 +1089,26 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void knockbackMovement()
     {
 
-                if (isInRagdoll && knockbacked)
-            {
-                movementResetFull();
-                playerVel.y = pushBack.y;
-                knockback.z = pushBack.z;
-                knockback.x = pushBack.x;
-                knockbackTimer = 0;
-                knockbacked = false;
-                pushBack = Vector3.zero;
-            }
-            else if (knockbacked)
-            {
-                playerVel.y = pushBack.y;
-                knockback.z = pushBack.z;
-                knockback.x = pushBack.x;
-                knockbackTimer = 0;
-                knockbacked = false;
-                pushBack = Vector3.zero;
-            }
-            // Appying forces when hit
+        if (isInRagdoll && knockbacked)
+        {
+            movementResetFull();
+            playerVel.y = pushBack.y;
+            knockback.z = pushBack.z;
+            knockback.x = pushBack.x;
+            knockbackTimer = 0;
+            knockbacked = false;
+            pushBack = Vector3.zero;
+        }
+        else if (knockbacked)
+        {
+            playerVel.y = pushBack.y;
+            knockback.z = pushBack.z;
+            knockback.x = pushBack.x;
+            knockbackTimer = 0;
+            knockbacked = false;
+            pushBack = Vector3.zero;
+        }
+        // Appying forces when hit
 
         // How to move the player based on your bool and if you're in ragdoll right now
         if (knockbackOnly && isInRagdoll)
@@ -1076,7 +1130,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 knockback.x -= (knockback.x > 0) ? (gravity * Time.deltaTime) : -(gravity * Time.deltaTime);
             }
-            if(knockback.z < 0.5f && knockback.z > -0.5f)
+            if (knockback.z < 0.5f && knockback.z > -0.5f)
             {
                 knockback.z = 0;
             }
@@ -1160,6 +1214,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             controller.enabled = false;
             controller.transform.position = GameManager.instance.playerSpawn.transform.position;
             controller.transform.rotation = GameManager.instance.playerSpawn.transform.localRotation;
+            aud.PlayOneShot(audSpawn[Random.Range(0, audSpawn.Length)], audSpawnVol);
             controller.enabled = true;
         }
 
@@ -1174,7 +1229,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (resetHealth)
         {
             HP = hpOrig;
-            // Reset UI Health function
+            updatePlayerUI();
         }
     }
 
@@ -1213,6 +1268,27 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         yield return new WaitForSeconds(invertDuration);
         invertMove = false;
         GameManager.instance.hypnoScreen.SetActive(false);
+    }
+    IEnumerator playStep()
+    {
+        isplayingsteps = true;
+        aud.PlayOneShot(audSteps[Random.Range(0, audSteps.Length)], audStepsVol);
+
+        yield return new WaitForSeconds(0.3f);
+
+        isplayingsteps = false;
+    }
+
+    public void updatePlayerUI()
+    {
+        GameManager.instance.playerHPBar.fillAmount = (float)HP / hpOrig;
+        GameManager.instance.playerHPLabel.text = HP.ToString("F0");
+
+        if (gunList.Count > 0)
+        {
+            GameManager.instance.ammoCurrent.text = gunList[gunListIdx].ammoCurrent.ToString("F0");
+            GameManager.instance.ammoMax.text = gunList[gunListIdx].ammoMax.ToString("F0");
+        }
     }
 }
 

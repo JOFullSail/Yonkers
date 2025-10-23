@@ -734,13 +734,13 @@ MonoBehaviour:
   HP: 4
   FOV: 180
   baseMoveSpeed: 12
-  canMove: 1
+  canMove: 0
   canRotate: 1
   canRoam: 1
   alwaysRoaming: 0
   randomizeRoamTime: 1
   facingWhileRoaming: 0
-  approachWhenShot: 1
+  approachWhenShot: 0
   damageWhenDelayed: 1
   damageWhenUndetected: 1
   enragesWhenDamaged: 0
@@ -779,7 +779,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 15
+  m_Radius: 45
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!195 &5979280869925726344
 NavMeshAgent:

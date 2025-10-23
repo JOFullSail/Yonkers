@@ -27,6 +27,7 @@ Material:
   m_ValidKeywords:
   - _EMISSION
   - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+  - _SPECULAR_SETUP
   m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
@@ -45,7 +46,8 @@ Material:
     - _Glossiness: 1
     - _SmoothnessTextureChannel: 1
     m_Colors:
-    - _Color: {r: 0.3509434, g: 0.3509434, b: 0.3509434, a: 1}
+    - _BaseColor: {r: 1, g: 0.7638384, b: 0, a: 1}
+    - _Color: {r: 1, g: 0.7638384, b: 0, a: 1}
     - _EmissionColor: {r: 0.5622641, g: 0.35141504, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

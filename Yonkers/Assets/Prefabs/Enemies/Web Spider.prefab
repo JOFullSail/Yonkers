@@ -2085,7 +2085,7 @@ MonoBehaviour:
   enragesWhenDamaged: 0
   explodesOnDeath: 0
   faceTargetSpeed: 5
-  stoppingDistance: 10
+  stoppingDistance: 5
   roamDist: 0
   roamPauseTime: 2
   randomMinRoamTime: 1
@@ -2112,7 +2112,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 3f84ca341c1b1844eb99afcd13998555, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0

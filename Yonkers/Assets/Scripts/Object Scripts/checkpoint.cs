@@ -1,47 +1,86 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class checkpoint : MonoBehaviour
+public class Checkpoint : MonoBehaviour
 {
-    [SerializeField] GameObject MainFlagObject;
-    Renderer flagrender1;
-    Renderer flagrender2;
-    Renderer flagrender3;
+    [SerializeField] Transform spawnPos;
 
-    Color colorOrig1;
-    Color colorOrig2;
-    Color colorOrig3;
+    [Tooltip("Models that will have their materials changed.")]
+    [SerializeField] Renderer[] objects;
+
+    [Tooltip("Material the object will change to when touched.")]
+    [SerializeField] Material newMaterial;
+
+    [Tooltip("Allows the object to revert to the previous material.\n\n" +
+        "- All objects will change to the original material of the first object in the list.\n\n" +
+        "- If disabled, the objects will permanently retain the new material.")]
+    [SerializeField] bool canRevertMaterial;
+
+    [Tooltip("Duration of the new material on the object before it reverts back to the original.")]
+    [SerializeField] float materialDuration = 2f;
+
+    //[Tooltip("Duration of the UI Checkpoint Label before it disappears")]
+    //[SerializeField] float labelDuration;
+
+    bool hasTriggered;
+    Material matOrig;
+
+
     private void Start()
     {
-        GameObject flag = MainFlagObject.transform.Find("Flag").gameObject;
-        flagrender1 = flag.transform.Find("Flag Wrap").GetComponent<Renderer>();
-        flagrender2 = flag.transform.Find("Flag1").GetComponent<Renderer>();
-        flagrender3 = flag.transform.Find("Flag2").GetComponent<Renderer>();
-        colorOrig1 = flagrender1.material.color;
-        colorOrig2 = flagrender2.material.color;
-        colorOrig3 = flagrender3.material.color;
+        if (objects.Length > 0) matOrig = objects[0].material;
+        else Debug.LogWarning("Please assign an object to the Objects array in the checkpoint.");
     }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.isTrigger)
-            return;
-        if (true)
+        if (other.CompareTag("Player") && !hasTriggered)
         {
-            GameManager.instance.playerSpawnOrig.transform.position = transform.position;
-            StartCoroutine(feedback());
+            hasTriggered = true;
+            if (GameManager.instance.playerSpawn != null)
+            {
+                GameManager.instance.playerSpawn.transform.position = spawnPos.transform.position;
+                GameManager.instance.playerSpawn.transform.rotation = spawnPos.transform.rotation;
+                StartCoroutine(feedback());
+
+                if (canRevertMaterial)
+                {
+                    StartCoroutine(flashMaterial());
+                    // UI Label function here
+                }
+                else
+                {
+                    // UI Label function here
+                    foreach (Renderer model in objects)
+                    {
+                        model.material = newMaterial;
+                    }
+                }
+            }
+            else Debug.LogWarning("Please assign an object with the \"PlayerSpawn\" tag to use checkpoints.");
+        }
+    }
+
+    IEnumerator flashMaterial()
+    {
+        foreach (Renderer model in objects)
+        {
+            model.material = newMaterial;
+        }
+
+        yield return new WaitForSeconds(materialDuration);
+
+        foreach (Renderer model in objects)
+        {
+            model.material = matOrig;
         }
     }
 
     IEnumerator feedback()
     {
-        flagrender1.material.color = Color.red;
-        flagrender2.material.color = Color.red;
-        flagrender3.material.color = Color.red;
-        //GameManager.instance.CheckPointPopup.SetActive(true);
-        yield return new WaitForSeconds(0.5f);
-        //GameManager.instance.CheckPointPopup.SetActive(false);
-        flagrender1.material.color = colorOrig1;
-        flagrender2.material.color = colorOrig2;
-        flagrender3.material.color = colorOrig3;
+        GameManager.instance.checkpointLabel.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        GameManager.instance.checkpointLabel.SetActive(false);
     }
 }
