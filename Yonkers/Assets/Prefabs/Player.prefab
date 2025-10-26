@@ -341,7 +341,7 @@ MonoBehaviour:
   ignoreClimbing:
     serializedVersion: 2
     m_Bits: 472
-  HP: 10
+  HP: 4
   freezeDelay: 0.5
   InvincibilityDuration: 0.5
   jumpSpeed: 12
