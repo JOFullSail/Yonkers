@@ -18248,8 +18248,8 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: debugSpawnAtCamera
-      value: 0
+      propertyPath: InvincibilityDuration
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 2701138106116441341, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.x
