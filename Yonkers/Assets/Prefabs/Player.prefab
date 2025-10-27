@@ -343,7 +343,7 @@ MonoBehaviour:
     m_Bits: 472
   HP: 4
   freezeDelay: 0.5
-  InvincibilityDuration: 0.5
+  InvincibilityDuration: 2.5
   jumpSpeed: 12
   jumpMaxCount: 2
   jumpGracePeriod: 0.175
