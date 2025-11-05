@@ -330,6 +330,15 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
         yield return new WaitForSeconds(0.1f);
         model.material.color = colorOrig;
     }
+
+    public void flashBlue()
+    {
+        model.material.color = Color.blueViolet;
+    }
+    public void originalcolor()
+    {
+        model.material.color = colorOrig;
+    }
     protected bool canSeePlayer()
     {
         playerDir = GameManager.instance.player.transform.position - headPos.position;

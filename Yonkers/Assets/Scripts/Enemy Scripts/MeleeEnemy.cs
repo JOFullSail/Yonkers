@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 public class MeleeEnemy : EnemyAI
@@ -9,6 +11,7 @@ public class MeleeEnemy : EnemyAI
     [SerializeField] float pushForce; //
     [SerializeField] int meleeDamage;
     [SerializeField] float meleeDelay;
+    [SerializeField] float meleeRecharge;
     [SerializeField] float dashSpeed;
     [SerializeField] float targetDistance; //This is how far the enemy raycast will be to detect the player's last position
     [SerializeField] float reach;
@@ -20,8 +23,11 @@ public class MeleeEnemy : EnemyAI
     //bool collide;
     //bool attackRange;
     bool Die;
+    bool findingLocal = false;
     bool punched;
+    bool beBlue;
     float attackTimer;
+    float chargeTimer;
     Vector3 playerPosition;
     Vector3 newPushPosition;
     Vector3 dir;
@@ -31,30 +37,54 @@ public class MeleeEnemy : EnemyAI
         playerPosition = GameManager.instance.player.transform.position - transform.position;
         attackTimer += Time.deltaTime;
 
+        if(findingLocal == false)
+        enemyRoutine();
 
-
-        enemyRoutine(); // roamRoutine()
         if (playerDetected && (firstTimeMet && initialAttackDelay <= 0.0f ||
            !firstTimeMet && attackDelayTimer <= 0.0f))
         {
 
-            if (attackTimer > meleeDelay)
+            if (attackTimer > meleeDelay && findingLocal == false)
             {
                 dashattack();
-                transform.position = Vector3.Lerp(transform.position, newPushPosition, Time.deltaTime * dashSpeed);
-                punch(pushForce, (GameManager.instance.player.transform.position - transform.position));
-
-                
+                findingLocal = true;
             }
-            if(punched == true && diesonimpact == true)
+
+            if (punched == true && diesonimpact == true)
             {
                 Destroy(gameObject);
             }
 
         }
+
+        if (findingLocal == true)
+        {
+            if(chargeTimer < meleeRecharge)
+            {
+                flashBlue();
+            }
+
+            chargeTimer += Time.deltaTime;
+            if (chargeTimer >= meleeRecharge)
+            {
+                originalcolor();
+                transform.position = Vector3.Lerp(transform.position, newPushPosition, Time.deltaTime * dashSpeed);
+                punch(pushForce, (GameManager.instance.player.transform.position - transform.position));
+            }
+
+            if (transform.position == Vector3.Lerp(transform.position, newPushPosition, Time.deltaTime * dashSpeed) || punched == true)
+            {
+                punched = false;
+                findingLocal = false;
+                attackTimer = 0;
+                chargeTimer = 0;
+            }
+        }
     }
 
-    void punch(float Force, Vector3 dir)
+
+
+    public void punch(float Force, Vector3 dir)
     {
 
         dir = dir.normalized;
@@ -71,11 +101,13 @@ public class MeleeEnemy : EnemyAI
             GameManager.instance.playerScript.applyPushback(totalPunch);
             GameManager.instance.playerScript.takeDamage(meleeDamage);
             punched = true;
-            attackTimer = 0;
+            //attackTimer = 0;
         }
        
 
     }
+
+   
 
     void dashattack()
     {
@@ -88,9 +120,13 @@ public class MeleeEnemy : EnemyAI
                 dir = transform.forward;
                 newPushPosition = new Vector3(GameManager.instance.player.transform.position.x, transform.position.y, GameManager.instance.player.transform.position.z);
                 Debug.Log("Player Dectected");
+                
             }
 
         }
     }
+    
+  
+
 }
     
