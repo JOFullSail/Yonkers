@@ -10,8 +10,7 @@ public class ButtonFunctions : MonoBehaviour
 
     public void respawn()
     {
-        GameManager.instance.stateUnpause();
-        GameManager.instance.playerScript.respawnPlayer(true, true);
+        GameManager.instance.RespawnFromCheckpoint();
     }
     public void restart()
     {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Damage : MonoBehaviour
 {
@@ -81,7 +82,7 @@ public class Damage : MonoBehaviour
 
                 if (respawnUponTouch)
                 {
-                    GameManager.instance.playerScript.respawnPlayer(true, false);
+                    GameManager.instance.RespawnFromCheckpoint();
                 }
             }
         }
