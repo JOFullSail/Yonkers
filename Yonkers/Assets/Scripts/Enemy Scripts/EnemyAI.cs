@@ -12,6 +12,8 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     [SerializeField] Transform headPos;
 
+    [SerializeField] int scoreValue = 10;
+
     [SerializeField] int HP = 2;
     [Tooltip("Field of view the enemy will have to detect the player.")]
     [SerializeField] int FOV = 90;
@@ -111,10 +113,12 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     protected float stoppingDistanceOrig;
     protected float originalMoveSpeed;
 
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (LevelManager.instance != null)
+            LevelManager.instance.EnemyCount++;
+
         if (room != null)
         {
             room.UpdateEnemyCount(1);
@@ -263,6 +267,14 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
                 if (expl != null)
                     expl.TriggerExplosion(transform.position, explosionDamage);
             }
+
+            if (LevelManager.instance != null)
+            {
+                LevelManager.instance.EnemyCount--;
+                LevelManager.instance.CurrentScore += (float)scoreValue;
+            }
+                
+
             if (room != null)
             {
                 room.UpdateEnemyCount(-1);

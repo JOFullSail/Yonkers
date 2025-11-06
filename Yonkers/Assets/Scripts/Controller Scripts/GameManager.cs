@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuDead;
+    [SerializeField] GameObject menuLevelComplete;
     [SerializeField] GameObject mainMenu;
 
     [SerializeField] bool enableMainMenu = false;
@@ -99,6 +100,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void stateLevelComplete()
+    {
+        statePause();
+        menuActive = menuLevelComplete;
+        menuActive.SetActive(true);
+    }
     public void stateMainMenuOpen()
     {
         isPaused = true;
