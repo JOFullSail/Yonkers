@@ -267,7 +267,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
 
-        if (!GameManager.instance.isPaused)
+        if (!GameManager.instance.isPaused && HP > 0)
         {
             timers();
             shoot();

@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
     public TMP_Text ammoCurrent, ammoMax;
 
     public bool isPaused;
+    private bool isReloadingScene = false;
 
     float timeScaleOrig;
     public GameObject playerSpawnOrig;
@@ -49,19 +51,57 @@ public class GameManager : MonoBehaviour
 
     private const string SaveKey = "PlayerSaveData";
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Serializable]
+    public class SaveData
+    {
+        public int HP;
+        public int selectedGun;
+        public string currentScene;
+        public string lastCheckpointName;
+        public List<GunStatsData> guns = new List<GunStatsData>();
+    }
+
+    [Serializable]
+    public class GunStatsData
+    {
+        public string gunName;
+        public int ammoCurrent;
+        public int ammoReserves;
+    }
+
+    [Serializable]
+    public class PlayerState
+    {
+        public int HP;
+        public string lastScene;
+        public List<GunStatsData> guns = new List<GunStatsData>();
+    }
+
+    // This object lives in memory between scene transitions
+    public PlayerState persistentPlayerState = new PlayerState();
+
     void Awake()
     {
-        instance = this;
-        timeScaleOrig = Time.timeScale;
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+            player = GameObject.FindWithTag("Player");
+            playerScript = player.GetComponent<PlayerController>();
+            playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+            playerSpawnOrig = playerSpawn;
+            goalObject = GameObject.FindWithTag("Goal");
+            MainCamera = GameObject.FindWithTag("MainCamera");
+            CameraScript = MainCamera.GetComponent<CameraController>();
+            timeScaleOrig = Time.timeScale;
 
-        player = GameObject.FindWithTag("Player");
-        playerScript = player.GetComponent<PlayerController>();
-        playerSpawn = GameObject.FindWithTag("PlayerSpawn");
-        playerSpawnOrig = playerSpawn;
-        goalObject = GameObject.FindWithTag("Goal");
-        MainCamera = GameObject.FindWithTag("MainCamera");
-        CameraScript = MainCamera.GetComponent<CameraController>();
+            GetUI();
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
 #if UNITY_EDITOR
         if (playerScript.DebugSpawnAtCamera)
@@ -161,26 +201,19 @@ public class GameManager : MonoBehaviour
         menuActive.SetActive(true);
     }
 
-    public void SaveGame(string checkpointName = "", Vector3 checkpointPos = default)
+    public void SaveGame(string checkpointName = "")
     {
-        if (playerScript = null)
+        if (playerScript == null)
             return;
 
         SaveData data = new SaveData();
         data.HP = playerScript.CurrentHealth;
-        Vector3 pos = playerScript.transform.position;
-        data.posX = pos.x;
-        data.posY = pos.y;
-        data.posZ = pos.z;
         data.selectedGun = playerScript.GunListIndex;
         data.currentScene = SceneManager.GetActiveScene().name;
 
         if (!string.IsNullOrEmpty(checkpointName))
         {
             data.lastCheckpointName = checkpointName;
-            data.checkpointX = checkpointPos.x;
-            data.checkpointY = checkpointPos.y;
-            data.checkpointZ = checkpointPos.z;
         }
 
         foreach (GunStats gun in playerScript.GunList)
@@ -226,7 +259,8 @@ public class GameManager : MonoBehaviour
 
             // Restore player
             playerScript.CurrentHealth = data.HP;
-            playerScript.transform.position = new Vector3(data.posX, data.posY, data.posZ);
+            player.transform.position = playerSpawn.transform.position;
+            player.transform.rotation = playerSpawn.transform.rotation;
 
             // Restore gun list
             playerScript.GunList.Clear();
@@ -263,8 +297,56 @@ public class GameManager : MonoBehaviour
         Debug.Log("Save data cleared.");
     }
 
+    public void SavePlayerToMemory()
+    {
+        if (playerScript == null) return;
+
+        persistentPlayerState.HP = playerScript.CurrentHealth;
+        persistentPlayerState.guns.Clear();
+
+        foreach (GunStats gun in playerScript.GunList)
+        {
+            persistentPlayerState.guns.Add(new GunStatsData
+            {
+                gunName = gun.name,
+                ammoCurrent = gun.ammoCurrent,
+                ammoReserves = gun.ammoReserves
+            });
+        }
+
+        Debug.Log("Player state saved to memory for scene transition.");
+    }
+
+    public void LoadPlayerFromMemory()
+    {
+        if (playerScript == null)
+        {
+            Debug.Log("No memory data to load.");
+            return;
+        }
+
+        playerScript.CurrentHealth = persistentPlayerState.HP;
+        playerScript.GunList.Clear();
+
+        foreach (GunStatsData g in persistentPlayerState.guns)
+        {
+            GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+            gun.ammoCurrent = g.ammoCurrent;
+            gun.ammoReserves = g.ammoReserves;
+            playerScript.GunList.Add(gun);
+        }
+
+        playerScript.GunListIndex = 0;
+        if (playerScript.GunList.Count > 0)
+            playerScript.changeGun();
+        playerScript.updatePlayerUI();
+
+        Debug.Log("Player state restored from memory after scene load.");
+    }
+
     private void OnEnable()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -275,74 +357,116 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        LoadGame();
+        if (isReloadingScene)
+            return;
+
+        isReloadingScene = true;
+
+        Debug.Log($"OnSceneLoaded: {scene.name}");
+
+        // Clear old references
+        player = null;
+        playerScript = null;
+        playerSpawn = null;
+        playerSpawnOrig = null;
+        goalObject = null;
+        MainCamera = null;
+        CameraScript = null;
+
+        // Wait a short delay before relinking
+        StartCoroutine(ReinitializeAfterLoad(scene));
+    }
+
+    public void LoadNextLevel(string nextScene)
+    {
+        SavePlayerToMemory();  // Save to memory first
+        SceneManager.LoadScene(nextScene);  // Then load the new scene
     }
 
     public void RespawnFromCheckpoint()
     {
-        if (!PlayerPrefs.HasKey(SaveKey))
+        playerScript.CurrentHealth = playerScript.OriginalHealth;
+        playerScript.transform.position = playerSpawn.transform.position;
+        playerScript.transform.rotation = playerSpawn.transform.rotation;
+
+        stateUnpause();
+        menuActive = null;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        playerScript.updatePlayerUI();
+
+        Debug.Log("Respawned at last checkpoint.");
+    }
+
+    // For finding inactive elements
+    GameObject FindInactive(string name)
+    {
+        foreach (Transform t in Resources.FindObjectsOfTypeAll<Transform>())
         {
-            Debug.LogWarning("No checkpoint data found. Restarting scene...");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            if (t.hideFlags == HideFlags.None && t.name == name)
+                return t.gameObject;
+        }
+        return null;
+    }
+    private void GetUI()
+    {
+        if (menuPause != null && menuWin != null && menuDead != null && playerHPBar != null)
+            return;
+
+        GameObject uiRoot = GameObject.Find("UI");
+        if (uiRoot == null)
+        {
+            Debug.LogWarning("No UI object found in scene.");
             return;
         }
 
-        try
-        {
-            string encoded = PlayerPrefs.GetString(SaveKey);
-            string json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
-            SaveData data = JsonUtility.FromJson<SaveData>(json);
+        menuPause = FindInactive("Pause Menu");
+        menuWin = FindInactive("Win Menu");
+        menuDead = FindInactive("Lose Menu");
+        mainMenu = FindInactive("Main Menu");
 
-            // Restore player
-            playerScript.CurrentHealth = data.HP;
-            playerScript.transform.position = new Vector3(data.checkpointX, data.checkpointY, data.checkpointZ);
+        playerHPBar = FindInactive("Player HP Fill")?.GetComponent<Image>();
+        playerHPLabel = FindInactive("Player HP Label")?.GetComponent<TMP_Text>();
+        ammoCurrent = FindInactive("Ammo Current")?.GetComponent<TMP_Text>();
+        ammoMax = FindInactive("Ammo Max")?.GetComponent<TMP_Text>();
 
-            // Restore guns
-            playerScript.GunList.Clear();
-            foreach (GunStatsData g in data.guns)
-            {
-                GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
-                gun.ammoCurrent = g.ammoCurrent;
-                gun.ammoReserves = g.ammoReserves;
-                playerScript.GunList.Add(gun);
-            }
+        checkpointLabel = FindInactive("Checkpoint Label");
+        playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();
 
-            playerScript.GunListIndex = data.selectedGun;
-            playerScript.changeGun();
+        Debug.Log("UI linked.");
+    }
+
+    private IEnumerator ReinitializeAfterLoad(Scene scene)
+    {
+        // Wait for the frame to complete
+        yield return new WaitForEndOfFrame();
+
+        // Reacquire key objects
+        player = GameObject.FindWithTag("Player");
+        if (player != null)
+            playerScript = player.GetComponent<PlayerController>();
+
+        playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+        playerSpawnOrig = playerSpawn;
+        goalObject = GameObject.FindWithTag("Goal");
+        MainCamera = GameObject.FindWithTag("MainCamera");
+        if (MainCamera != null)
+            CameraScript = MainCamera.GetComponent<CameraController>();
+
+        // Refresh UI
+        GetUI();
+
+        // Load player data only if the scene changed
+        if (SceneManager.GetActiveScene().name != persistentPlayerState.lastScene)
+            LoadPlayerFromMemory();
+
+        persistentPlayerState.lastScene = SceneManager.GetActiveScene().name;
+
+        if(playerScript != null)
             playerScript.updatePlayerUI();
 
-            // Reset UI
-            stateUnpause();
-            menuActive = null;
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-
-            Debug.Log($"Player respawned at checkpoint '{data.lastCheckpointName}'");
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning("Respawn failed: " + e.Message);
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
+        Debug.Log($"Scene '{scene.name}' initialized.");
+        isReloadingScene = false;
     }
-}
-
-[Serializable]
-public class SaveData
-{
-    public int HP;
-    public float posX, posY, posZ;
-    public int selectedGun;
-    public string currentScene;
-    public string lastCheckpointName;
-    public float checkpointX, checkpointY, checkpointZ;
-    public List<GunStatsData> guns = new List<GunStatsData>();
-}
-
-[Serializable]
-public class GunStatsData
-{
-    public string gunName;
-    public int ammoCurrent;
-    public int ammoReserves;
 }

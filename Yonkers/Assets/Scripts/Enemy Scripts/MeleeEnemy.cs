@@ -31,8 +31,6 @@ public class MeleeEnemy : EnemyAI
         playerPosition = GameManager.instance.player.transform.position - transform.position;
         attackTimer += Time.deltaTime;
 
-
-
         enemyRoutine(); // roamRoutine()
         if (playerDetected && (firstTimeMet && initialAttackDelay <= 0.0f ||
            !firstTimeMet && attackDelayTimer <= 0.0f))

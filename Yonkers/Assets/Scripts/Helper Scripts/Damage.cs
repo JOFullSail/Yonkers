@@ -82,7 +82,8 @@ public class Damage : MonoBehaviour
 
                 if (respawnUponTouch)
                 {
-                    GameManager.instance.RespawnFromCheckpoint();
+                    GameManager.instance.player.transform.position = GameManager.instance.playerSpawn.transform.position;
+                    GameManager.instance.player.transform.rotation = GameManager.instance.playerSpawn.transform.rotation;
                 }
             }
         }

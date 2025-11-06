@@ -1,76 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &722028149123578293
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5533149121505930517}
-  - component: {fileID: 5170266921909074243}
-  m_Layer: 5
-  m_Name: Gamemanager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &5533149121505930517
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 722028149123578293}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7425041027192894116}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5170266921909074243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 722028149123578293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0580092815dddce49b1c163f2a471c72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  menuActive: {fileID: 0}
-  menuPause: {fileID: 5116617714532407684}
-  menuWin: {fileID: 5930702838156305917}
-  menuDead: {fileID: 6164001823537672508}
-  mainMenu: {fileID: 6320162279484417440}
-  enableMainMenu: 0
-  playerSpawn: {fileID: 0}
-  player: {fileID: 0}
-  playerScript: {fileID: 0}
-  goalObject: {fileID: 0}
-  MainCamera: {fileID: 0}
-  CameraScript: {fileID: 0}
-  blindScreen: {fileID: 8776983562900730942, guid: 65253a87d55477d4b95f3c38e3b9e852, type: 3}
-  hypnoScreen: {fileID: 5658346767865897733, guid: eef845be00cd7f242b1f4986a0f031d9, type: 3}
-  webScreen: {fileID: 7526445377226203194, guid: c1c5751dbdf0e2a41bba900676451d1c, type: 3}
-  playerHPBar: {fileID: 2997132204987307188}
-  playerHPLabel: {fileID: 3033297426169517568}
-  checkpointLabel: {fileID: 2738631062152560818}
-  playerDamageScreen: {fileID: 9016361085662505625}
-  ammoCurrent: {fileID: 7086029945292462694}
-  ammoMax: {fileID: 6289445640634729168}
-  isPaused: 0
-  playerSpawnOrig: {fileID: 0}
 --- !u!1 &1228175287208575339
 GameObject:
   m_ObjectHideFlags: 0
@@ -719,7 +648,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5533149121505930517}
   - {fileID: 3057755334565121508}
   - {fileID: 5555404607815237125}
   - {fileID: 3007581953868505223}
