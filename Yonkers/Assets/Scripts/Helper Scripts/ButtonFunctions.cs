@@ -10,6 +10,9 @@ public class ButtonFunctions : MonoBehaviour
 
     public void respawn()
     {
+        if (LevelManager.instance.pointsLostOnRespawn > 0)
+            LevelManager.instance.CurrentScore -= LevelManager.instance.pointsLostOnRespawn;
+
         GameManager.instance.stateUnpause();
         GameManager.instance.playerScript.respawnPlayer(true, true);
     }
