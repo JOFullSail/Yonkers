@@ -1,19 +1,56 @@
 using UnityEngine;
 
+enum PickupType
+{
+    Gun,
+    Health,
+    Ammo
+}
+
 public class Pickup : MonoBehaviour
 {
+    [SerializeField] PickupType type;
+
+    [Header("For Gun Pickups")]
     [SerializeField] GunStats gun;
 
+    [Header("For Ammo Pickups")]
+
+
+    [Header("For Health Pickups")]
+    [SerializeField] int healingAmount = 1;
+
     Vector3 rotation = new Vector3(0, 0, 100);
+
+    private bool wasConsumed = false;
     private void OnTriggerEnter(Collider other)
     {
         IPickup pickup = other.GetComponent<IPickup>();
 
-        if (pickup != null && gun != null)
+        if (pickup != null)
         {
-            gun.ammoCurrent = gun.ammoMax;
-            pickup.GetGunStats(gun);
-            Destroy(gameObject);
+            switch (type)
+            {
+                case PickupType.Gun:
+                    if(gun != null)
+                    {
+                        gun.ammoCurrent = gun.ammoMax;
+                        pickup.GetGunStats(gun);
+                        wasConsumed = true;
+                    }
+                    break;
+
+                case PickupType.Health:
+                    if(GameManager.instance.playerScript.Health < GameManager.instance.playerScript.OriginalHealth)
+                    {
+                        GameManager.instance.playerScript.takeDamage(-healingAmount);
+                        wasConsumed = true;
+                    }
+                    break;
+            }
+
+            if(wasConsumed)
+                Destroy(gameObject);
         }
     }
 

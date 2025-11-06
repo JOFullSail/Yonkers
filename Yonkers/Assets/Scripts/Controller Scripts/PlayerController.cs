@@ -174,6 +174,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //make a toggle for gravity done
     //knockback
 
+    public int Health
+    {
+        get { return HP; }
+        set { HP = value; }
+    }
+
+    public int OriginalHealth
+    {
+        get { return hpOrig; }
+        set { hpOrig = value; }
+    }
     public bool DebugSpawnAtCamera
     {
         get { return debugSpawnAtCamera; }
@@ -344,8 +355,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             HP -= amount;
             InvincibilityTimer = 0;
             updatePlayerUI();
-            StartCoroutine(flashDmgScreen());
-            aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
+            if(amount > 0)
+            {
+                StartCoroutine(flashDmgScreen());
+                aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
+            }
+            else
+            {
+                StartCoroutine(flashHealScreen());
+            }
         }
 
         if (HP <= 0)
@@ -372,6 +390,26 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
 
         GameManager.instance.playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0f);
+    }
+
+    IEnumerator flashHealScreen()
+    {
+        float healScreenTimer = 0f;
+
+        Color colorOrig = GameManager.instance.playerHealScreen.color;
+
+        colorOrig = GameManager.instance.playerHealScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0.3922f);
+
+        while (healScreenTimer < InvincibilityDuration)
+        {
+            float a = Mathf.Lerp(0.3922f, 0f, healScreenTimer / InvincibilityDuration);
+
+            GameManager.instance.playerHealScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, a);
+            healScreenTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        GameManager.instance.playerHealScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0f);
     }
 
     void timers()
