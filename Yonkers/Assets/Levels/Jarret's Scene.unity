@@ -480,14 +480,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
-    - target: {fileID: 5116617714532407684, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6164001823537672508, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7425041027192894116, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -661,14 +653,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4280110503661148695, guid: eae56407171265243acef35f0b6b25ac, type: 3}
-      propertyPath: menuPause
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4280110503661148695, guid: eae56407171265243acef35f0b6b25ac, type: 3}
-      propertyPath: gunDatabase
-      value: 
-      objectReference: {fileID: 11400000, guid: 40f831d6203451941b8cb718dbe291a4, type: 2}
     - target: {fileID: 8548768097155439329, guid: eae56407171265243acef35f0b6b25ac, type: 3}
       propertyPath: m_Name
       value: Gamemanager
