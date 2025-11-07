@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Damage : MonoBehaviour
 {
@@ -86,7 +87,8 @@ public class Damage : MonoBehaviour
 
                 if (respawnUponTouch)
                 {
-                    GameManager.instance.playerScript.respawnPlayer(true, false);
+                    GameManager.instance.player.transform.position = GameManager.instance.playerSpawn.transform.position;
+                    GameManager.instance.player.transform.rotation = GameManager.instance.playerSpawn.transform.rotation;
                 }
             }
 
