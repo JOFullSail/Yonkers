@@ -267,7 +267,6 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
             {
                 room.UpdateEnemyCount(-1);
             }
-            GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
             Destroy(gameObject);
 
         }
