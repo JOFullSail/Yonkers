@@ -89,7 +89,7 @@ public class ActivationEvent : MonoBehaviour
         // Prerequisite Checks
         if (activateScript)
         {
-            if (!eventObject.TryGetComponent<IActivate>(out eventScript))
+            if (!eventObject || !eventObject.TryGetComponent<IActivate>(out eventScript))
             {
                 Debug.LogWarning("No IActivate object attached. Please attach an Object with an \"IActivate\" interface " +
                                  "or turn OFF \"Activate Script\" and attach an event object to \"Event Object.\"");
