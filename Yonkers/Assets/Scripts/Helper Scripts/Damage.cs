@@ -26,6 +26,9 @@ public class Damage : MonoBehaviour
 
     bool isDamaging;
 
+	// Activation Switches
+	bool isPlayerProjectile;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -38,6 +41,8 @@ public class Damage : MonoBehaviour
                 rb.linearVelocity = transform.forward * speed;
             }
         }
+
+		if (LayerMask.NameToLayer("Player Projectile") != -1) isPlayerProjectile = true;
     }
 
     // Update is called once per frame
@@ -53,8 +58,9 @@ public class Damage : MonoBehaviour
     {
         if (other.isTrigger)
             return;
-
+		
         IDamage dmg = other.GetComponent<IDamage>();
+        IActivate act = other.GetComponent<IActivate>();
 
         if (type == damageType.moving || type == damageType.stationary || type == damageType.homing)
         {
@@ -72,9 +78,8 @@ public class Damage : MonoBehaviour
             else if(isExplosive && explosionPrefab == null)
             {
                 Debug.LogWarning(gameObject.name + " is set as being explosive but it doesn't have an explosive prefab assigned.");
-            }
-                
-
+            }   
+            
             if (dmg != null)
             {
                 dmg.takeDamage(damageAmount);
@@ -84,6 +89,11 @@ public class Damage : MonoBehaviour
                     GameManager.instance.playerScript.respawnPlayer(true, false);
                 }
             }
+
+			if (isPlayerProjectile && act != null)
+			{
+				act.activate();
+			}
         }
 
         if (type == damageType.homing || type == damageType.moving || (type == damageType.stationary && isExplosive))

@@ -169,7 +169,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     Vector3 newWallPos;
     Vector3 prevWallNorm;
     Vector3 newWallNorm;
-	float newWallHeight;
+	float newWallHeight = 0f;
 
     // - UNUSED -
     //[SerializeField] Collider slopecheck; // no use yet
@@ -308,7 +308,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         string noClimbTag;
         if (useCanClimbTag) noClimbTag = "CanClimb";
         else noClimbTag = "NoClimb";
-
+        
         if (debugClimbAnything)
         {
             noClimbLayers = 0;
@@ -316,6 +316,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
         else noClimbLayers = ignoreClimbing.value;
         
+        // Wall Vaulting
         if (transform.position.y >= newWallHeight) 
             prevWallNorm = new Vector3(7f, 7f, 7f);
         
@@ -325,18 +326,20 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             // Displays the normal of the object the player is facing.
             Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
             
+            // Storing data of the wall the player is currently facing.
             newWallPos = hit.transform.position;
             newWallPos.y = 0;
             newWallNorm = hit.normal;
 			if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
             
+            // Angle Calculation
             int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
             int wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
 
+            // Conditions 
             bool canBeClimbed;
             if (useCanClimbTag) canBeClimbed = hit.collider.CompareTag(noClimbTag);
             else canBeClimbed = !hit.collider.CompareTag(noClimbTag);
-            
             bool isAboveMinSlope = controller.slopeLimit <= wallAngle;
             bool isBelowMaxSlope = wallAngle <= climbMaxSlopeAngle;
             bool isFallOrClimb = playerVel.y < -1 || isClimbing;
@@ -344,21 +347,23 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             bool isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= climbMinAngleDiff;
             bool climbTimeLeft = climbTimer <= climbDuration;
             
+            // Check for climbing walls
             if ((canBeClimbed && // If it doesn't have the "NoClimb" tag
                 isAboveMinSlope && // Greater than or equal to the max angle a surface can have 
                 isBelowMaxSlope && // Less than or equal to the max angle the player can climb
                 !controller.isGrounded && // If not on the ground
                 isFallOrClimb && // If velocity is less than 1 or if already climbing
-                isAboveMinDiff && // Greater or equal to the minimum angle the new wall needs compared to the previous.
-                notSameWall && climbTimeLeft && gravityOn) || debugClimbAnything && canBeClimbed && isFallOrClimb)
+                isAboveMinDiff && // Greater or equal to the minimum angle the new wall is compared to the previous.
+                notSameWall && climbTimeLeft && gravityOn) || 
+                debugClimbAnything && canBeClimbed && isFallOrClimb) // For debugClimbAnything
             {
                 if (!isClimbing && jumpCount > 0) --jumpCount;
                 playerVel.y = climbSpeed;
                 isClimbing = true;
             }
-            else // No longer climbing
+            else // Not climbing
             {
-                if (!climbTimeLeft /*|| !isAboveMin || !isBelowMax*/)
+                if (!climbTimeLeft)
                 {
                     prevWallPos = newWallPos;
                     prevWallNorm = newWallNorm;
@@ -369,8 +374,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
         else // Not looking at a wall
         {
+            // Triggers only on the first frame
             if (isClimbing)
-            {
+            { 
                 jumpTimer = 0;
                 prevWallPos = newWallPos;
                 prevWallNorm = newWallNorm;
@@ -393,7 +399,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
     }
 
-    void shootApplyDamage()
+    void shootApply()
     {
         shootTimer = 0;
         --gunList[gunListIdx].ammoCurrent;
@@ -404,9 +410,16 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             Instantiate(gunList[gunListIdx].hitEffect, hit.point, Quaternion.identity);
 
             IDamage dmg = hit.collider.GetComponent<IDamage>();
+            IActivate act = hit.collider.GetComponent<IActivate>();  
+            
             if (dmg != null)
             {
                 dmg.takeDamage(shootDmg);
+            }
+
+            if (act != null)
+            {
+                act.activate();
             }
         }
         else if (projectile != null && !weaponIsHitscan)
@@ -472,7 +485,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         if (Input.GetButton("Fire1") && gunList.Count > 0 && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate)
         {
-            shootApplyDamage();
+            shootApply();
             aud.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
             // For special guns
             if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
