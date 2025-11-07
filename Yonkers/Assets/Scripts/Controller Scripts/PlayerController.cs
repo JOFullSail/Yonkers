@@ -191,7 +191,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //make a toggle for gravity done
     //knockback
 
-    public int Health
+    public int CurrentHealth
     {
         get { return HP; }
         set { HP = value; }
@@ -201,6 +201,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         get { return hpOrig; }
         set { hpOrig = value; }
+    }
+
+    public int GunListIndex
+    {
+        get { return gunListIdx; }
+        set { gunListIdx = value; }
     }
     public bool DebugSpawnAtCamera
     {
@@ -243,6 +249,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         get { return frozenOn; }
         set { frozenOn = value; }
+    }
+
+    public List<GunStats> GunList
+    {
+        get { return gunList; }
+        set { gunList = value; }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -571,7 +583,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         changeGun();
     }
 
-    void changeGun()
+    public void changeGun()
     {
         shootDmg = gunList[gunListIdx].hitscanShootDamage;
         shootDist = gunList[gunListIdx].hitscanShootDist;

@@ -1,7 +1,13 @@
+using System;
+using System.Text;
+using System.Collections.Generic;
+using NUnit.Framework;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -34,43 +40,83 @@ public class GameManager : MonoBehaviour
     public TMP_Text ammoCurrent, ammoMax;
 
     public bool isPaused;
+    private bool isReloadingScene = false;
 
     float timeScaleOrig;
     public GameObject playerSpawnOrig;
 
     int gameGoalCount;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Header("Gun Database")]
+    public GunDatabase gunDatabase;
+
+    private const string SaveKey = "PlayerSaveData";
+
+    [Serializable]
+    public class SaveData
+    {
+        public int HP;
+        public int selectedGun;
+        public string currentScene;
+        public string lastCheckpointName;
+        public List<GunStatsData> guns = new List<GunStatsData>();
+    }
+
+    [Serializable]
+    public class GunStatsData
+    {
+        public string gunName;
+        public int ammoCurrent;
+        public int ammoReserves;
+    }
+
+    [Serializable]
+    public class PlayerState
+    {
+        public int HP;
+        public string lastScene;
+        public List<GunStatsData> guns = new List<GunStatsData>();
+    }
+
+    // This object lives in memory between scene transitions
+    public PlayerState persistentPlayerState = new PlayerState();
+
     void Awake()
     {
-        instance = this;
-        timeScaleOrig = Time.timeScale;
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+            player = GameObject.FindWithTag("Player");
+            playerScript = player.GetComponent<PlayerController>();
+            playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+            playerSpawnOrig = playerSpawn;
+            goalObject = GameObject.FindWithTag("Goal");
+            MainCamera = GameObject.FindWithTag("MainCamera");
+            CameraScript = MainCamera.GetComponent<CameraController>();
+            timeScaleOrig = Time.timeScale;
 
-        player = GameObject.FindWithTag("Player");
-        playerScript = player.GetComponent<PlayerController>();
-        playerSpawn = GameObject.FindWithTag("PlayerSpawn");
-        playerSpawnOrig = playerSpawn;
-        goalObject = GameObject.FindWithTag("Goal");
-        MainCamera = GameObject.FindWithTag("MainCamera");
-        CameraScript = MainCamera.GetComponent<CameraController>();
+            GetUI();
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
 #if UNITY_EDITOR
         if (playerScript.DebugSpawnAtCamera)
         {
-            Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
             if (playerSpawn != null)
             {
+                Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
                 playerSpawn.transform.position = cameraTransform.position;
-                playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, cameraTransform.rotation.w);
+                playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
                 playerSpawnOrig = playerSpawn;
             }
-            else
-            {
-                player.transform.position = cameraTransform.position;
-                player.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, cameraTransform.rotation.w);
-            }
+            else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
         }
-    #endif
+#endif
     }
 
     private void Start()
