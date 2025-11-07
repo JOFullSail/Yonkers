@@ -56,14 +56,18 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         if (playerScript.DebugSpawnAtCamera)
         {
+            Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
             if (playerSpawn != null)
             {
-                Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
                 playerSpawn.transform.position = cameraTransform.position;
-                playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
+                playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, cameraTransform.rotation.w);
                 playerSpawnOrig = playerSpawn;
             }
-            else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
+            else
+            {
+                player.transform.position = cameraTransform.position;
+                player.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, cameraTransform.rotation.w);
+            }
         }
     #endif
     }
