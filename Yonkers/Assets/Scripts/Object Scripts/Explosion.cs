@@ -67,6 +67,13 @@ public class Explosion : MonoBehaviour
             {
                 dmg.takeDamage(splashDamage);
             }
+            
+            // Activation Switches
+            IActivate act = col.GetComponentInParent<IActivate>();
+            if (act != null)
+            {
+                act.activate();
+            }
 
             // Pushback
             IPushback pb = col.GetComponentInParent<IPushback>();
