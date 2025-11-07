@@ -41,7 +41,7 @@ public class Pickup : MonoBehaviour
                     break;
 
                 case PickupType.Health:
-                    if(GameManager.instance.playerScript.Health < GameManager.instance.playerScript.OriginalHealth)
+                    if(GameManager.instance.playerScript.CurrentHealth < GameManager.instance.playerScript.OriginalHealth)
                     {
                         GameManager.instance.playerScript.takeDamage(-healingAmount);
                         wasConsumed = true;

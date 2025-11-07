@@ -63,11 +63,12 @@ MonoBehaviour:
   playerHPLabel: {fileID: 0}
   checkpointLabel: {fileID: 0}
   playerDamageScreen: {fileID: 0}
+  playerHealScreen: {fileID: 0}
   ammoCurrent: {fileID: 0}
   ammoMax: {fileID: 0}
   isPaused: 0
   playerSpawnOrig: {fileID: 0}
-  gunDatabase: {fileID: 11400000, guid: 40f831d6203451941b8cb718dbe291a4, type: 2}
+  gunDatabase: {fileID: 11400000, guid: 4633ffc775b32884a88301d9a133d162, type: 2}
   persistentPlayerState:
     HP: 0
     lastScene: 

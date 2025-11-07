@@ -434,6 +434,7 @@ public class GameManager : MonoBehaviour
 
         checkpointLabel = FindInactive("Checkpoint Label");
         playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();
+        playerHealScreen = FindInactive("Player Heal Screen")?.GetComponent<Image>();
 
         Debug.Log("UI linked.");
     }
