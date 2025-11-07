@@ -28,13 +28,13 @@ public class ActivationEvent : MonoBehaviour
     [SerializeField] Color activationColor = Color.blue;
     
     [Tooltip("Material the switches will swap to when all switches in the list are activated." +
-             "\n\n- If no material is attached, the respective color will be used instead."
-             "\n\n- You can override the materials in the ActivationSwitch script.")])]
+             "\n\n- If no material is attached, the respective color will be used instead." +
+             "\n\n- You can override the materials in the ActivationSwitch script.")]
     [SerializeField] Material groupCompleteMaterial;
     
     [Tooltip("Color the switches will swap to when all switches in the list are activated. This option is also included " +
              "as a way to change the color of a switch if they already have a texture attached to them." +
-             "\n\n- You can override the materials in the ActivationSwitch script.")])]
+             "\n\n- You can override the materials in the ActivationSwitch script.")]
     [SerializeField] Color groupCompleteColor = Color.green;
     
     IActivate eventScript;
