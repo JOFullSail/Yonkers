@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public TMP_Text playerHPLabel;
     public GameObject checkpointLabel;
     public Image playerDamageScreen;
+    public Image playerHealScreen;
     public TMP_Text ammoCurrent, ammoMax;
 
     public bool isPaused;
