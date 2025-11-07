@@ -224,23 +224,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         set { knockbacked = value; }
     }
 
-    public int CurrentHealth
-    {
-        get { return HP; }
-        set { HP = value; }
-    }
-
-    public int OriginalHealth
-    {
-        get { return hpOrig; }
-    }
-
-    public int GunListIndex
-    {
-        get { return gunListIdx; }
-        set {  gunListIdx = value; }
-    }
-
     public float RagdollPerSpeed
     {
         get { return ragdollPerSpeed; }
@@ -262,15 +245,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         set { frozenOn = value; }
     }
 
-    public List<GunStats> GunList
-    {
-        get { return gunList; }
-        set {  gunList = value; }
-    }
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        respawnPlayer(false, false);
         hpOrig = HP;
         currentSpeedX = speedZero;
         currentSpeedZ = speedZero;
@@ -298,7 +276,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
 
-        if (!GameManager.instance.isPaused && HP > 0)
+        if (!GameManager.instance.isPaused)
         {
             timers();
             shoot();
@@ -593,7 +571,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         changeGun();
     }
 
-    public void changeGun()
+    void changeGun()
     {
         shootDmg = gunList[gunListIdx].hitscanShootDamage;
         shootDist = gunList[gunListIdx].hitscanShootDist;
@@ -1359,6 +1337,33 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
 
 
+    }
+
+    public void respawnPlayer(bool resetPlayer, bool resetHealth)
+    {
+        if (GameManager.instance.playerSpawn != null)
+        {
+
+            controller.enabled = false;
+            controller.transform.position = GameManager.instance.playerSpawn.transform.position;
+            controller.transform.rotation = GameManager.instance.playerSpawn.transform.rotation;
+            aud.PlayOneShot(audSpawn[Random.Range(0, audSpawn.Length)], audSpawnVol);
+            controller.enabled = true;
+        }
+
+        if (resetPlayer)
+        {
+            knockbacked = false;
+            isInRagdoll = false;
+            knockbackTimer = 0f;
+            playerVel = Vector3.zero;
+        }
+
+        if (resetHealth)
+        {
+            HP = hpOrig;
+            updatePlayerUI();
+        }
     }
 
     public void Blind()

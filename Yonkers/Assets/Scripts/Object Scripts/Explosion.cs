@@ -24,8 +24,6 @@ public class Explosion : MonoBehaviour
     [Tooltip("Which layers can block the explosion?")]
     [SerializeField] LayerMask obstacleMask = ~0;
 
-    private bool canDoDamage = true;
-
     /// <summary>
     /// Trigger an explosion at a given location.
     /// Damage is applied to anything implementing IDamage.
@@ -33,7 +31,6 @@ public class Explosion : MonoBehaviour
     /// </summary>
     public void TriggerExplosion(Vector3 explosionLocation, int splashDamage = 0)
     {
-        
         if (explosionEffect)
         {
             ParticleSystem.MainModule mainModule = explosionEffect.main;
@@ -65,9 +62,8 @@ public class Explosion : MonoBehaviour
             }
 
             // Damage
-            StartCoroutine(disableDamage());
             IDamage dmg = col.GetComponentInParent<IDamage>();
-            if (dmg != null && splashDamage != 0 && canDoDamage)
+            if (dmg != null && splashDamage != 0)
             {
                 dmg.takeDamage(splashDamage);
             }
@@ -110,11 +106,5 @@ public class Explosion : MonoBehaviour
     {
         yield return new WaitForSeconds(soundLength);
         Destroy(gameObject);
-    }
-
-    IEnumerator disableDamage()
-    {
-        yield return new WaitForFixedUpdate();
-        canDoDamage = false;
     }
 }
