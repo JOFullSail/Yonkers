@@ -1242,11 +1242,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         if (InvincibilityTimer < InvincibilityDuration)
         {
-            GameManager.instance.player.layer = 11;
+            gameObject.layer = 11;
         }
         else
         {
-            GameManager.instance.player.layer = 3;
+            gameObject.layer = 3;
         }
     }
 

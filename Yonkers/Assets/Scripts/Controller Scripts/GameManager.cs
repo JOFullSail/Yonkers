@@ -439,7 +439,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ReinitializeAfterLoad(Scene scene)
     {
-        // Wait for the frame to complete
+        // Wait
         yield return new WaitForEndOfFrame();
 
         // Reacquire key objects

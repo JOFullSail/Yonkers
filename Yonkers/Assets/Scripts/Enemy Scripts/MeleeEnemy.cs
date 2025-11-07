@@ -28,7 +28,8 @@ public class MeleeEnemy : EnemyAI
 
     void Update()
     {
-        playerPosition = GameManager.instance.player.transform.position - transform.position;
+        if(playerDetected)
+            playerPosition = GameManager.instance.player.transform.position - transform.position;
         attackTimer += Time.deltaTime;
 
         enemyRoutine(); // roamRoutine()
