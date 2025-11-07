@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
+using System.Linq;
 
 public class EnemyAI : MonoBehaviour, IDamage, IPushback
 {
@@ -89,6 +90,11 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     [SerializeField] GameObject explosionPrefab;
     [SerializeField] int explosionDamage;
+
+    [Header("On-Death Item Dropping")]
+    [SerializeField] bool canDropItems;
+    [SerializeField] GameObject[] possibleItemDrops;
+    [SerializeField] [Range(0, 100)] int dropChance;
 
     Color colorOrig;
 
@@ -267,6 +273,15 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
             {
                 room.UpdateEnemyCount(-1);
             }
+
+            if (canDropItems && Random.Range(0, 100) <= dropChance && possibleItemDrops.Count() > 0)
+            {
+                int itemPos = Random.Range(0, possibleItemDrops.Length);
+                Vector3 dropPos = transform.position;
+                dropPos.y += 0.5f;
+                Instantiate(possibleItemDrops[itemPos], dropPos, possibleItemDrops[itemPos].transform.rotation);
+            }
+
             Destroy(gameObject);
 
         }
