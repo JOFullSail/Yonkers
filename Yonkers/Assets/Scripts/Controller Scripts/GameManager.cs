@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -51,10 +52,18 @@ public class GameManager : MonoBehaviour
     [Header("Gun Database")]
     public GunDatabase gunDatabase;
 
+    [Header("Level List - Ordered")]
+    [SerializeField]List<string> levelOrder = new List<string>();
+
     private const string SaveKey = "PlayerSaveData";
 
+    private Dictionary<string, int> levelScores = new Dictionary<string, int>();
+    private Dictionary<string, int> levelGrades = new Dictionary<string, int>();
+
+    private HashSet<string> unlockedLevels = new HashSet<string>();
+
     [Serializable]
-    public class SaveData
+    public class PlayerSaveData
     {
         public int HP;
         public int selectedGun;
@@ -96,6 +105,16 @@ public class GameManager : MonoBehaviour
             MainCamera = GameObject.FindWithTag("MainCamera");
             CameraScript = MainCamera.GetComponent<CameraController>();
             timeScaleOrig = Time.timeScale;
+
+            levelOrder.Clear();
+            for (int i = 1; i < SceneManager.sceneCountInBuildSettings; i++)
+            {
+                string path = SceneUtility.GetScenePathByBuildIndex(i);
+                string name = System.IO.Path.GetFileNameWithoutExtension(path);
+                levelOrder.Add(name);
+            }
+
+            unlockedLevels.Add(levelOrder[0]);
 
             GetUI();
         }
@@ -214,7 +233,7 @@ public class GameManager : MonoBehaviour
         if (playerScript == null)
             return;
 
-        SaveData data = new SaveData();
+        PlayerSaveData data = new PlayerSaveData();
         data.HP = playerScript.CurrentHealth;
         data.selectedGun = playerScript.GunListIndex;
         data.currentScene = SceneManager.GetActiveScene().name;
@@ -256,7 +275,7 @@ public class GameManager : MonoBehaviour
         {
             string encoded = PlayerPrefs.GetString(SaveKey);
             string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
-            SaveData data = JsonUtility.FromJson<SaveData>(json);
+            PlayerSaveData data = JsonUtility.FromJson<PlayerSaveData>(json);
 
             // If the wrong scene is open, load the correct one
             if (SceneManager.GetActiveScene().name != data.currentScene)
@@ -266,6 +285,23 @@ public class GameManager : MonoBehaviour
             }
 
             // Restore player
+            GameObject spawn = GameObject.Find(data.lastCheckpointName);
+            if (spawn != null)
+            {
+                Checkpoint checkpoint = spawn.GetComponent<Checkpoint>();
+                if (checkpoint != null)
+                {
+                    Transform spawnPos = checkpoint.SpawnPos;
+
+                    if (spawnPos != null)
+                    {
+                        playerSpawn.transform.position = spawnPos.position;
+                        playerSpawn.transform.rotation = spawnPos.rotation;
+                    }
+                        
+                }
+            }
+
             playerScript.CurrentHealth = data.HP;
             player.transform.position = playerSpawn.transform.position;
             player.transform.rotation = playerSpawn.transform.rotation;
@@ -356,11 +392,14 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        EventController.OnGameComplete += HandleGameWon;
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        EventController.OnGameComplete -= HandleGameWon;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -433,6 +472,7 @@ public class GameManager : MonoBehaviour
         menuWin = FindInactive("Win Menu");
         menuDead = FindInactive("Lose Menu");
         mainMenu = FindInactive("Main Menu");
+        menuLevelComplete = FindInactive("Level Complete Menu");
 
         playerHPBar = FindInactive("Player HP Fill")?.GetComponent<Image>();
         playerHPLabel = FindInactive("Player HP Label")?.GetComponent<TMP_Text>();
@@ -477,5 +517,67 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"Scene '{scene.name}' initialized.");
         isReloadingScene = false;
+    }
+
+    // Record a score for the current level
+    public void RecordLevelScore(int score, char grade)
+    {
+        string levelName = SceneManager.GetActiveScene().name;
+        levelScores[levelName] = score;
+        levelGrades[levelName] = grade;
+
+        Debug.Log((char)levelGrades[levelName] + " rank recorded for " + levelName);
+    }
+    
+    // Calculate final grade based on average
+    public char GetFinalGrade()
+    {
+        int avg = (int)levelGrades.Values.Average();
+
+        if (avg >= 'S') return 'S';
+        else if (avg >= 'A') return 'A';
+        else if (avg >= 'B') return 'B';
+        else if (avg >= 'C') return 'C';
+        else return 'D';
+    }
+
+    // Get individual score
+    public int GetLevelScore(string levelName)
+    {
+        return levelScores.TryGetValue(levelName, out int score) ? score : 0;
+    }
+
+    // Get individual grade
+    public char GetLevelGrade(string levelName)
+    {
+        return levelGrades.TryGetValue(levelName, out int score) ? (char)score : ' ';
+    }
+
+    // Unlock the next level
+    public void UnlockNextLevel()
+    {
+        string currentLevel = SceneManager.GetActiveScene().name;
+
+        int currentIndex = levelOrder.IndexOf(currentLevel);
+        if (currentIndex != -1 && currentIndex + 1 < levelOrder.Count)
+        {
+            string nextLevel = levelOrder[currentIndex + 1];
+            unlockedLevels.Add(nextLevel);
+            Debug.Log($"Unlocked {nextLevel}");
+        }
+    }
+
+    // Check if a level is unlocked
+    public bool IsLevelUnlocked(string levelName)
+    {
+        return unlockedLevels.Contains(levelName);
+    }
+
+    private void HandleGameWon()
+    {
+        // TODO - Play cutscene
+        char grade = GetFinalGrade();
+        Debug.Log("Final Grade is " + grade);
+        stateWin();
     }
 }

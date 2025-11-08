@@ -42,12 +42,6 @@ public class LevelManager : MonoBehaviour
         set { currentScore = value; }
     }
 
-    public Grade LevelGrade
-    {
-        get { return levelGrade; }
-        set { levelGrade = value; }
-    }
-
     private void Awake()
     {
         instance = this;
@@ -98,6 +92,10 @@ public class LevelManager : MonoBehaviour
             levelGrade = Grade.C;
         else
             levelGrade = Grade.D;
+
+        GameManager.instance.RecordLevelScore(levelScore, (char)levelGrade);
+
+        GameManager.instance.UnlockNextLevel();
 
         GameManager.instance.stateLevelComplete();
     }
