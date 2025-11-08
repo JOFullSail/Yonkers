@@ -30,6 +30,8 @@
 
 # JetBrains Raider cache directory
 .idea/
+Folder.DotSettings.user
+Folder.DotSettings.user.meta
 
 # Gradle cache directory
 .gradle/
