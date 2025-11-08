@@ -690,10 +690,16 @@ MonoBehaviour:
   playerHPLabel: {fileID: 3033297426169517568}
   checkpointLabel: {fileID: 2738631062152560818}
   playerDamageScreen: {fileID: 9016361085662505625}
+  playerHealScreen: {fileID: 0}
   ammoCurrent: {fileID: 7086029945292462694}
   ammoMax: {fileID: 6289445640634729168}
   isPaused: 0
   playerSpawnOrig: {fileID: 0}
+  gunDatabase: {fileID: 0}
+  persistentPlayerState:
+    HP: 0
+    lastScene: 
+    guns: []
 --- !u!1 &744493467080279998
 GameObject:
   m_ObjectHideFlags: 0
@@ -3905,6 +3911,7 @@ RectTransform:
   - {fileID: 1451042919668872084}
   - {fileID: 1330161940317984822}
   - {fileID: 1701057062741110701}
+  - {fileID: 5533149121505930517}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -5585,7 +5592,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7761191722413123484}
+  m_Father: {fileID: 1233637992580312597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -6023,7 +6030,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &3761538363673890760
---- !u!1 &3926648675318927286
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6031,20 +6037,14 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7761191722413123484}
-  m_Layer: 5
-  m_Name: Silder
   - component: {fileID: 1233637992580312597}
-  - component: {fileID: 2091790123149622561}
-  - component: {fileID: 2657292063846074306}
-  m_Layer: 5
-  m_Name: Player Heal Screen
+  m_Layer: 0
+  m_Name: a
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &7761191722413123484
+  m_IsActive: 0
 --- !u!224 &1233637992580312597
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6052,7 +6052,6 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3761538363673890760}
-  m_GameObject: {fileID: 3926648675318927286}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -6062,20 +6061,49 @@ RectTransform:
   - {fileID: 6177645325711594421}
   - {fileID: 1145115878647250722}
   - {fileID: 7446011090592097408}
-  m_Father: {fileID: 3077354410485712233}
+  m_Father: {fileID: 7425041027192894116}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 340, y: -255}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &3926648675318927286
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7761191722413123484}
+  - component: {fileID: 2091790123149622561}
+  - component: {fileID: 2657292063846074306}
+  m_Layer: 5
+  m_Name: Silder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7761191722413123484
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3926648675318927286}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7425041027192894116}
+  m_Father: {fileID: 3077354410485712233}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2091790123149622561
 CanvasRenderer:
@@ -6552,7 +6580,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7761191722413123484}
+  m_Father: {fileID: 1233637992580312597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -7399,7 +7427,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7761191722413123484}
+  m_Father: {fileID: 1233637992580312597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -11849,7 +11877,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7761191722413123484}
+  m_Father: {fileID: 1233637992580312597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

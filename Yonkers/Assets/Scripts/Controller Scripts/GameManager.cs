@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuDead;
     [SerializeField] GameObject mainMenu;
+    [SerializeField] GameObject menuSettings;
 
     [SerializeField] bool enableMainMenu = false;
 
@@ -46,6 +47,8 @@ public class GameManager : MonoBehaviour
     public GameObject playerSpawnOrig;
 
     int gameGoalCount;
+
+    Scene currScene;
 
     [Header("Gun Database")]
     public GunDatabase gunDatabase;
@@ -87,11 +90,15 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
-            player = GameObject.FindWithTag("Player");
-            playerScript = player.GetComponent<PlayerController>();
-            playerSpawn = GameObject.FindWithTag("PlayerSpawn");
-            playerSpawnOrig = playerSpawn;
-            goalObject = GameObject.FindWithTag("Goal");
+            currScene = SceneManager.GetActiveScene(); 
+            if (currScene.name != "Main Menu Scene")
+            {
+                player = GameObject.FindWithTag("Player");
+                playerScript = player.GetComponent<PlayerController>();
+                playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+                playerSpawnOrig = playerSpawn;
+                goalObject = GameObject.FindWithTag("Goal");
+            }
             MainCamera = GameObject.FindWithTag("MainCamera");
             CameraScript = MainCamera.GetComponent<CameraController>();
             timeScaleOrig = Time.timeScale;
@@ -105,16 +112,18 @@ public class GameManager : MonoBehaviour
         }
 
 #if UNITY_EDITOR
-        if (playerScript.DebugSpawnAtCamera)
-        {
-            if (playerSpawn != null)
+       if (currScene.name != "Main Menu Scene"){
+            if (playerScript.DebugSpawnAtCamera)
             {
-                Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
-                playerSpawn.transform.position = cameraTransform.position;
-                playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
-                playerSpawnOrig = playerSpawn;
+                if (playerSpawn != null)
+                {
+                    Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
+                    playerSpawn.transform.position = cameraTransform.position;
+                    playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
+                    playerSpawnOrig = playerSpawn;
+                }
+                else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
             }
-            else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
         }
 #endif
     }
@@ -135,7 +144,7 @@ public class GameManager : MonoBehaviour
         if (menuActive == mainMenu && Input.GetKeyDown(KeyCode.Space))
             stateUnpause();
 
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene")
         {
             if (menuActive == null)
             {
@@ -426,15 +435,17 @@ public class GameManager : MonoBehaviour
         menuWin = FindInactive("Win Menu");
         menuDead = FindInactive("Lose Menu");
         mainMenu = FindInactive("Main Menu");
-
-        playerHPBar = FindInactive("Player HP Fill")?.GetComponent<Image>();
-        playerHPLabel = FindInactive("Player HP Label")?.GetComponent<TMP_Text>();
-        ammoCurrent = FindInactive("Ammo Current")?.GetComponent<TMP_Text>();
-        ammoMax = FindInactive("Ammo Max")?.GetComponent<TMP_Text>();
-
-        checkpointLabel = FindInactive("Checkpoint Label");
-        playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();
-        playerHealScreen = FindInactive("Player Heal Screen")?.GetComponent<Image>();
+        menuSettings = FindInactive("Settings Menu");
+        if(currScene.name != "Main Menu Scene")
+        {
+            playerHPBar = FindInactive("Player HP Fill")?.GetComponent<Image>();
+            playerHPLabel = FindInactive("Player HP Label")?.GetComponent<TMP_Text>();
+            ammoCurrent = FindInactive("Ammo Current")?.GetComponent<TMP_Text>();
+            ammoMax = FindInactive("Ammo Max")?.GetComponent<TMP_Text>();
+            checkpointLabel = FindInactive("Checkpoint Label");
+            playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();
+            playerHealScreen = FindInactive("Player Heal Screen")?.GetComponent<Image>();
+        }
 
         Debug.Log("UI linked.");
     }
