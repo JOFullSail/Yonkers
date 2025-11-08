@@ -32,12 +32,14 @@ public class GameManager : MonoBehaviour
     public GameObject hypnoScreen;
     public GameObject webScreen;
 
+    public Image playerBrightnessOverlay;
     public Image playerHPBar;
     public TMP_Text playerHPLabel;
     public GameObject checkpointLabel;
     public Image playerDamageScreen;
     public Image playerHealScreen;
     public TMP_Text ammoCurrent, ammoMax;
+    public Image playerDashCooldown;
 
     public bool isPaused;
     private bool isReloadingScene = false;
@@ -426,11 +428,13 @@ public class GameManager : MonoBehaviour
         menuWin = FindInactive("Win Menu");
         menuDead = FindInactive("Lose Menu");
         mainMenu = FindInactive("Main Menu");
-
+        
+        playerBrightnessOverlay = FindInactive("Brightness Overlay")?.GetComponent<Image>();
         playerHPBar = FindInactive("Player HP Fill")?.GetComponent<Image>();
         playerHPLabel = FindInactive("Player HP Label")?.GetComponent<TMP_Text>();
         ammoCurrent = FindInactive("Ammo Current")?.GetComponent<TMP_Text>();
         ammoMax = FindInactive("Ammo Max")?.GetComponent<TMP_Text>();
+        playerDashCooldown = FindInactive("Player Dash Cooldown Fill")?.GetComponent<Image>();
 
         checkpointLabel = FindInactive("Checkpoint Label");
         playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();

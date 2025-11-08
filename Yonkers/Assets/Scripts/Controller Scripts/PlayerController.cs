@@ -1042,10 +1042,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void dash() // Dash in a direction. Bool for if you want dash to increase your movement speed
     {
+        // Dash Cooldown UI
+        GameManager.instance.playerDashCooldown.fillAmount = ButtonFunctions.normalize(0f, dashCooldown, dashCooldownTimer);
+        
         //v2
         if (Input.GetButton("Shift") && (Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true) && isClimbing == false && isInRagdoll == false && gravityOn)
         {
-
             if (dashCooldownTimer >= dashCooldown)
             {
                 isDashing = true;
@@ -1188,6 +1190,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             dashTimer += Time.deltaTime;
             controller.Move(move);
+            GameManager.instance.playerDashCooldown.fillAmount = ButtonFunctions.normalize(dashLength, 0f, dashTimer);
             yield return null;
         }
     }
