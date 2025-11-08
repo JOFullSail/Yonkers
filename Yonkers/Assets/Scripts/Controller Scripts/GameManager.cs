@@ -49,6 +49,8 @@ public class GameManager : MonoBehaviour
 
     int gameGoalCount;
 
+    public char finalGrade;
+
     [Header("Gun Database")]
     public GunDatabase gunDatabase;
 
@@ -670,8 +672,8 @@ public class GameManager : MonoBehaviour
     private void HandleGameWon()
     {
         // TODO - Play cutscene
-        char grade = GetFinalGrade();
-        Debug.Log("Final Grade is " + grade);
+        finalGrade = GetFinalGrade();
+        Debug.Log("Final Grade is " + finalGrade);
         stateWin();
     }
 }

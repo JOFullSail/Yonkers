@@ -1,11 +1,11 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Test_LevelTransition : MonoBehaviour
+public class Test_Trigger : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
-            GameManager.instance.ResetSave();
+            EventController.RaiseGameComplete();
     }
 }

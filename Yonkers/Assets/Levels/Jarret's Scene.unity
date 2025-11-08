@@ -304,7 +304,7 @@ GameObject:
   - component: {fileID: 870599787}
   - component: {fileID: 870599786}
   m_Layer: 0
-  m_Name: Scene Transition
+  m_Name: Test Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
