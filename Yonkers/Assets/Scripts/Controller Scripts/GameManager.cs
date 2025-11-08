@@ -125,8 +125,18 @@ public class GameManager : MonoBehaviour
             MainCamera = GameObject.FindWithTag("MainCamera");
             CameraScript = MainCamera.GetComponent<CameraController>();
             timeScaleOrig = Time.timeScale;
-
             GetUI();
+
+            bool loaded = LoadGame();
+
+            if (!loaded && playerScript != null)
+            {
+                // No save found — start with full health
+                playerScript.CurrentHealth = playerScript.OriginalHealth;
+            }
+
+            if (playerScript != null)
+                playerScript.updatePlayerUI();
         }
         else
         {
@@ -194,8 +204,6 @@ public class GameManager : MonoBehaviour
     }
     public void stateMainMenuOpen()
     {
-        isPaused = true;
-        Time.timeScale = 0;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
@@ -279,12 +287,12 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Game saved (Checkpoint: {data.lastCheckpointName})");
     }
 
-    public void LoadGame()
+    public bool LoadGame()
     {
         if (!PlayerPrefs.HasKey(SaveKey))
         {
             Debug.Log("No save data found.");
-            return;
+            return false;
         }
 
         try
@@ -297,7 +305,6 @@ public class GameManager : MonoBehaviour
             if (SceneManager.GetActiveScene().name != data.currentScene)
             {
                 SceneManager.LoadScene(data.currentScene);
-                return;
             }
 
             // Restore player
@@ -340,13 +347,14 @@ public class GameManager : MonoBehaviour
 
             playerScript.GunListIndex = data.selectedGun;
             playerScript.changeGun();
-            playerScript.updatePlayerUI();
 
             Debug.Log($"Loaded checkpoint '{data.lastCheckpointName}'");
+            return true;
         }
         catch (Exception e)
         {
             Debug.LogWarning("Load failed: " + e.Message);
+            return false;
         }
     }
 
@@ -454,6 +462,8 @@ public class GameManager : MonoBehaviour
         }
 
         playerScript.CurrentHealth = persistentPlayerState.HP;
+        if (playerScript.CurrentHealth <= 0)
+            playerScript.CurrentHealth = playerScript.OriginalHealth;
         playerScript.GunList.Clear();
 
         foreach (GunStatsData g in persistentPlayerState.guns)

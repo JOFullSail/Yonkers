@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //Ints
     int gunListIdx;
     int jumpCount;
-    int hpOrig;
+    int hpOrig = 4;
     //bools
     bool isDashing;
     bool isClimbing;
@@ -261,7 +261,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void Start()
     {
         respawnPlayer(false, false);
-        hpOrig = HP;
         currentSpeedX = speedZero;
         currentSpeedZ = speedZero;
         currentSpeedAccelX = minAccel;
