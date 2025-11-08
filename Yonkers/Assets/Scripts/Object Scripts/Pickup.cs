@@ -1,3 +1,5 @@
+using System;
+using NUnit.Framework;
 using UnityEngine;
 
 enum PickupType
@@ -11,11 +13,11 @@ public class Pickup : MonoBehaviour
 {
     [SerializeField] PickupType type;
 
-    [Header("For Gun Pickups")]
+    [Header("For Gun and Ammo Pickups")]
     [SerializeField] GunStats gun;
 
-    [Header("For Ammo Pickups")]
-
+    [Header("Just For Ammo Pickups")]
+    [SerializeField] int ammoAmount;
 
     [Header("For Health Pickups")]
     [SerializeField] int healingAmount = 1;
@@ -32,7 +34,7 @@ public class Pickup : MonoBehaviour
             switch (type)
             {
                 case PickupType.Gun:
-                    if(gun != null)
+                    if (gun != null)
                     {
                         gun.ammoCurrent = gun.ammoMax;
                         pickup.GetGunStats(gun);
@@ -41,19 +43,28 @@ public class Pickup : MonoBehaviour
                     break;
 
                 case PickupType.Health:
-                    if(GameManager.instance.playerScript.CurrentHealth < GameManager.instance.playerScript.OriginalHealth)
+                    if (GameManager.instance.playerScript.CurrentHealth < GameManager.instance.playerScript.OriginalHealth)
                     {
                         GameManager.instance.playerScript.takeDamage(-healingAmount);
                         wasConsumed = true;
                     }
                     break;
+
+                case PickupType.Ammo:
+                    int index = GameManager.instance.playerScript.GunList.IndexOf(gun); // returns -1 if item not found
+                    if (index != -1 && gun.ammoReserves < gun.maxAmmoReserves)
+                    {
+                        gun.ammoReserves += ammoAmount;
+
+                        wasConsumed = true;
+                    }
+                    break;
             }
 
-            if(wasConsumed)
+            if (wasConsumed)
                 Destroy(gameObject);
         }
     }
-
     private void Update()
     {
         transform.Rotate(rotation * Time.deltaTime);

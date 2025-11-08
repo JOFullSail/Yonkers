@@ -568,7 +568,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             aud.PlayOneShot(audGun[Random.Range(0, audGun.Length)], audGunVol);
             int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
-            gunList[gunListIdx].ammoReserves -= (gunList[gunListIdx].ammoMax - gunList[gunListIdx].ammoCurrent);
+            gunList[gunListIdx].ammoReserves -= ammoToLoad;
             gunList[gunListIdx].ammoCurrent = ammoToLoad;
 
             updatePlayerUI();

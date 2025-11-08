@@ -17,6 +17,7 @@ MonoBehaviour:
   ammoCurrent: 30
   ammoMax: 30
   ammoReserves: 300
+  maxAmmoReserves: 300
   recoilToCamera: 0.5
   recoilToUser: 0
   isSpecial: 0
