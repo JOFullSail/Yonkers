@@ -254,6 +254,9 @@ public class GameManager : MonoBehaviour
         menuActive.SetActive(true);
     }
 
+    /// <summary>
+    /// Save the player's current state along with the last checkpoint they hit.
+    /// </summary>
     public void SaveGame(string checkpointName = "")
     {
         if (playerScript == null)
@@ -289,6 +292,9 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Game saved (Checkpoint: {data.lastCheckpointName})");
     }
 
+    /// <summary>
+    /// Load the player's last saved state and place them at the last checkpoint they hit.
+    /// </summary>
     public bool LoadGame()
     {
         if (!PlayerPrefs.HasKey(SaveKey))
@@ -360,6 +366,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Erase the player's saved state
+    /// </summary>
     public void ResetSave()
     {
         PlayerPrefs.DeleteKey(SaveKey);
@@ -367,7 +376,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("Save data cleared.");
     }
 
-    // Save unlocked levels and scores
+    /// <summary>
+    /// Save level progression and scores
+    /// </summary>
     public void SaveProgression()
     {
         ProgressData progress = new ProgressData();
@@ -390,7 +401,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("Progress saved.");
     }
 
-    // Load unlocked levels and scores
+    /// <summary>
+    /// Load level progression and scores. This should be done on game start.
+    /// </summary>
     public void LoadProgression()
     {
         // first-time playthrough
@@ -420,7 +433,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("Progress loaded.");
     }
 
-    // Reset Progression
+    /// <summary>
+    /// Reset level progression and scores.
+    /// </summary>
     public void ResetProgression()
     {
         PlayerPrefs.DeleteKey(ProgressKey);
@@ -435,6 +450,10 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Progress reset.");
     }
+
+    /// <summary>
+    /// Save player state between scene transitions.
+    /// </summary>
     public void SavePlayerToMemory()
     {
         if (playerScript == null) return;
@@ -455,6 +474,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("Player state saved to memory for scene transition.");
     }
 
+    /// <summary>
+    /// Load player state after scene load
+    /// </summary>
     public void LoadPlayerFromMemory()
     {
         if (playerScript == null)
@@ -498,6 +520,9 @@ public class GameManager : MonoBehaviour
         EventController.OnGameComplete -= HandleGameWon;
     }
 
+    /// <summary>
+    /// Subscribes to sceneLoaded event. This should never be called manually.
+    /// </summary>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (isReloadingScene)
@@ -520,12 +545,18 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ReinitializeAfterLoad(scene));
     }
 
+    /// <summary>
+    /// Save player and load given level.
+    /// </summary>
     public void LoadNextLevel(string nextScene)
     {
         SavePlayerToMemory();  // Save to memory first
         SceneManager.LoadScene(nextScene);  // Then load the new scene
     }
 
+    /// <summary>
+    /// Heal player and place them where the last checkpoint they hit was.
+    /// </summary>
     public void RespawnFromCheckpoint()
     {
         playerScript.CurrentHealth = playerScript.OriginalHealth;
@@ -542,7 +573,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("Respawned at last checkpoint.");
     }
 
-    // For finding inactive elements
+    /// <summary>
+    /// Helper for finding inactive objects
+    /// </summary>
     GameObject FindInactive(string name)
     {
         foreach (Transform t in Resources.FindObjectsOfTypeAll<Transform>())
@@ -552,6 +585,10 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
+
+    /// <summary>
+    /// Get UI in current scene
+    /// </summary>
     private void GetUI()
     {
         if (menuPause != null && menuWin != null && menuDead != null && playerHPBar != null)
@@ -582,6 +619,9 @@ public class GameManager : MonoBehaviour
         Debug.Log("UI linked.");
     }
 
+    /// <summary>
+    /// Refresh references on scene load.
+    /// </summary>
     private IEnumerator ReinitializeAfterLoad(Scene scene)
     {
         // Wait
@@ -615,7 +655,9 @@ public class GameManager : MonoBehaviour
         isReloadingScene = false;
     }
 
-    // Record a score for the current level
+    /// <summary>
+    /// Record the current level's score.
+    /// </summary>
     public void RecordLevelScore(int score, char grade)
     {
         string levelName = SceneManager.GetActiveScene().name;
@@ -624,8 +666,10 @@ public class GameManager : MonoBehaviour
 
         Debug.Log((char)levelGrades[levelName] + " rank recorded for " + levelName);
     }
-    
-    // Calculate final grade based on average
+
+    /// <summary>
+    /// Calculate Final Grade
+    /// </summary>
     public char GetFinalGrade()
     {
         int avg = (int)levelGrades.Values.Average();
@@ -637,19 +681,25 @@ public class GameManager : MonoBehaviour
         else return 'D';
     }
 
-    // Get individual score
+    /// <summary>
+    /// Get a given level's score.
+    /// </summary>
     public int GetLevelScore(string levelName)
     {
         return levelScores.TryGetValue(levelName, out int score) ? score : 0;
     }
 
-    // Get individual grade
+    /// <summary>
+    /// Get a given level's letter grade.
+    /// </summary>
     public char GetLevelGrade(string levelName)
     {
         return levelGrades.TryGetValue(levelName, out int score) ? (char)score : ' ';
     }
 
-    // Unlock the next level
+    /// <summary>
+    /// Unlock the next level in sequence.
+    /// </summary>
     public void UnlockNextLevel()
     {
         string currentLevel = SceneManager.GetActiveScene().name;
@@ -663,12 +713,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Check if a level is unlocked
+    /// <summary>
+    /// Check if a given level is unlocked.
+    /// </summary>
     public bool IsLevelUnlocked(string levelName)
     {
         return unlockedLevels.Contains(levelName);
     }
 
+    /// <summary>
+    /// What happens when you win the game.
+    /// </summary>
     private void HandleGameWon()
     {
         // TODO - Play cutscene
