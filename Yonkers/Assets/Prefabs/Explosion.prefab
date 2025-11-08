@@ -52,7 +52,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0f628b992e9403945a845ff214244297, type: 3}
   - {fileID: 8300000, guid: 07d86f38d24ec394398898718fd5e4fb, type: 3}
   explosionVolume: 1
-  explosionRadius: 2
+  explosionRadius: 4
   explosionForce: 20
   upwardsForceModifier: 10
   overlapMask:
