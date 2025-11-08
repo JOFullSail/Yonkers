@@ -44,13 +44,12 @@ public class MeleeEnemy : EnemyAI
                 transform.position = Vector3.Lerp(transform.position, newPushPosition, Time.deltaTime * dashSpeed);
                 punch(pushForce, (GameManager.instance.player.transform.position - transform.position));
 
-                
+    
             }
             if(punched == true && diesonimpact == true)
             {
                 Destroy(gameObject);
             }
-
         }
     }
 
@@ -59,7 +58,6 @@ public class MeleeEnemy : EnemyAI
 
         dir = dir.normalized;
         Vector3 totalPunch = dir * Force;
-
 
         if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= reach)
         {

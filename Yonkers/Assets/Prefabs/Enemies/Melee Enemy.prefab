@@ -492,7 +492,7 @@ MonoBehaviour:
   meleeDelay: 2
   dashSpeed: 8
   targetDistance: 25
-  reach: 2
+  reach: 20
   diesonimpact: 0
   audEn: {fileID: -1201055083429867957}
   audPunch:
