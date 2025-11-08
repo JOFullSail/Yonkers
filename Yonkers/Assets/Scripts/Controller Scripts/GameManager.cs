@@ -14,11 +14,15 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [SerializeField] GameObject menuActive;
+    [SerializeField] GameObject submenuActive;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuDead;
     [SerializeField] GameObject mainMenu;
     [SerializeField] GameObject menuSettings;
+    [SerializeField] GameObject menuLevelSelect;
+    [SerializeField] GameObject submenuGameplaySettings;
+    [SerializeField] GameObject submenuAudioSettings;
 
     [SerializeField] bool enableMainMenu = false;
 
@@ -136,6 +140,7 @@ public class GameManager : MonoBehaviour
             menuActive = mainMenu;
             menuActive.SetActive(true);
         }
+        currScene = SceneManager.GetActiveScene();
     }
 
     // Update is called once per frame
@@ -161,10 +166,7 @@ public class GameManager : MonoBehaviour
 
     public void stateMainMenuOpen()
     {
-        isPaused = true;
-        Time.timeScale = 0;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        statePause();
     }
 
     public void statePause()
@@ -436,7 +438,9 @@ public class GameManager : MonoBehaviour
         menuDead = FindInactive("Lose Menu");
         mainMenu = FindInactive("Main Menu");
         menuSettings = FindInactive("Settings Menu");
-        if(currScene.name != "Main Menu Scene")
+        submenuGameplaySettings = FindInactive("Gameplay Menu");
+        submenuAudioSettings = FindInactive("Audio Menu");
+        if (currScene.name != "Main Menu Scene")
         {
             playerHPBar = FindInactive("Player HP Fill")?.GetComponent<Image>();
             playerHPLabel = FindInactive("Player HP Label")?.GetComponent<TMP_Text>();
@@ -476,10 +480,29 @@ public class GameManager : MonoBehaviour
 
         persistentPlayerState.lastScene = SceneManager.GetActiveScene().name;
 
-        if(playerScript != null)
+        if (playerScript != null)
             playerScript.updatePlayerUI();
 
         Debug.Log($"Scene '{scene.name}' initialized.");
         isReloadingScene = false;
+    }
+    public void menuChange(GameObject menuchoice)
+    {
+        menuActive.SetActive(false);
+        menuActive = null;
+        menuActive = menuchoice;
+        menuActive.SetActive(true);
+    }
+    public void submenuChange(GameObject menuchoice)
+    {
+
+    }
+    public void statetoSettings()
+    {
+        menuChange(menuSettings);
+    }
+    public void statetoLevelSelect()
+    {
+        menuChange(menuSettings);
     }
 }
