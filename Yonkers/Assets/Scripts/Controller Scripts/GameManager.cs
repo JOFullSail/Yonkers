@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
-            currScene = SceneManager.GetActiveScene(); 
+            currScene = SceneManager.GetActiveScene();
             if (currScene.name != "Main Menu Scene")
             {
                 player = GameObject.FindWithTag("Player");
@@ -117,7 +117,8 @@ public class GameManager : MonoBehaviour
         }
 
 #if UNITY_EDITOR
-       if (currScene.name != "Main Menu Scene"){
+        if (currScene.name != "Main Menu Scene")
+        {
             if (playerScript.DebugSpawnAtCamera)
             {
                 if (playerSpawn != null)
@@ -142,6 +143,10 @@ public class GameManager : MonoBehaviour
             menuActive.SetActive(true);
         }
         currScene = SceneManager.GetActiveScene();
+        if(currScene.name != "Main Menu Scene")
+        {
+            InLevelUpdate();
+        }
     }
 
     // Update is called once per frame
@@ -162,6 +167,10 @@ public class GameManager : MonoBehaviour
             {
                 stateUnpause();
             }
+        }
+        if (currScene.name != "Main Menu Scene")
+        {
+            currScene = SceneManager.GetActiveScene();
         }
     }
 
@@ -188,15 +197,15 @@ public class GameManager : MonoBehaviour
         menuActive = null;
     }
 
-    public void updateGameGoal(int amount) 
+    public void updateGameGoal(int amount)
     {
         gameGoalCount += amount;
 
-        if(gameGoalCount <= 0) 
+        if (gameGoalCount <= 0)
         {
             menuActive = menuWin;
             menuActive.SetActive(true);
-            statePause();  
+            statePause();
         }
     }
 
@@ -512,16 +521,22 @@ public class GameManager : MonoBehaviour
     {
         statePause();
         menuChange(menuPause);
-        
+
     }
     public void backtoMainmenu()
     {
-        menuChange(mainMenu); 
+        menuChange(mainMenu);
 
+    }
+    public void settoMainmenu()
+    {
+        menuActive = mainMenu;
+        menuActive.SetActive(true);
     }
     public void statetoLevelSelect()
     {
-        menuChange(menuLevelSelect);
+
+        menuChange(menuLevelSelect); 
     }
 
     public void openGameplaySubmenu()
@@ -531,5 +546,32 @@ public class GameManager : MonoBehaviour
     public void openAudioSubmenu()
     {
         submenuChange(submenuAudioSettings);
+    }
+
+    public void InLevelUpdate()
+    {
+        if (GameObject.FindWithTag("Player") != null)
+        {
+          player = GameObject.FindWithTag("Player");
+            playerScript = player.GetComponent<PlayerController>(); 
+            playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+            playerSpawnOrig = playerSpawn;
+            goalObject = GameObject.FindWithTag("Goal");
+            GetUI();
+    #if UNITY_EDITOR
+            if (playerScript.DebugSpawnAtCamera)
+            {
+                if (playerSpawn != null)
+                {
+                    Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
+                    playerSpawn.transform.position = cameraTransform.position;
+                    playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
+                    playerSpawnOrig = playerSpawn;
+                }
+                else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
+            }
+        
+    #endif
+        }
     }
 }

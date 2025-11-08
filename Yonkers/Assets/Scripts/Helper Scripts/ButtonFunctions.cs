@@ -59,7 +59,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.LoadNextLevel("Main Menu Scene");
     }
-    public void BackfromSettings() //exit during a level uses this! also "back" while in main menu scene!
+    public void Backfrom() //exit during a level uses this! also "back" while in main menu scene!
     {
         if(GameManager.instance.currScene.name != "Main Menu Scene")
         {
@@ -68,7 +68,7 @@ public class ButtonFunctions : MonoBehaviour
         }
         else
         {
-            GameManager.instance.backtoMainmenu() ;
+            GameManager.instance.backtoMainmenu();
         }
     }
     //to level select menu
@@ -90,14 +90,21 @@ public class ButtonFunctions : MonoBehaviour
     //}
     public void gotoMainmenu()
     {
+
+        GameManager.instance.stateUnpause();
+        GameManager.instance.settoMainmenu();
         GameManager.instance.LoadNextLevel("Main Menu Scene");
+        
     }
     public void gotoLevel1()//head to level 1
     {
+        GameManager.instance.stateUnpause();
         GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
+        
     }
     public void gotoLevel2()//head to level 2
     {
+        GameManager.instance.stateUnpause();
         GameManager.instance.LoadNextLevel("Level 2- Gold's Springway");
     }
     public void gotoLevel3()//head to level 3
