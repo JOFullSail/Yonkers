@@ -97,6 +97,8 @@ public class LevelManager : MonoBehaviour
 
         GameManager.instance.UnlockNextLevel();
 
+        GameManager.instance.SaveProgression();
+
         GameManager.instance.stateLevelComplete();
     }
 }

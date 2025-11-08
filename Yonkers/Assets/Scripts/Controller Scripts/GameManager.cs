@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]List<string> levelOrder = new List<string>();
 
     private const string SaveKey = "PlayerSaveData";
+    private const string ProgressKey = "MetaProgressionData";
 
     private Dictionary<string, int> levelScores = new Dictionary<string, int>();
     private Dictionary<string, int> levelGrades = new Dictionary<string, int>();
@@ -70,6 +71,15 @@ public class GameManager : MonoBehaviour
         public string currentScene;
         public string lastCheckpointName;
         public List<GunStatsData> guns = new List<GunStatsData>();
+    }
+
+    [Serializable]
+    public class ProgressData
+    {
+        public List<string> unlockedLevels = new List<string>();
+        public List<string> levelNames = new List<string>();
+        public List<int> levelScores = new List<int>();
+        public List<int> levelGrades = new List<int>(); // ASCII Codes
     }
 
     [Serializable]
@@ -88,7 +98,6 @@ public class GameManager : MonoBehaviour
         public List<GunStatsData> guns = new List<GunStatsData>();
     }
 
-    // This object lives in memory between scene transitions
     public PlayerState persistentPlayerState = new PlayerState();
 
     void Awake()
@@ -97,14 +106,6 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
-            player = GameObject.FindWithTag("Player");
-            playerScript = player.GetComponent<PlayerController>();
-            playerSpawn = GameObject.FindWithTag("PlayerSpawn");
-            playerSpawnOrig = playerSpawn;
-            goalObject = GameObject.FindWithTag("Goal");
-            MainCamera = GameObject.FindWithTag("MainCamera");
-            CameraScript = MainCamera.GetComponent<CameraController>();
-            timeScaleOrig = Time.timeScale;
 
             levelOrder.Clear();
             for (int i = 1; i < SceneManager.sceneCountInBuildSettings; i++)
@@ -114,7 +115,16 @@ public class GameManager : MonoBehaviour
                 levelOrder.Add(name);
             }
 
-            unlockedLevels.Add(levelOrder[0]);
+            LoadProgression();
+
+            player = GameObject.FindWithTag("Player");
+            playerScript = player.GetComponent<PlayerController>();
+            playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+            playerSpawnOrig = playerSpawn;
+            goalObject = GameObject.FindWithTag("Goal");
+            MainCamera = GameObject.FindWithTag("MainCamera");
+            CameraScript = MainCamera.GetComponent<CameraController>();
+            timeScaleOrig = Time.timeScale;
 
             GetUI();
         }
@@ -149,7 +159,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (menuActive == mainMenu && Input.GetKeyDown(KeyCode.Space))
@@ -168,6 +177,13 @@ public class GameManager : MonoBehaviour
                 stateUnpause();
             }
         }
+
+        // TESTING
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.F5)) SaveProgression();
+        if (Input.GetKeyDown(KeyCode.F9)) LoadProgression();
+        if (Input.GetKeyDown(KeyCode.F10)) ResetProgression();
+#endif
     }
 
     public void stateLevelComplete()
@@ -341,6 +357,74 @@ public class GameManager : MonoBehaviour
         Debug.Log("Save data cleared.");
     }
 
+    // Save unlocked levels and scores
+    public void SaveProgression()
+    {
+        ProgressData progress = new ProgressData();
+        progress.unlockedLevels = unlockedLevels.ToList();
+
+
+        foreach (var kvp in levelScores)
+        {
+            progress.levelNames.Add(kvp.Key);
+            progress.levelScores.Add(kvp.Value);
+            progress.levelGrades.Add(levelGrades.TryGetValue(kvp.Key, out int grade) ? grade : 'D');
+        }
+
+        string jsonP = JsonUtility.ToJson(progress);
+        string encodedP = Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonP));
+
+        PlayerPrefs.SetString(ProgressKey, encodedP);
+        PlayerPrefs.Save();
+
+        Debug.Log("Progress saved.");
+    }
+
+    // Load unlocked levels and scores
+    public void LoadProgression()
+    {
+        // first-time playthrough
+        if (!PlayerPrefs.HasKey(ProgressKey))
+        {   
+            unlockedLevels.Clear();
+            if (levelOrder.Count > 0)
+                unlockedLevels.Add(levelOrder[0]);
+            return;
+        }
+
+        string encoded = PlayerPrefs.GetString(ProgressKey);
+        string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+        ProgressData data = JsonUtility.FromJson<ProgressData>(json);
+
+        unlockedLevels = new HashSet<string>(data.unlockedLevels);
+        levelScores.Clear();
+        levelGrades.Clear();
+
+        for (int i = 0; i < data.levelNames.Count; i++)
+        {
+            string name = data.levelNames[i];
+            levelScores[name] = data.levelScores[i];
+            levelGrades[name] = data.levelGrades[i];
+        }
+
+        Debug.Log("Progress loaded.");
+    }
+
+    // Reset Progression
+    public void ResetProgression()
+    {
+        PlayerPrefs.DeleteKey(ProgressKey);
+        PlayerPrefs.Save();
+
+        unlockedLevels.Clear();
+        levelScores.Clear();
+        levelGrades.Clear();
+
+        if (levelOrder.Count > 0)
+            unlockedLevels.Add(levelOrder[0]);
+
+        Debug.Log("Progress reset.");
+    }
     public void SavePlayerToMemory()
     {
         if (playerScript == null) return;
