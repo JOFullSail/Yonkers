@@ -15,13 +15,14 @@ public class MeleeEnemy : EnemyAI
     [SerializeField] float dashSpeed;
     [SerializeField] float targetDistance; //This is how far the enemy raycast will be to detect the player's last position
     [SerializeField] float reach;
-    [SerializeField] bool diesonimpact;
+    [SerializeField] bool isSuicider;
     [SerializeField] AudioSource audEn;
     [SerializeField] AudioClip[] audPunch;
     [Range(0, 1)][SerializeField] float audPunchVol;
 
     //bool collide;
     //bool attackRange;
+
     bool Die;
     bool findingLocal = false;
     bool punched;
@@ -44,18 +45,11 @@ public class MeleeEnemy : EnemyAI
         if (playerDetected && (firstTimeMet && initialAttackDelay <= 0.0f ||
            !firstTimeMet && attackDelayTimer <= 0.0f))
         {
-
             if (attackTimer > meleeDelay && findingLocal == false)
             {
                 dashattack();
                 findingLocal = true;
             }
-
-            if (punched == true && diesonimpact == true)
-            {
-                Destroy(gameObject);
-            }
-
         }
 
         if (findingLocal == true)
@@ -102,6 +96,9 @@ public class MeleeEnemy : EnemyAI
             GameManager.instance.playerScript.applyPushback(totalPunch);
             GameManager.instance.playerScript.takeDamage(meleeDamage);
             punched = true;
+
+            if (isSuicider)
+                takeDamage(1000);
             //attackTimer = 0;
         }
        

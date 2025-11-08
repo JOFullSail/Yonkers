@@ -58,8 +58,6 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     [Tooltip("Makes the enemy move faster when shot.")]
     [SerializeField] bool enragesWhenDamaged;
 
-    [SerializeField] bool explodesOnDeath;
-
     [Tooltip("Rotational speed of the enemy when facing the player if detected.")]
     [SerializeField] int faceTargetSpeed = 5;
     [Tooltip("Distance between the enemy and the player the enemy will attempt not to cross.")]
@@ -88,6 +86,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     [Tooltip("Speed increase that will be added to the enemy speed once it's enraged.")]
     [SerializeField] int enrageSpeedIncrease;
 
+    [SerializeField] bool explodesOnDeath;
     [SerializeField] GameObject explosionPrefab;
     [SerializeField] int explosionDamage;
 
@@ -227,7 +226,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     }
     void checkRoam()
     {
-        if (roamTimer >= roamPauseTime) //? No && remaining distance check?
+        if (roamTimer >= roamPauseTime)
         {
             roam();
         }
@@ -376,6 +375,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
                     faceTarget();
 
                 playerDetected = true;
+
                 return playerDetected;
             }
         }
