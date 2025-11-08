@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject mainMenu;
     [SerializeField] GameObject menuSettings;
     [SerializeField] GameObject menuLevelSelect;
+    //[SerializeField] GameObject CreditsScreen; //not made yet
     [SerializeField] GameObject submenuGameplaySettings;
     [SerializeField] GameObject submenuAudioSettings;
 
@@ -52,7 +53,7 @@ public class GameManager : MonoBehaviour
 
     int gameGoalCount;
 
-    Scene currScene;
+    public Scene currScene;
 
     [Header("Gun Database")]
     public GunDatabase gunDatabase;
@@ -438,6 +439,7 @@ public class GameManager : MonoBehaviour
         menuDead = FindInactive("Lose Menu");
         mainMenu = FindInactive("Main Menu");
         menuSettings = FindInactive("Settings Menu");
+        menuLevelSelect = FindInactive("Level Select Menu");
         submenuGameplaySettings = FindInactive("Gameplay Menu");
         submenuAudioSettings = FindInactive("Audio Menu");
         if (currScene.name != "Main Menu Scene")
@@ -493,16 +495,41 @@ public class GameManager : MonoBehaviour
         menuActive = menuchoice;
         menuActive.SetActive(true);
     }
-    public void submenuChange(GameObject menuchoice)
+    public void submenuChange(GameObject submenuchoice)
     {
-
+        submenuActive.SetActive(false);
+        submenuActive = null;
+        submenuActive = submenuchoice;
+        submenuActive.SetActive(true);
     }
     public void statetoSettings()
     {
         menuChange(menuSettings);
+        submenuActive = submenuGameplaySettings;
+        submenuActive.SetActive(true);
+    }
+    public void backtoPausemenu()
+    {
+        statePause();
+        menuChange(menuPause);
+        
+    }
+    public void backtoMainmenu()
+    {
+        menuChange(mainMenu); 
+
     }
     public void statetoLevelSelect()
     {
-        menuChange(menuSettings);
+        menuChange(menuLevelSelect);
+    }
+
+    public void openGameplaySubmenu()
+    {
+        submenuChange(submenuGameplaySettings);
+    }
+    public void openAudioSubmenu()
+    {
+        submenuChange(submenuAudioSettings);
     }
 }
