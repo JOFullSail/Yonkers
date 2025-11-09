@@ -486,14 +486,13 @@ MonoBehaviour:
   explosionPrefab: {fileID: 0}
   explosionDamage: 0
   room: {fileID: 0}
-  enemyPOS: {fileID: 6327477208707926472}
+  enemyPOS: {fileID: 0}
   pushForce: 60
   meleeDamage: 1
-  meleeDelay: 3
-  meleeRecharge: 1
+  meleeDelay: 2
   dashSpeed: 8
-  targetDistance: 50
-  reach: 2
+  targetDistance: 25
+  reach: 20
   diesonimpact: 0
   audEn: {fileID: -1201055083429867957}
   audPunch:
@@ -1373,8 +1372,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7626663719005779446}
   - component: {fileID: 6001506536709675522}
-  - component: {fileID: 3718299800432405867}
-  - component: {fileID: 6781572863211022722}
   m_Layer: 0
   m_Name: Helmet
   m_TagString: Untagged
@@ -1520,51 +1517,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.00016778708, y: 1.7340008, z: 0.028698951}
     m_Extent: {x: 0.3310948, y: 0.42025912, z: 0.39716962}
   m_DirtyAABB: 0
---- !u!136 &3718299800432405867
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4816102609515445872}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 11000
-  m_Height: 50000
-  m_Direction: 1
-  m_Center: {x: 0, y: -15000, z: 0}
---- !u!114 &6781572863211022722
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4816102609515445872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c7f77064c38e6842bd97cf9d67dfeb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Damage
-  type: 2
-  rb: {fileID: 0}
-  damageAmount: 1
-  isExplosive: 0
-  respawnUponTouch: 0
-  splashDamageAmount: 0
-  damageRate: 0.5
-  speed: 0
-  destroyTime: 0
-  explosionPrefab: {fileID: 0}
 --- !u!1 &4822751822314866824
 GameObject:
   m_ObjectHideFlags: 0
