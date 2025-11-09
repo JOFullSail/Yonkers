@@ -21,6 +21,11 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] bool enableMainMenu = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioClip menuMusic;
+    [SerializeField] private AudioClip levelMusic;
+
     public GameObject playerSpawn;
 
     public GameObject player;
@@ -365,6 +370,11 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"OnSceneLoaded: {scene.name}");
 
+        if (scene.name.Contains("Menu"))
+            PlayMenuMusic();
+        else if (scene.name.Contains("Level") || scene.name.Contains("Scene"))
+            PlayLevelMusic();
+
         // Clear old references
         player = null;
         playerScript = null;
@@ -447,7 +457,9 @@ public class GameManager : MonoBehaviour
         // Reacquire key objects
         player = GameObject.FindWithTag("Player");
         if (player != null)
+        {
             playerScript = player.GetComponent<PlayerController>();
+        }
 
         playerSpawn = GameObject.FindWithTag("PlayerSpawn");
         playerSpawnOrig = playerSpawn;
@@ -470,5 +482,25 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"Scene '{scene.name}' initialized.");
         isReloadingScene = false;
+    }
+
+    public void PlayMenuMusic()
+    {
+        if (musicSource == null || menuMusic == null) return;
+        if (musicSource.clip == menuMusic && musicSource.isPlaying) return;
+
+        musicSource.clip = menuMusic;
+        musicSource.loop = true;
+        musicSource.Play();
+    }
+
+    public void PlayLevelMusic()
+    {
+        if (musicSource == null || levelMusic == null) return;
+        if (musicSource.clip == levelMusic && musicSource.isPlaying) return;
+
+        musicSource.clip = levelMusic;
+        musicSource.loop = true;
+        musicSource.Play();
     }
 }
