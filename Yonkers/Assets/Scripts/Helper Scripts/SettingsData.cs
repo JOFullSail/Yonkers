@@ -32,69 +32,71 @@ public class SettingsData : MonoBehaviour
         instance = this;
         
         Slider slider;
-        slider = btnFunctions.FOVSliderParent.GetComponentInChildren<Slider>();
-
-        if (slider)
+        if (btnFunctions.FOVSliderParent != null)
         {
-            float FOVOrig = FOV;
-            if (FOVWholeNumbers)
+            slider = btnFunctions.FOVSliderParent.GetComponentInChildren<Slider>();
+            if (slider)
             {
-                
-                slider.minValue = (int)FOVMin;
-                slider.maxValue = (int)FOVMax;
-                slider.value = (int)FOVOrig;
-            }
-            else
-            {
-                slider.minValue = FOVMin;
-                slider.maxValue = FOVMax;
-                slider.value = FOVOrig;
+                float FOVOrig = FOV;
+                if (FOVWholeNumbers)
+                {
+
+                    slider.minValue = (int)FOVMin;
+                    slider.maxValue = (int)FOVMax;
+                    slider.value = (int)FOVOrig;
+                }
+                else
+                {
+                    slider.minValue = FOVMin;
+                    slider.maxValue = FOVMax;
+                    slider.value = FOVOrig;
+                }
+
+                FOV = FOVOrig;
             }
 
-            FOV = FOVOrig;
+            slider = btnFunctions.mouSensSliderParent.GetComponentInChildren<Slider>();
+
+            if (slider)
+            {
+                float mouSensOrig = mouSens;
+                if (mouSensWholeNumbers)
+                {
+                    slider.minValue = (int)mouSensMin;
+                    slider.maxValue = (int)mouSensMax;
+                    slider.value = (int)mouSensOrig;
+                }
+                else
+                {
+                    slider.minValue = mouSensMin;
+                    slider.maxValue = mouSensMax;
+                    slider.value = mouSensOrig;
+                }
+
+                mouSens = mouSensOrig;
+            }
+
+            slider = btnFunctions.brightnessSliderParent.GetComponentInChildren<Slider>();
+
+            if (slider)
+            {
+                float brightnessOrig = brightness;
+                if (brightnessWholeNumbers)
+                {
+                    slider.minValue = (int)brightnessMin;
+                    slider.maxValue = (int)brightnessMax;
+                    slider.value = (int)brightnessOrig;
+                }
+                else
+                {
+                    slider.minValue = brightnessMin;
+                    slider.maxValue = brightnessMax;
+                    slider.value = brightnessOrig;
+                }
+
+                brightness = brightnessOrig;
+            }
         }
-
-        slider = btnFunctions.mouSensSliderParent.GetComponentInChildren<Slider>();
-
-        if (slider)
-        {
-            float mouSensOrig = mouSens;
-            if (mouSensWholeNumbers)
-            {
-                slider.minValue = (int)mouSensMin;
-                slider.maxValue = (int)mouSensMax;
-                slider.value = (int)mouSensOrig;
-            }
-            else
-            {
-                slider.minValue = mouSensMin;
-                slider.maxValue = mouSensMax;
-                slider.value = mouSensOrig;
-            }
-            
-            mouSens = mouSensOrig;
-        }
-
-		slider = btnFunctions.brightnessSliderParent.GetComponentInChildren<Slider>();
-
-		if (slider)
-		{
-            float brightnessOrig = brightness;
-			if (brightnessWholeNumbers)
-            {
-                slider.minValue = (int)brightnessMin;
-                slider.maxValue = (int)brightnessMax;
-                slider.value = (int)brightnessOrig;
-            }
-            else
-            {
-                slider.minValue = brightnessMin;
-                slider.maxValue = brightnessMax;
-                slider.value = brightnessOrig;
-            }
-            
-            brightness = brightnessOrig;
-		}
 
     }
 }

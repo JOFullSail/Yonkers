@@ -634,6 +634,8 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("No UI object found in scene.");
             return;
         }
+        uiRoot.name = "UIA";
+        DontDestroyOnLoad(uiRoot);
 
         menuLevelComplete = FindInactive("Level Complete Menu");
         playerBrightnessOverlay = FindInactive("Brightness Overlay")?.GetComponent<Image>();
@@ -665,6 +667,7 @@ public class GameManager : MonoBehaviour
         playerHPLabel = FindInactive("Player HP Label").GetComponent<TMP_Text>();
         ammoCurrent = FindInactive("Ammo Current").GetComponent<TMP_Text>();
         ammoMax = FindInactive("Ammo Max").GetComponent<TMP_Text>();
+        ammoReserves = FindInactive("Ammo Reserves").GetComponent<TMP_Text>();
         checkpointLabel = FindInactive("Checkpoint Label");
         playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();
         playerHealScreen = FindInactive("Player Heal Screen")?.GetComponent<Image>();
@@ -813,6 +816,7 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay.SetActive(true);
         PlayerAmmoDisplay.SetActive(true);
         PlayerReticleDisplay.SetActive(true);
+        playerDashCooldown.gameObject.SetActive(true);
     }
     public void disablePlayerUI()
     {
