@@ -852,10 +852,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: The Cartoon King
       objectReference: {fileID: 0}
-    - target: {fileID: 1251315814953352402, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
-      propertyPath: baseMoveSpeed
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 6551068776124201155, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.41419
@@ -895,10 +891,6 @@ PrefabInstance:
     - target: {fileID: 6551068776124201155, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6588222311142264602, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
