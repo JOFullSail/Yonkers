@@ -852,6 +852,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: The Cartoon King
       objectReference: {fileID: 0}
+    - target: {fileID: 1251315814953352402, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
+      propertyPath: HLaser
+      value: 
+      objectReference: {fileID: 1344606138491272966, guid: 29f069bb1e297a845b0748f7460ba7e7, type: 3}
+    - target: {fileID: 1251315814953352402, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
+      propertyPath: Health
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1251315814953352402, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
+      propertyPath: VLaser
+      value: 
+      objectReference: {fileID: 7642645796179592302, guid: af3262486c6d7e843a76fa5a12aab16c, type: 3}
+    - target: {fileID: 1251315814953352402, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
+      propertyPath: laserMax
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1251315814953352402, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
+      propertyPath: laserRate
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1251315814953352402, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
+      propertyPath: smallProjectile
+      value: 
+      objectReference: {fileID: 9133834467076832970, guid: 4d6f4ab05182e2345bb62c7d148e969f, type: 3}
     - target: {fileID: 6551068776124201155, guid: cd09dbeed131e164bb31b4fc53d6f6e1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.41419
