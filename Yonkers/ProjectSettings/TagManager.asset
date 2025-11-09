@@ -12,6 +12,7 @@ TagManager:
   - PlayerSpawn
   - EnemySpawn
   - Enemy
+  - LevelManager
   layers:
   - Default
   - TransparentFX

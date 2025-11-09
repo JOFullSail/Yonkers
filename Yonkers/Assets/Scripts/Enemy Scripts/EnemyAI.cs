@@ -13,6 +13,8 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     [SerializeField] Transform headPos;
 
+    [SerializeField] int scoreValue = 10;
+
     [SerializeField] int HP = 2;
     [Tooltip("Field of view the enemy will have to detect the player.")]
     [SerializeField] int FOV = 90;
@@ -58,8 +60,6 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     [Tooltip("Makes the enemy move faster when shot.")]
     [SerializeField] bool enragesWhenDamaged;
 
-    [SerializeField] bool explodesOnDeath;
-
     [Tooltip("Rotational speed of the enemy when facing the player if detected.")]
     [SerializeField] int faceTargetSpeed = 5;
     [Tooltip("Distance between the enemy and the player the enemy will attempt not to cross.")]
@@ -88,6 +88,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     [Tooltip("Speed increase that will be added to the enemy speed once it's enraged.")]
     [SerializeField] int enrageSpeedIncrease;
 
+    [SerializeField] bool explodesOnDeath;
     [SerializeField] GameObject explosionPrefab;
     [SerializeField] int explosionDamage;
 
@@ -117,10 +118,12 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     protected float stoppingDistanceOrig;
     protected float originalMoveSpeed;
 
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (LevelManager.instance != null)
+            LevelManager.instance.EnemyCount++;
+
         if (room != null)
         {
             room.UpdateEnemyCount(1);
@@ -227,7 +230,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     }
     void checkRoam()
     {
-        if (roamTimer >= roamPauseTime) //? No && remaining distance check?
+        if (roamTimer >= roamPauseTime)
         {
             roam();
         }
@@ -269,6 +272,14 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
                 if (expl != null)
                     expl.TriggerExplosion(transform.position, explosionDamage);
             }
+
+            if (LevelManager.instance != null)
+            {
+                LevelManager.instance.EnemyCount--;
+                LevelManager.instance.CurrentScore += (float)scoreValue;
+            }
+                
+
             if (room != null)
             {
                 room.UpdateEnemyCount(-1);
@@ -376,6 +387,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
                     faceTarget();
 
                 playerDetected = true;
+
                 return playerDetected;
             }
         }
@@ -418,4 +430,5 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     {
         // TODO
     }
+
 }
