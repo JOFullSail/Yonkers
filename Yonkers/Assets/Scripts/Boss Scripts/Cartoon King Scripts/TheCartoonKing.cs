@@ -20,6 +20,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     [SerializeField] GameObject smallProjectile;
     [SerializeField] GameObject rocketProjectile;
     [SerializeField] GameObject sniperProjectile;
+    [SerializeField] GameObject VLaser;
+    [SerializeField] GameObject HLaser;
     //General Stats:
     [Header("General Stats")]
     [SerializeField] int Health = 200;
@@ -50,6 +52,9 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     [SerializeField] float sniperMax;
 
     [Header("Laser Stats")]
+    [SerializeField] float laserRate;
+    [SerializeField] float laserMax;
+
 
 
     int HP;
@@ -62,6 +67,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     bool dashState;
     bool rocketState;
     bool sniperState;
+    bool laserState;
 
     //MOVEMENT BOOLEANS:
     bool strafeMode;
@@ -71,6 +77,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     bool dashLocalfound;
     bool punched;
     bool shotSniper;
+    bool HLaserB;
+    bool VLaserB;
 
     //DICE TIMERS:
     int strafediceRoll;
@@ -82,6 +90,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     float stanceTimer;
     float shootTimer;
     float chargeTimer;
+    float dashTimer;
 
     //PLAYER VECTORS:
     Vector3 playerDir;
@@ -102,6 +111,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     {
         //I will figure this out later, but I assume I will make the boss wait for the player to get ready
         defaultState = true;
+        HLaserB = true;
         originalSpeed = baseMoveSpeed;
         kingColor = model.material.color;
         HP = Health;
@@ -183,13 +193,13 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             }
             if (dashLocalfound == true)
             {
-                agent.SetDestination(punchPosition);
-                transform.position =
-                Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
+                
+                transform.position = Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
                 punch(punchForce, (GameManager.instance.player.transform.position - transform.position));
+                dashTimer += Time.deltaTime;
             }
 
-            if (transform.position == Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed) || punched == true)
+            if (transform.position == Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed) || punched == true || dashTimer >= punchSpeed)
             {
                 chargeTimer = 0;
                 model.material.color = kingColor;
@@ -259,6 +269,34 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             }
         }
 
+        //LASER STATE:
+        if (laserState)
+        {
+            faceTarget();
+            model.material.color = Color.black;
+            agent.SetDestination(transform.position);
+            chargeTimer += Time.deltaTime;
+
+
+            if (chargeTimer >= attackRate)
+            {
+                shootTimer += Time.deltaTime;
+                stanceTimer += Time.deltaTime;
+                if (shootTimer >= laserRate)
+                    shootLaser();
+
+                if (stanceTimer >= laserMax)
+                {
+                    chargeTimer = 0;
+                    stanceTimer = 0;
+                    shootTimer = 0;
+                    model.material.color = kingColor;
+                    laserState = false;
+                    defaultState = true;
+                }
+            }
+        }
+
     }
 
     
@@ -269,7 +307,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     {
         if (HP <= HPP2)
         {
-            diceRoll = Random.Range(1, 4);
+            diceRoll = Random.Range(1, 5);
         }
         else
         {
@@ -290,6 +328,11 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         if(diceRoll == 3)
         {
             sniperState = true;
+        }
+
+        if (diceRoll == 4)
+        {
+            laserState = true;
         }
     }
 
@@ -361,6 +404,27 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
         Instantiate(sniperProjectile, shootposition, transform.rotation);
         shotSniper = true;
+    }
+
+    void shootLaser()
+    {
+        shootTimer = 0;
+        Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
+
+        if (HLaserB == true)
+        {
+            Instantiate(HLaser, shootposition, transform.rotation);
+            VLaserB = true;
+            HLaserB = false;
+            return;
+        }
+        if(VLaserB == true)
+        {
+            Instantiate(VLaser, shootposition, transform.rotation);
+            HLaserB = true;
+            VLaserB = false;
+            return;
+        }
     }
 
     //PUNCH FUNCTION NOTES:
