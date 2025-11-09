@@ -89,7 +89,7 @@ public class Damage : MonoBehaviour
 
                 if (respawnUponTouch && !delayRespawnUponTouch)
                 {
-                    GameManager.instance.playerScript.respawnPlayer(true, false);
+                    GameManager.instance.RespawnFromCheckpoint();
                 }
                 else if (delayRespawnUponTouch)
                 {
@@ -142,6 +142,6 @@ public class Damage : MonoBehaviour
         yield return new WaitForSeconds(delayTime);
         GameManager.instance.player.transform.parent = null;
         //GameManager.instance.playerScript.controller.enabled = false;
-        GameManager.instance.playerScript.respawnPlayer(true, false);
+        GameManager.instance.RespawnFromCheckpoint();
     }
 }

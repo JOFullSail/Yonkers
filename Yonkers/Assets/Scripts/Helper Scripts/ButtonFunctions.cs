@@ -51,7 +51,7 @@ public class ButtonFunctions : MonoBehaviour
             LevelManager.instance.CurrentScore -= LevelManager.instance.pointsLostOnRespawn;
 
         GameManager.instance.stateUnpause();
-        GameManager.instance.playerScript.respawnPlayer(true, true);
+        GameManager.instance.RespawnFromCheckpoint();
     }
     public void restart()
     {

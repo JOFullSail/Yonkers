@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using UnityEditor;
 
 public class TheCartoonKing : MonoBehaviour, IDamage
 {
@@ -395,7 +396,11 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         StartCoroutine(flashRed());
 
         if(HP <= 0)
+        {
+            EventController.RaiseGameComplete();
             Destroy(gameObject);
+        }
+            
         
     }
 
