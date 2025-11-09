@@ -132,6 +132,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.ResetSave();
         GameManager.instance.ResetProgression();
+        GameManager.instance.levelLocks();
         GameManager.instance.statetoLevelSelect();
     }
     //to settings menu
@@ -182,6 +183,7 @@ public class ButtonFunctions : MonoBehaviour
 
         GameManager.instance.LoadNextLevel("Main Menu Scene");
         GameManager.instance.clearActive();
+        GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
         GameManager.instance.disablePlayerUI();
 
@@ -189,6 +191,7 @@ public class ButtonFunctions : MonoBehaviour
     //Continue goes to level select but uses player's current save data
     public void ContinuetoLevelSelect()
     {
+        GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
     }
     //to credits section not added yet

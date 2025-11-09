@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
     public GunDatabase gunDatabase;
 
     [Header("Level List - Ordered")]
-    [SerializeField]List<string> levelOrder = new List<string>();
+    [SerializeField] List<string> levelOrder = new List<string>();
 
     private const string SaveKey = "PlayerSaveData";
     private const string ProgressKey = "MetaProgressionData";
@@ -148,7 +148,7 @@ public class GameManager : MonoBehaviour
             instance.currScene = SceneManager.GetActiveScene();
 
             levelOrder.Clear();
-            for (int i = 1; i < SceneManager.sceneCountInBuildSettings; i++)
+            for (int i = 2; i < SceneManager.sceneCountInBuildSettings; i++)
             {
                 string path = SceneUtility.GetScenePathByBuildIndex(i);
                 string name = System.IO.Path.GetFileNameWithoutExtension(path);
@@ -176,7 +176,7 @@ public class GameManager : MonoBehaviour
 
             if (playerScript != null)
                 playerScript.updatePlayerUI();
-            
+
 
             PlayMenuMusic();
         }
@@ -241,15 +241,15 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
-    public void updateGameGoal(int amount) 
+    public void updateGameGoal(int amount)
     {
         gameGoalCount += amount;
 
-        if(gameGoalCount <= 0) 
+        if (gameGoalCount <= 0)
         {
             menuActive = menuWin;
             menuActive.SetActive(true);
-            statePause();  
+            statePause();
         }
     }
 
@@ -336,7 +336,7 @@ public class GameManager : MonoBehaviour
                         playerSpawn.transform.position = spawnPos.position;
                         playerSpawn.transform.rotation = spawnPos.rotation;
                     }
-                        
+
                 }
             }
 
@@ -415,7 +415,7 @@ public class GameManager : MonoBehaviour
     {
         // first-time playthrough
         if (!PlayerPrefs.HasKey(ProgressKey))
-        {   
+        {
             unlockedLevels.Clear();
             if (levelOrder.Count > 0)
                 unlockedLevels.Add(levelOrder[0]);
@@ -545,7 +545,7 @@ public class GameManager : MonoBehaviour
         {
             PlayLevelMusic();
         }
-            
+
 
         // Clear old references
         player = null;
@@ -575,7 +575,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void RespawnFromCheckpoint(bool heal)
     {
-        if(heal)
+        if (heal)
             playerScript.CurrentHealth = playerScript.OriginalHealth;
 
         playerScript.transform.position = playerSpawn.transform.position;
@@ -735,7 +735,7 @@ public class GameManager : MonoBehaviour
 
         persistentPlayerState.lastScene = SceneManager.GetActiveScene().name;
 
-        if(playerScript != null)
+        if (playerScript != null)
             playerScript.updatePlayerUI();
 
         Debug.Log($"Scene '{scene.name}' initialized.");
@@ -745,7 +745,7 @@ public class GameManager : MonoBehaviour
 
         if (scene.name.Contains("Level") || scene.name.Contains("Scene"))
         {
-            if(PlayerPrefs.HasKey(SaveKey))
+            if (PlayerPrefs.HasKey(SaveKey))
                 LoadGame();
         }
         Time.timeScale = timeScaleOrig;
@@ -922,7 +922,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Final Grade is " + finalGrade);
         stateWin();
     }
-    
+
     public void PlayMenuMusic()
     {
         if (musicSource == null || menuMusic == null) return;
@@ -941,5 +941,64 @@ public class GameManager : MonoBehaviour
         musicSource.clip = levelMusic;
         musicSource.loop = true;
         musicSource.Play();
+    }
+    public void levelLocks() //used to keep track of locked and unlocked levels 
+    {
+        int index = 0;
+        int maxIndex = levelOrder.Count() - 1;
+        if (!IsLevelUnlocked(levelOrder[index]))
+        {
+            submenuLockedlevel2.SetActive(true);
+            submenuUnlockedlevel2button.SetActive(false);
+            submenuUnlockedlevel2stats.SetActive(false);
+        }
+        else
+        {
+            submenuLockedlevel2.SetActive(false);
+            submenuUnlockedlevel2button.SetActive(true);
+            submenuUnlockedlevel2stats.SetActive(true);
+        }
+        if (index < maxIndex)
+            index++;
+        if (!IsLevelUnlocked(levelOrder[index]))
+        {
+            submenuLockedlevel3.SetActive(true);
+            submenuUnlockedlevel3button.SetActive(false);
+            submenuUnlockedlevel3stats.SetActive(false);
+        }
+        else
+        {
+            submenuLockedlevel3.SetActive(false);
+            submenuUnlockedlevel3button.SetActive(true);
+            submenuUnlockedlevel3stats.SetActive(true);
+        }
+        if (index < maxIndex)
+            index++;
+        if (!IsLevelUnlocked(levelOrder[index]))
+        {
+            submenuLockedlevel4.SetActive(true);
+            submenuUnlockedlevel4button.SetActive(false);
+            submenuUnlockedlevel4stats.SetActive(false);
+        }
+        else
+        {
+            submenuLockedlevel4.SetActive(false);
+            submenuUnlockedlevel4button.SetActive(true);
+            submenuUnlockedlevel4stats.SetActive(true);
+        }
+        if (index < maxIndex)
+            index++;
+        if (!IsLevelUnlocked(levelOrder[index]))
+        {
+            submenuLockedlevel5.SetActive(true);
+            submenuUnlockedlevel5button.SetActive(false);
+            submenuUnlockedlevel5stats.SetActive(false);
+        }
+        else
+        {
+            submenuLockedlevel5.SetActive(false);
+            submenuUnlockedlevel5button.SetActive(true);
+            submenuUnlockedlevel5stats.SetActive(true);
+        }
     }
 }
