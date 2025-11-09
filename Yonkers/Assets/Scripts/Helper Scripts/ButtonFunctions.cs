@@ -33,9 +33,6 @@ public class ButtonFunctions : MonoBehaviour
     //new game goes to level select and refreshes player data
     public void NewGametoLevelSelect()
     {
-        GameManager.instance.ResetSave();
-        GameManager.instance.SaveGame();
-        GameManager.instance.LoadGameLevelSelect();
         GameManager.instance.statetoLevelSelect();
     }
     //to settings menu
@@ -47,7 +44,6 @@ public class ButtonFunctions : MonoBehaviour
     //Open Gameplay section in settings menu
     public void SettingsGameplay()
     {
-        GameManager.instance.LoadGameSettings();
         GameManager.instance.openGameplaySubmenu();
 
     }
@@ -92,7 +88,6 @@ public class ButtonFunctions : MonoBehaviour
     //Continue goes to level select but uses player's current save data
     public void ContinuetoLevelSelect()
     {
-        GameManager.instance.LoadGameLevelSelect();
         GameManager.instance.menuTolevel();
     }
     //to credits section not added yet

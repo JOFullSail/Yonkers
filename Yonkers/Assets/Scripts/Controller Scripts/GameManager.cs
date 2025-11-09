@@ -267,10 +267,6 @@ public class GameManager : MonoBehaviour
         data.HP = playerScript.CurrentHealth;
         data.selectedGun = playerScript.GunListIndex;
         data.currentScene = SceneManager.GetActiveScene().name;
-        data.Level2_lock = Level2lock;
-        data.Level3_lock = Level3lock;
-        data.Level4_lock = Level4lock;
-        data.Level5_lock = Level5lock;
 
         if (!string.IsNullOrEmpty(checkpointName))
         {
@@ -297,7 +293,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Game saved (Checkpoint: {data.lastCheckpointName})");
     }
 
-    public void LoadGameLevel()
+    public void LoadGame()
     {
         if (!PlayerPrefs.HasKey(SaveKey))
         {
@@ -315,16 +311,8 @@ public class GameManager : MonoBehaviour
             if (SceneManager.GetActiveScene().name != data.currentScene)
             {
                 SceneManager.LoadScene(data.currentScene);
-                stateUnpause();
-                clearActive();
-                enablePlayerUI();
                 return;
             }
-            //Restore player Level progress
-            Level2lock = data.Level2_lock;
-            Level3lock = data.Level3_lock;
-            Level4lock = data.Level4_lock;
-            Level5lock = data.Level5_lock;
             // Restore player
             playerScript.CurrentHealth = data.HP;
             if (!string.IsNullOrEmpty(data.lastCheckpointName))
@@ -363,73 +351,12 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("Load failed: " + e.Message);
         }
     } //for loading last known player data
-    public void LoadGameLevelSelect() // for loading level progress
-    {
-        if (!PlayerPrefs.HasKey(SaveKey))
-        {
-            levelLocks();
-            Debug.Log("No save data found.");
-            return;
-        }
-
-        try
-        {
-            string encoded = PlayerPrefs.GetString(SaveKey);
-            string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
-            SaveData data = JsonUtility.FromJson<SaveData>(json);
-
-
-            //Restore player Level progress
-            Level2lock = data.Level2_lock;
-            Level3lock = data.Level3_lock;
-            Level4lock = data.Level4_lock;
-            Level5lock = data.Level5_lock;
-            levelLocks();
-            Debug.Log($"Loaded Progress");
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning("Load failed: " + e.Message);
-        }
-    }
-    public void LoadGameSettings() //for getting player's current settings
-    {
-        //if (!PlayerPrefs.HasKey(SaveKey))
-        //{
-        //    Debug.Log("No save data found.");
-        //    return;
-        //}
-
-        //try
-        //{
-        //    string encoded = PlayerPrefs.GetString(SaveKey);
-        //    string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
-        //    SaveData data = JsonUtility.FromJson<SaveData>(json);
-
-
-        //    //Restore player Level progress
-        //    Level2lock = data.Level2_lock;
-        //    Level3lock = data.Level3_lock;
-        //    Level4lock = data.Level4_lock;
-        //    Level5lock = data.Level5_lock;
-
-        //    Debug.Log($"Loaded Progress");
-        //}
-        //catch (Exception e)
-        //{
-        //    Debug.LogWarning("Load failed: " + e.Message);
-        //}
-    }
+    
 
     public void ResetSave()
     {
         PlayerPrefs.DeleteKey(SaveKey);
         PlayerPrefs.Save();
-        Level2lock = true;
-        Level3lock = true;
-        Level4lock = true;
-        Level5lock = true;
-        levelLocks();
         Debug.Log("Save data cleared.");
     }
 
@@ -610,7 +537,6 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay = FindInactive("Player HP");
         PlayerAmmoDisplay = FindInactive("Ammo");
         PlayerReticleDisplay = FindInactive("Reticle");
-        LoadGameLevelSelect();
         levelLocks();
         if (OpenLevelSelect == true && mainMenu.name != null && menuLevelSelect != null && currScene.name == "Main Menu Scene")
         {
