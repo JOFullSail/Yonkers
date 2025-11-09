@@ -462,7 +462,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             updatePlayerUI();
             if(amount > 0)
             {
-                StartCoroutine(flashDmgScreen());
+                if (HP > 0)
+                {
+                    StartCoroutine(flashDmgScreen());
+                }
                 aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
             }
             else
