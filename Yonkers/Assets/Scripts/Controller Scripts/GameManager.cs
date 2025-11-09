@@ -157,10 +157,10 @@ public class GameManager : MonoBehaviour
                 playerSpawn = GameObject.FindWithTag("PlayerSpawn");
                 playerSpawnOrig = playerSpawn;
                 goalObject = GameObject.FindWithTag("Goal");
+                MainCamera = GameObject.FindWithTag("MainCamera");
+                CameraScript = MainCamera.GetComponent<CameraController>();
             }
 
-            MainCamera = GameObject.FindWithTag("MainCamera");
-            CameraScript = MainCamera.GetComponent<CameraController>();
             timeScaleOrig = Time.timeScale;
             instance.GetUI();
             menuActive = mainMenu;
@@ -170,7 +170,7 @@ public class GameManager : MonoBehaviour
 
             if (!loaded && playerScript != null)
             {
-                // No save found � start with full health
+                // No save found = start with full health
                 playerScript.CurrentHealth = playerScript.OriginalHealth;
             }
 
@@ -182,24 +182,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-#if UNITY_EDITOR
-        if (playerScript.DebugSpawnAtCamera)
-        {
-            Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
-            if (playerSpawn != null)
-            {
-                playerSpawn.transform.position = cameraTransform.position;
-                playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, cameraTransform.rotation.w);
-                playerSpawnOrig = playerSpawn;
-            }
-            else
-            {
-                player.transform.position = cameraTransform.position;
-                player.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, cameraTransform.rotation.w);
-            }
-        }
-    #endif
     }
     void Update()
     {
