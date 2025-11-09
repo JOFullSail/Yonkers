@@ -418,7 +418,7 @@ public class GameManager : MonoBehaviour
         {
             unlockedLevels.Clear();
             if (levelOrder.Count > 0)
-                unlockedLevels.Add(levelOrder[0]);
+                unlockedLevels.Add(levelOrder[0]); 
             return;
         }
 
@@ -567,7 +567,6 @@ public class GameManager : MonoBehaviour
     {
         SavePlayerToMemory();  // Save to memory first
         SceneManager.LoadScene(nextScene);  // Then load the new scene
-        playerScript.CurrentHealth = playerScript.OriginalHealth;
     }
 
     /// <summary>
@@ -944,7 +943,7 @@ public class GameManager : MonoBehaviour
     }
     public void levelLocks() //used to keep track of locked and unlocked levels 
     {
-        int index = 0;
+        int index = 1;
         int maxIndex = levelOrder.Count() - 1;
         if (!IsLevelUnlocked(levelOrder[index]))
         {
@@ -959,7 +958,14 @@ public class GameManager : MonoBehaviour
             submenuUnlockedlevel2stats.SetActive(true);
         }
         if (index < maxIndex)
+        {
             index++;
+        }
+        else
+        {
+            return;
+        }
+
         if (!IsLevelUnlocked(levelOrder[index]))
         {
             submenuLockedlevel3.SetActive(true);
@@ -973,7 +979,13 @@ public class GameManager : MonoBehaviour
             submenuUnlockedlevel3stats.SetActive(true);
         }
         if (index < maxIndex)
+        {
             index++;
+        }
+        else
+        {
+            return;
+        }
         if (!IsLevelUnlocked(levelOrder[index]))
         {
             submenuLockedlevel4.SetActive(true);
@@ -987,7 +999,13 @@ public class GameManager : MonoBehaviour
             submenuUnlockedlevel4stats.SetActive(true);
         }
         if (index < maxIndex)
+        {
             index++;
+        }
+        else
+        {
+            return;
+        }
         if (!IsLevelUnlocked(levelOrder[index]))
         {
             submenuLockedlevel5.SetActive(true);
