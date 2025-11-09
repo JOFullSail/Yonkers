@@ -130,6 +130,8 @@ public class ButtonFunctions : MonoBehaviour
     //new game goes to level select and refreshes player data
     public void NewGametoLevelSelect()
     {
+        GameManager.instance.ResetSave();
+        GameManager.instance.ResetProgression();
         GameManager.instance.statetoLevelSelect();
     }
     //to settings menu

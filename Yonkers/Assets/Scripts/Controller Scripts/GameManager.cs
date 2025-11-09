@@ -542,7 +542,10 @@ public class GameManager : MonoBehaviour
         if (scene.name.Contains("Menu"))
             PlayMenuMusic();
         else if (scene.name.Contains("Level") || scene.name.Contains("Scene"))
+        {
             PlayLevelMusic();
+        }
+            
 
         // Clear old references
         player = null;
@@ -564,13 +567,7 @@ public class GameManager : MonoBehaviour
     {
         SavePlayerToMemory();  // Save to memory first
         SceneManager.LoadScene(nextScene);  // Then load the new scene
-        bool loaded = LoadGame();
-
-        if (!loaded && playerScript != null)
-        {
-            // No save found = start with full health
-            playerScript.CurrentHealth = playerScript.OriginalHealth;
-        }
+        playerScript.CurrentHealth = playerScript.OriginalHealth;
     }
 
     /// <summary>
@@ -745,6 +742,12 @@ public class GameManager : MonoBehaviour
         isReloadingScene = false;
 
         isPaused = false;
+
+        if (scene.name.Contains("Level") || scene.name.Contains("Scene"))
+        {
+            if(PlayerPrefs.HasKey(SaveKey))
+                LoadGame();
+        }
         Time.timeScale = timeScaleOrig;
     }
 
