@@ -95,6 +95,8 @@ public class GameManager : MonoBehaviour
 
     private HashSet<string> unlockedLevels = new HashSet<string>();
 
+    Color colorOrig;
+
     [Serializable]
     public class PlayerSaveData
     {
@@ -169,10 +171,12 @@ public class GameManager : MonoBehaviour
             timeScaleOrig = Time.timeScale;
             instance.GetUI();
             menuActive = mainMenu;
+            colorOrig = playerDamageScreen.color;
             menuActive.SetActive(true);
 
             if (playerScript != null)
                 playerScript.updatePlayerUI();
+            
 
             PlayMenuMusic();
         }
@@ -212,7 +216,7 @@ public class GameManager : MonoBehaviour
 
     public void statePause()
     {
-        isPaused = !isPaused;
+        isPaused = true;
         Time.timeScale = 0;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -220,11 +224,12 @@ public class GameManager : MonoBehaviour
 
     public void stateUnpause()
     {
-        isPaused = !isPaused;
+        isPaused = false;
         Time.timeScale = timeScaleOrig;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        menuActive.SetActive(false);
+        if (menuActive != null)
+            menuActive.SetActive(false);
         menuActive = null;
     }
 
@@ -571,9 +576,11 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Heal player and place them where the last checkpoint they hit was.
     /// </summary>
-    public void RespawnFromCheckpoint()
+    public void RespawnFromCheckpoint(bool heal)
     {
-        playerScript.CurrentHealth = playerScript.OriginalHealth;
+        if(heal)
+            playerScript.CurrentHealth = playerScript.OriginalHealth;
+
         playerScript.transform.position = playerSpawn.transform.position;
         playerScript.transform.rotation = playerSpawn.transform.rotation;
 
@@ -723,6 +730,7 @@ public class GameManager : MonoBehaviour
 
         // Refresh UI
         GetUI();
+        playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0f);
 
         // Load player data only if the scene changed
         if (SceneManager.GetActiveScene().name != persistentPlayerState.lastScene)
