@@ -15,6 +15,9 @@ public class Damage : MonoBehaviour
     [Tooltip("Respawns the player if they take damage.")]
     [SerializeField] bool respawnUponTouch;
 
+    [SerializeField] bool delayRespawnUponTouch;
+    [SerializeField] float delayTime;
+
     [Tooltip("Used only if damage is set as being explosive. Be aware that BOTH this and the regular damage will be applied.")]
     [SerializeField] int splashDamageAmount;
 
@@ -84,9 +87,13 @@ public class Damage : MonoBehaviour
             {
                 dmg.takeDamage(damageAmount);
 
-                if (respawnUponTouch)
+                if (respawnUponTouch && !delayRespawnUponTouch)
                 {
                     GameManager.instance.playerScript.respawnPlayer(true, false);
+                }
+                else if (delayRespawnUponTouch)
+                {
+                    StartCoroutine(delayRespawn());
                 }
             }
 
@@ -124,5 +131,17 @@ public class Damage : MonoBehaviour
         d.takeDamage(damageAmount);
         yield return new WaitForSeconds(damageRate);
         isDamaging = false;
+    }
+
+    IEnumerator delayRespawn()
+    {
+        //GameManager.instance.playerScript.controller.enabled = false;
+        GameManager.instance.playerScript.PlayerVel = new Vector3(0, 0, 0);
+        GameManager.instance.playerScript.gravityOffTimer = 0;
+        GameManager.instance.playerScript.gravityLockout = delayTime;
+        yield return new WaitForSeconds(delayTime);
+        GameManager.instance.player.transform.parent = null;
+        //GameManager.instance.playerScript.controller.enabled = false;
+        GameManager.instance.playerScript.respawnPlayer(true, false);
     }
 }

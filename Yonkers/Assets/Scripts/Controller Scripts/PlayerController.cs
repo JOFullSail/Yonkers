@@ -251,6 +251,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         set { frozenOn = value; }
     }
 
+    public Vector3 PlayerVel
+    {
+        get { return playerVel; }
+        set { playerVel = value; }
+    }
+
     public List<GunStats> GunList
     {
         get { return gunList; }
