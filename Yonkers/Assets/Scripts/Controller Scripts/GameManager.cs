@@ -20,6 +20,27 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject menuDead;
     [SerializeField] GameObject menuLevelComplete;
     [SerializeField] GameObject mainMenu;
+    [SerializeField] GameObject submenuActive;
+    [SerializeField] GameObject menuSettings;
+    [SerializeField] GameObject menuLevelSelect;
+    [SerializeField] GameObject CreditsScreen;
+    [SerializeField] GameObject submenuGameplaySettings;
+    [SerializeField] GameObject submenuAudioSettings;
+    [SerializeField] GameObject submenuLockedlevel2;
+    [SerializeField] GameObject submenuLockedlevel3;
+    [SerializeField] GameObject submenuLockedlevel4;
+    [SerializeField] GameObject submenuLockedlevel5;
+    [SerializeField] GameObject submenuUnlockedlevel2button;
+    [SerializeField] GameObject submenuUnlockedlevel2stats;
+    [SerializeField] GameObject submenuUnlockedlevel3button;
+    [SerializeField] GameObject submenuUnlockedlevel3stats;
+    [SerializeField] GameObject submenuUnlockedlevel4button;
+    [SerializeField] GameObject submenuUnlockedlevel4stats;
+    [SerializeField] GameObject submenuUnlockedlevel5button;
+    [SerializeField] GameObject submenuUnlockedlevel5stats;
+    [SerializeField] GameObject PlayerHPDisplay;
+    [SerializeField] GameObject PlayerAmmoDisplay;
+    [SerializeField] GameObject PlayerReticleDisplay;
 
     [SerializeField] bool enableMainMenu = false;
 
@@ -45,11 +66,13 @@ public class GameManager : MonoBehaviour
 
     public bool isPaused;
     private bool isReloadingScene = false;
+    private bool needUIReload = false;
 
     float timeScaleOrig;
     public GameObject playerSpawnOrig;
 
     int gameGoalCount;
+    public Scene currScene;
 
     public char finalGrade;
 
@@ -102,6 +125,8 @@ public class GameManager : MonoBehaviour
         public List<GunStatsData> guns = new List<GunStatsData>();
     }
 
+    public static bool OpenLevelSelect;
+    public static bool OpenMainMenu;
     public PlayerState persistentPlayerState = new PlayerState();
 
     void Awake()
@@ -109,7 +134,11 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            needUIReload = true;
             DontDestroyOnLoad(gameObject);
+            gameObject.name = "Game ManagaerA";
+            currScene = SceneManager.GetActiveScene();
+            instance.currScene = SceneManager.GetActiveScene();
 
             levelOrder.Clear();
             for (int i = 1; i < SceneManager.sceneCountInBuildSettings; i++)
@@ -121,15 +150,21 @@ public class GameManager : MonoBehaviour
 
             LoadProgression();
 
-            player = GameObject.FindWithTag("Player");
-            playerScript = player.GetComponent<PlayerController>();
-            playerSpawn = GameObject.FindWithTag("PlayerSpawn");
-            playerSpawnOrig = playerSpawn;
-            goalObject = GameObject.FindWithTag("Goal");
+            if (currScene.name != "Main Menu Scene First Open")
+            {
+                player = GameObject.FindWithTag("Player");
+                playerScript = player.GetComponent<PlayerController>();
+                playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+                playerSpawnOrig = playerSpawn;
+                goalObject = GameObject.FindWithTag("Goal");
+            }
+
             MainCamera = GameObject.FindWithTag("MainCamera");
             CameraScript = MainCamera.GetComponent<CameraController>();
             timeScaleOrig = Time.timeScale;
-            GetUI();
+            instance.GetUI();
+            menuActive = mainMenu;
+            menuActive.SetActive(true);
 
             bool loaded = LoadGame();
 
@@ -166,23 +201,9 @@ public class GameManager : MonoBehaviour
         }
     #endif
     }
-
-    private void Start()
-    {
-        if (enableMainMenu)
-        {
-            stateMainMenuOpen();
-            menuActive = mainMenu;
-            menuActive.SetActive(true);
-        }
-    }
-
     void Update()
     {
-        if (menuActive == mainMenu && Input.GetKeyDown(KeyCode.Space))
-            stateUnpause();
-
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene")
         {
             if (menuActive == null)
             {
@@ -190,18 +211,11 @@ public class GameManager : MonoBehaviour
                 menuActive = menuPause;
                 menuActive.SetActive(true);
             }
-            else if (menuActive == menuPause)
+            else if (menuActive == menuPause || menuActive != null)
             {
                 stateUnpause();
             }
         }
-
-        // TESTING
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.F5)) SaveProgression();
-        if (Input.GetKeyDown(KeyCode.F9)) LoadProgression();
-        if (Input.GetKeyDown(KeyCode.F10)) ResetProgression();
-#endif
     }
 
     public void stateLevelComplete()
@@ -212,8 +226,7 @@ public class GameManager : MonoBehaviour
     }
     public void stateMainMenuOpen()
     {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        statePause();
     }
 
     public void statePause()
@@ -232,6 +245,14 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         menuActive.SetActive(false);
         menuActive = null;
+    }
+
+    public void UnpausetoMenu()
+    {
+        isPaused = false;
+        Time.timeScale = timeScaleOrig;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void updateGameGoal(int amount) 
@@ -597,8 +618,33 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void GetUI()
     {
-        if (menuPause != null && menuWin != null && menuDead != null && playerHPBar != null)
+        if (needUIReload == true)
+        {
+            menuActive = null;
+            menuPause = null;
+            menuWin = null;
+            menuDead = null;
+            mainMenu = null;
+            menuSettings = null;
+            menuLevelSelect = null;
+            menuLevelComplete = null;
+            submenuGameplaySettings = null;
+            submenuAudioSettings = null;
+            playerHPBar = null;
+            playerHPLabel = null;
+            playerDashCooldown = null;
+            ammoCurrent = null;
+            ammoMax = null;
+            checkpointLabel = null;
+            playerDamageScreen = null;
+            playerHealScreen = null;
+            needUIReload = false;
+            playerBrightnessOverlay = null;
+        }
+        else
+        {
             return;
+        }
 
         GameObject uiRoot = GameObject.Find("UI");
         if (uiRoot == null)
@@ -607,23 +653,59 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        menuPause = FindInactive("Pause Menu");
-        menuWin = FindInactive("Win Menu");
-        menuDead = FindInactive("Lose Menu");
-        mainMenu = FindInactive("Main Menu");
         menuLevelComplete = FindInactive("Level Complete Menu");
         playerBrightnessOverlay = FindInactive("Brightness Overlay")?.GetComponent<Image>();
-        playerHPBar = FindInactive("Player HP Fill")?.GetComponent<Image>();
-        playerHPLabel = FindInactive("Player HP Label")?.GetComponent<TMP_Text>();
-        ammoCurrent = FindInactive("Ammo Current")?.GetComponent<TMP_Text>();
-        ammoMax = FindInactive("Ammo Max")?.GetComponent<TMP_Text>();
-        ammoReserves = FindInactive("Ammo Reserves")?.GetComponent<TMP_Text>();
         playerDashCooldown = FindInactive("Player Dash Cooldown Fill")?.GetComponent<Image>();
 
+        menuWin = FindInactive("Win Menu");
+        menuDead = FindInactive("Restart Menu");
+        mainMenu = FindInactive("Main Menu");
+        menuPause = FindInactive("Pause Menu");
+        menuSettings = FindInactive("Settings Menu");
+        menuLevelSelect = FindInactive("Level Select Menu");
+        CreditsScreen = FindInactive("Credits");
+        submenuGameplaySettings = FindInactive("Gameplay Menu");
+        submenuAudioSettings = FindInactive("Audio Menu");
+        submenuLockedlevel2 = FindInactive("Locked 2");
+        submenuLockedlevel3 = FindInactive("Locked 3");
+        submenuLockedlevel4 = FindInactive("Locked 4");
+        submenuLockedlevel5 = FindInactive("Locked 5");
+        submenuUnlockedlevel2button = FindInactive("Level 2 Button");
+        submenuUnlockedlevel2stats = FindInactive("Level 2 Button Back Ground");
+        submenuUnlockedlevel3button = FindInactive("Level 3 Button");
+        submenuUnlockedlevel3stats = FindInactive("Level 3 Button Back Ground");
+        submenuUnlockedlevel4button = FindInactive("Level 4 Button");
+        submenuUnlockedlevel4stats = FindInactive("Level 4 Button Back Ground");
+        submenuUnlockedlevel5button = FindInactive("Level 5 Button");
+        submenuUnlockedlevel5stats = FindInactive("Level 5 Button Back Ground");
+        currScene = SceneManager.GetActiveScene();
+        playerHPBar = FindInactive("Player HP Fill").GetComponent<Image>();
+        playerHPLabel = FindInactive("Player HP Label").GetComponent<TMP_Text>();
+        ammoCurrent = FindInactive("Ammo Current").GetComponent<TMP_Text>();
+        ammoMax = FindInactive("Ammo Max").GetComponent<TMP_Text>();
         checkpointLabel = FindInactive("Checkpoint Label");
         playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();
         playerHealScreen = FindInactive("Player Heal Screen")?.GetComponent<Image>();
+        PlayerHPDisplay = FindInactive("Player HP");
+        PlayerAmmoDisplay = FindInactive("Ammo");
+        PlayerReticleDisplay = FindInactive("Reticle");
 
+        if (OpenLevelSelect == true && mainMenu.name != null && menuLevelSelect != null && currScene.name == "Main Menu Scene")
+        {
+            menuActive = mainMenu;
+            menuActive.SetActive(true);
+            menuActive.SetActive(false);
+            menuActive = null;
+            menuActive = menuLevelSelect;
+            menuActive.SetActive(true);
+            OpenLevelSelect = false;
+        }
+        else if (OpenMainMenu == true && mainMenu.name != null && currScene.name == "Main Menu Scene")
+        {
+            menuActive = mainMenu;
+            menuActive.SetActive(true);
+            OpenMainMenu = false;
+        }
         Debug.Log("UI linked.");
     }
 
@@ -661,6 +743,100 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"Scene '{scene.name}' initialized.");
         isReloadingScene = false;
+    }
+
+    public void menuChange(GameObject menuchoice)
+    {
+        if (menuActive != null)
+        {
+            menuActive.SetActive(false);
+            menuActive = null;
+        }
+        menuActive = menuchoice;
+        menuActive.SetActive(true);
+    }
+    public void submenuChange(GameObject submenuchoice)
+    {
+        submenuActive.SetActive(false);
+        submenuActive = null;
+        submenuActive = submenuchoice;
+        submenuActive.SetActive(true);
+    }
+    public void emptyActive()
+    {
+        menuActive.SetActive(false);
+        menuActive = null;
+    }
+    public void menuTolevel()
+    {
+        menuChange(mainMenu);
+        menuChange(menuLevelSelect);
+    }
+
+    public void menuToCredits()
+    {
+        menuChange(mainMenu);
+        menuChange(CreditsScreen);
+    }
+    public void statetoSettings()
+    {
+        menuChange(menuSettings);
+        submenuActive = submenuGameplaySettings;
+        submenuActive.SetActive(true);
+    }
+    public void backtoPausemenu()
+    {
+        statePause();
+        menuChange(menuPause);
+
+    }
+    public void backtoMainmenu()
+    {
+        if (currScene.name != "Main Menu Scene")
+        {
+            GetUI();
+        }
+        menuChange(mainMenu);
+    }
+    public void settoMainmenu()
+    {
+        menuActive = mainMenu;
+        menuActive.SetActive(true);
+    }
+    public void statetoLevelSelect()
+    {
+
+        menuChange(menuLevelSelect);
+    }
+
+    public void openGameplaySubmenu()
+    {
+        submenuChange(submenuGameplaySettings);
+    }
+    public void openAudioSubmenu()
+    {
+        submenuChange(submenuAudioSettings);
+    }
+    public void clearActive()
+    {
+        if (menuActive.activeInHierarchy == true)
+        {
+            menuActive.SetActive(false);
+        }
+        menuActive = null;
+    }
+
+    public void enablePlayerUI()
+    {
+        PlayerHPDisplay.SetActive(true);
+        PlayerAmmoDisplay.SetActive(true);
+        PlayerReticleDisplay.SetActive(true);
+    }
+    public void disablePlayerUI()
+    {
+        PlayerHPDisplay.SetActive(false);
+        PlayerAmmoDisplay.SetActive(false);
+        PlayerReticleDisplay.SetActive(false);
     }
 
     /// <summary>
