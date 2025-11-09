@@ -735,6 +735,9 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"Scene '{scene.name}' initialized.");
         isReloadingScene = false;
+
+        isPaused = false;
+        Time.timeScale = timeScaleOrig;
     }
 
     public void menuChange(GameObject menuchoice)
