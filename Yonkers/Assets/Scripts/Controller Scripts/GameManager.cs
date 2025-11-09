@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject mainMenu;
     [SerializeField] GameObject menuSettings;
     [SerializeField] GameObject menuLevelSelect;
-    //[SerializeField] GameObject CreditsScreen; //not made yet
+    [SerializeField] GameObject CreditsScreen; 
     [SerializeField] GameObject submenuGameplaySettings;
     [SerializeField] GameObject submenuAudioSettings;
     [SerializeField] GameObject submenuLockedlevel2;
@@ -512,6 +512,7 @@ public class GameManager : MonoBehaviour
         menuPause = FindInactive("Pause Menu");
         menuSettings = FindInactive("Settings Menu");
         menuLevelSelect = FindInactive("Level Select Menu");
+        CreditsScreen = FindInactive("Credits");
         submenuGameplaySettings = FindInactive("Gameplay Menu");
         submenuAudioSettings = FindInactive("Audio Menu");
         submenuLockedlevel2 = FindInactive("Locked 2");
@@ -618,6 +619,12 @@ public class GameManager : MonoBehaviour
     {
         menuChange(mainMenu);
         menuChange(menuLevelSelect);
+    }
+
+    public void menuToCredits()
+    {
+        menuChange(mainMenu);
+        menuChange(CreditsScreen);
     }
     public void statetoSettings()
     {

@@ -60,8 +60,10 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.clearActive();
         GameManager.instance.disablePlayerUI();
         GameManager.instance.backtoMainmenu();
-        
-        
+    }
+    public void toCredits() //credits in main menu uses this!
+    {
+        GameManager.instance.menuToCredits();
     }
     public void Backfrom() //back from settings uses this! also "back" while in main menu scene!
     {
