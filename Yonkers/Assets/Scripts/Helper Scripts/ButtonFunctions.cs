@@ -31,10 +31,12 @@ public class ButtonFunctions : MonoBehaviour
 #endif
     }
     //new game goes to level select and refreshes player data
-    public void NewGametoLevelSelect() 
+    public void NewGametoLevelSelect()
     {
+        GameManager.instance.ResetSave();
+        GameManager.instance.SaveGame();
+        GameManager.instance.LoadGameLevelSelect();
         GameManager.instance.statetoLevelSelect();
-
     }
     //to settings menu
     public void toSettings()
@@ -45,6 +47,7 @@ public class ButtonFunctions : MonoBehaviour
     //Open Gameplay section in settings menu
     public void SettingsGameplay()
     {
+        GameManager.instance.LoadGameSettings();
         GameManager.instance.openGameplaySubmenu();
 
     }
@@ -55,33 +58,42 @@ public class ButtonFunctions : MonoBehaviour
 
     }
     //back to main menu
-    public void toMainmenu() //exit during a level uses this! also "back" while in main menu scene!
+    public void toMainmenu() //exit during a level uses this!
     {
         GameManager.instance.LoadNextLevel("Main Menu Scene");
+        GameManager.instance.clearActive();
+        GameManager.instance.disablePlayerUI();
+        GameManager.instance.backtoMainmenu();
+        
+        
     }
-    public void Backfrom() //exit during a level uses this! also "back" while in main menu scene!
+    public void Backfrom() //back from settings uses this! also "back" while in main menu scene!
     {
-        if(GameManager.instance.currScene.name != "Main Menu Scene")
+        if (SceneManager.GetActiveScene().name == "Main Menu Scene" || SceneManager.GetActiveScene().name == "Main Menu Scene First Open")
         {
+            GameManager.instance.backtoMainmenu();
             
-            GameManager.instance.backtoPausemenu();
         }
         else
         {
-            GameManager.instance.backtoMainmenu();
+            GameManager.instance.backtoPausemenu();
         }
     }
     //to level select menu
     public void backtoLevelselect()
     {
-        toMainmenu();
-        GameManager.instance.statetoLevelSelect();
+
+        GameManager.instance.LoadNextLevel("Main Menu Scene");
+        GameManager.instance.clearActive();
+        GameManager.instance.menuTolevel();
+        GameManager.instance.disablePlayerUI();
 
     }
     //Continue goes to level select but uses player's current save data
     public void ContinuetoLevelSelect()
     {
-        GameManager.instance.statetoLevelSelect();
+        GameManager.instance.LoadGameLevelSelect();
+        GameManager.instance.menuTolevel();
     }
     //to credits section not added yet
     //public void toCredits()
@@ -90,37 +102,47 @@ public class ButtonFunctions : MonoBehaviour
     //}
     public void gotoMainmenu()
     {
-
-        GameManager.instance.stateUnpause();
-        GameManager.instance.settoMainmenu();
-        GameManager.instance.LoadNextLevel("Main Menu Scene");
         
+        GameManager.instance.statePause();
+        GameManager.instance.LoadNextLevel("Main Menu Scene");
+        GameManager.OpenMainMenu = true;
+
     }
     public void gotoLevel1()//head to level 1
     {
         GameManager.instance.stateUnpause();
+        GameManager.instance.enablePlayerUI();
         GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
         
     }
     public void gotoLevel2()//head to level 2
     {
         GameManager.instance.stateUnpause();
+        GameManager.instance.enablePlayerUI();
         GameManager.instance.LoadNextLevel("Level 2- Gold's Springway");
     }
     public void gotoLevel3()//head to level 3
     {
+        //GameManager.instance.stateUnpause();
+        //GameManager.instance.enablePlayerUI();
         //GameManager.instance.LoadNextLevel(levelName);
-    }
+    } 
     public void gotoLevel4()//head to level 4
     {
+        //GameManager.instance.stateUnpause();
+        //GameManager.instance.enablePlayerUI();
         //GameManager.instance.LoadNextLevel(levelName);
     }
     public void gotoLevel5()//head to level 5
     {
+        //GameManager.instance.stateUnpause();
+        //GameManager.instance.enablePlayerUI();
         //GameManager.instance.LoadNextLevel(levelName);
     }
     public void gotoShowcase()//head to Showcase
     {
+        //GameManager.instance.stateUnpause();
+        //GameManager.instance.enablePlayerUI();
         //GameManager.instance.LoadNextLevel(levelName);
     }
 }

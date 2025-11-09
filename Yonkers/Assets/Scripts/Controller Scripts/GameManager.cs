@@ -24,6 +24,21 @@ public class GameManager : MonoBehaviour
     //[SerializeField] GameObject CreditsScreen; //not made yet
     [SerializeField] GameObject submenuGameplaySettings;
     [SerializeField] GameObject submenuAudioSettings;
+    [SerializeField] GameObject submenuLockedlevel2;
+    [SerializeField] GameObject submenuLockedlevel3;
+    [SerializeField] GameObject submenuLockedlevel4;
+    [SerializeField] GameObject submenuLockedlevel5;
+    [SerializeField] GameObject submenuUnlockedlevel2button;
+    [SerializeField] GameObject submenuUnlockedlevel2stats;
+    [SerializeField] GameObject submenuUnlockedlevel3button;
+    [SerializeField] GameObject submenuUnlockedlevel3stats;
+    [SerializeField] GameObject submenuUnlockedlevel4button;
+    [SerializeField] GameObject submenuUnlockedlevel4stats;
+    [SerializeField] GameObject submenuUnlockedlevel5button;
+    [SerializeField] GameObject submenuUnlockedlevel5stats;
+    [SerializeField] GameObject PlayerHPDisplay;
+    [SerializeField] GameObject PlayerAmmoDisplay;
+    [SerializeField] GameObject PlayerReticleDisplay; //add more displays if you add more to player UI! ALSO ADD IT TO GETUI() OR IT WON'T BE FOUND!!!!
 
     [SerializeField] bool enableMainMenu = false;
 
@@ -47,6 +62,7 @@ public class GameManager : MonoBehaviour
 
     public bool isPaused;
     private bool isReloadingScene = false;
+    private bool needUIReload = false;
 
     float timeScaleOrig;
     public GameObject playerSpawnOrig;
@@ -64,9 +80,14 @@ public class GameManager : MonoBehaviour
     public class SaveData
     {
         public int HP;
+
         public int selectedGun;
         public string currentScene;
         public string lastCheckpointName;
+        public bool Level2_lock;
+        public bool Level3_lock;
+        public bool Level4_lock;
+        public bool Level5_lock;
         public List<GunStatsData> guns = new List<GunStatsData>();
     }
 
@@ -86,6 +107,13 @@ public class GameManager : MonoBehaviour
         public List<GunStatsData> guns = new List<GunStatsData>();
     }
 
+    public static bool OpenLevelSelect;
+    public static bool OpenMainMenu;
+    public bool Level2lock = true;
+    public bool Level3lock = true;
+    public bool Level4lock = true;
+    public bool Level5lock = true;
+
     // This object lives in memory between scene transitions
     public PlayerState persistentPlayerState = new PlayerState();
 
@@ -94,9 +122,12 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            needUIReload = true;
             DontDestroyOnLoad(gameObject);
+            gameObject.name = "Game ManagaerA";
             currScene = SceneManager.GetActiveScene();
-            if (currScene.name != "Main Menu Scene")
+            instance.currScene = SceneManager.GetActiveScene();
+            if (currScene.name != "Main Menu Scene First Open")
             {
                 player = GameObject.FindWithTag("Player");
                 playerScript = player.GetComponent<PlayerController>();
@@ -107,53 +138,53 @@ public class GameManager : MonoBehaviour
             MainCamera = GameObject.FindWithTag("MainCamera");
             CameraScript = MainCamera.GetComponent<CameraController>();
             timeScaleOrig = Time.timeScale;
-
-            GetUI();
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-#if UNITY_EDITOR
-        if (currScene.name != "Main Menu Scene")
-        {
-            if (playerScript.DebugSpawnAtCamera)
-            {
-                if (playerSpawn != null)
-                {
-                    Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
-                    playerSpawn.transform.position = cameraTransform.position;
-                    playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
-                    playerSpawnOrig = playerSpawn;
-                }
-                else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
-            }
-        }
-#endif
-    }
-
-    private void Start()
-    {
-        if (enableMainMenu)
-        {
-            stateMainMenuOpen();
+            instance.GetUI();
             menuActive = mainMenu;
             menuActive.SetActive(true);
         }
-        currScene = SceneManager.GetActiveScene();
-        if(currScene.name != "Main Menu Scene")
+        else
         {
-            InLevelUpdate();
+            currScene = SceneManager.GetActiveScene();
+            instance.currScene = SceneManager.GetActiveScene();
+            if (menuPause == null && menuDead == null && menuLevelSelect == null)
+            {
+                instance.GetUI();
+            }
+            MainCamera = GameObject.FindWithTag("MainCamera");
+            if (currScene.name != "Main Menu Scene")
+            {
+                player = GameObject.FindWithTag("Player");
+                playerScript = player.GetComponent<PlayerController>();
+                playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+                playerSpawnOrig = playerSpawn;
+                goalObject = GameObject.FindWithTag("Goal");
+                CameraScript = MainCamera.GetComponent<CameraController>();
+            }
+            timeScaleOrig = Time.timeScale;
         }
+
+//#if UNITY_EDITOR
+//        if (currScene.name != "Main Menu Scene First Open" || currScene.name != "Main Menu Scene") 
+//        {
+//            if (playerScript.DebugSpawnAtCamera)
+//            {
+//                if (playerSpawn != null)
+//                {
+//                    Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
+//                    playerSpawn.transform.position = cameraTransform.position;
+//                    playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
+//                    playerSpawnOrig = playerSpawn;
+//                }
+//                else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
+//            }
+//        }
+//#endif
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (menuActive == mainMenu && Input.GetKeyDown(KeyCode.Space))
-            stateUnpause();
+
 
         if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene")
         {
@@ -163,14 +194,10 @@ public class GameManager : MonoBehaviour
                 menuActive = menuPause;
                 menuActive.SetActive(true);
             }
-            else if (menuActive == menuPause)
+            else if (menuActive == menuPause || menuActive != null)
             {
                 stateUnpause();
             }
-        }
-        if (currScene.name != "Main Menu Scene")
-        {
-            currScene = SceneManager.GetActiveScene();
         }
     }
 
@@ -181,7 +208,7 @@ public class GameManager : MonoBehaviour
 
     public void statePause()
     {
-        isPaused = !isPaused;
+        isPaused = true;
         Time.timeScale = 0;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -189,12 +216,20 @@ public class GameManager : MonoBehaviour
 
     public void stateUnpause()
     {
-        isPaused = !isPaused;
+        isPaused = false;
         Time.timeScale = timeScaleOrig;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         menuActive.SetActive(false);
         menuActive = null;
+    }
+
+    public void UnpausetoMenu()
+    {
+        isPaused = false;
+        Time.timeScale = timeScaleOrig;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void updateGameGoal(int amount)
@@ -232,6 +267,10 @@ public class GameManager : MonoBehaviour
         data.HP = playerScript.CurrentHealth;
         data.selectedGun = playerScript.GunListIndex;
         data.currentScene = SceneManager.GetActiveScene().name;
+        data.Level2_lock = Level2lock;
+        data.Level3_lock = Level3lock;
+        data.Level4_lock = Level4lock;
+        data.Level5_lock = Level5lock;
 
         if (!string.IsNullOrEmpty(checkpointName))
         {
@@ -258,7 +297,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Game saved (Checkpoint: {data.lastCheckpointName})");
     }
 
-    public void LoadGame()
+    public void LoadGameLevel()
     {
         if (!PlayerPrefs.HasKey(SaveKey))
         {
@@ -276,11 +315,24 @@ public class GameManager : MonoBehaviour
             if (SceneManager.GetActiveScene().name != data.currentScene)
             {
                 SceneManager.LoadScene(data.currentScene);
+                stateUnpause();
+                clearActive();
+                enablePlayerUI();
                 return;
             }
-
+            //Restore player Level progress
+            Level2lock = data.Level2_lock;
+            Level3lock = data.Level3_lock;
+            Level4lock = data.Level4_lock;
+            Level5lock = data.Level5_lock;
             // Restore player
             playerScript.CurrentHealth = data.HP;
+            if (!string.IsNullOrEmpty(data.lastCheckpointName))
+            {
+                GameObject checkpoint = GameObject.Find(data.lastCheckpointName).gameObject;
+                playerSpawn.transform.position = checkpoint.transform.position;
+                playerSpawn.transform.rotation = checkpoint.transform.rotation;
+            }
             player.transform.position = playerSpawn.transform.position;
             player.transform.rotation = playerSpawn.transform.rotation;
 
@@ -310,12 +362,74 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("Load failed: " + e.Message);
         }
+    } //for loading last known player data
+    public void LoadGameLevelSelect() // for loading level progress
+    {
+        if (!PlayerPrefs.HasKey(SaveKey))
+        {
+            levelLocks();
+            Debug.Log("No save data found.");
+            return;
+        }
+
+        try
+        {
+            string encoded = PlayerPrefs.GetString(SaveKey);
+            string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+
+            //Restore player Level progress
+            Level2lock = data.Level2_lock;
+            Level3lock = data.Level3_lock;
+            Level4lock = data.Level4_lock;
+            Level5lock = data.Level5_lock;
+            levelLocks();
+            Debug.Log($"Loaded Progress");
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("Load failed: " + e.Message);
+        }
+    }
+    public void LoadGameSettings() //for getting player's current settings
+    {
+        //if (!PlayerPrefs.HasKey(SaveKey))
+        //{
+        //    Debug.Log("No save data found.");
+        //    return;
+        //}
+
+        //try
+        //{
+        //    string encoded = PlayerPrefs.GetString(SaveKey);
+        //    string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+        //    SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+
+        //    //Restore player Level progress
+        //    Level2lock = data.Level2_lock;
+        //    Level3lock = data.Level3_lock;
+        //    Level4lock = data.Level4_lock;
+        //    Level5lock = data.Level5_lock;
+
+        //    Debug.Log($"Loaded Progress");
+        //}
+        //catch (Exception e)
+        //{
+        //    Debug.LogWarning("Load failed: " + e.Message);
+        //}
     }
 
     public void ResetSave()
     {
         PlayerPrefs.DeleteKey(SaveKey);
         PlayerPrefs.Save();
+        Level2lock = true;
+        Level3lock = true;
+        Level4lock = true;
+        Level5lock = true;
+        levelLocks();
         Debug.Log("Save data cleared.");
     }
 
@@ -368,7 +482,6 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -394,6 +507,7 @@ public class GameManager : MonoBehaviour
         goalObject = null;
         MainCamera = null;
         CameraScript = null;
+        GetUI();
 
         // Wait a short delay before relinking
         StartCoroutine(ReinitializeAfterLoad(scene));
@@ -431,39 +545,93 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
-    private void GetUI()
+    public void GetUI()
     {
-        if (menuPause != null && menuWin != null && menuDead != null && playerHPBar != null)
+        if (needUIReload == true)
+        {
+            menuActive = null;
+            menuPause = null;
+            menuWin = null;
+            menuDead = null;
+            mainMenu = null;
+            menuSettings = null;
+            menuLevelSelect = null;
+            submenuGameplaySettings = null;
+            submenuAudioSettings = null;
+            playerHPBar = null;
+            playerHPLabel = null;
+            ammoCurrent = null;
+            ammoMax = null;
+            checkpointLabel = null;
+            playerDamageScreen = null;
+            playerHealScreen = null;
+            needUIReload = false;
+        }
+        else
+        {
             return;
-
+        }
         GameObject uiRoot = GameObject.Find("UI");
         if (uiRoot == null)
         {
             Debug.LogWarning("No UI object found in scene.");
             return;
         }
-
-        menuPause = FindInactive("Pause Menu");
+        uiRoot.name = "UIA";
+        DontDestroyOnLoad(uiRoot);
         menuWin = FindInactive("Win Menu");
-        menuDead = FindInactive("Lose Menu");
+        menuDead = FindInactive("Restart Menu");
         mainMenu = FindInactive("Main Menu");
+        menuPause = FindInactive("Pause Menu");
         menuSettings = FindInactive("Settings Menu");
         menuLevelSelect = FindInactive("Level Select Menu");
         submenuGameplaySettings = FindInactive("Gameplay Menu");
         submenuAudioSettings = FindInactive("Audio Menu");
-        if (currScene.name != "Main Menu Scene")
+        submenuLockedlevel2 = FindInactive("Locked 2");
+        submenuLockedlevel3 = FindInactive("Locked 3");
+        submenuLockedlevel4 = FindInactive("Locked 4");
+        submenuLockedlevel5 = FindInactive("Locked 5");
+        submenuUnlockedlevel2button = FindInactive("Level 2 Button");
+        submenuUnlockedlevel2stats = FindInactive("Level 2 Button Back Ground");
+        submenuUnlockedlevel3button = FindInactive("Level 3 Button");
+        submenuUnlockedlevel3stats = FindInactive("Level 3 Button Back Ground");
+        submenuUnlockedlevel4button = FindInactive("Level 4 Button");
+        submenuUnlockedlevel4stats = FindInactive("Level 4 Button Back Ground");
+        submenuUnlockedlevel5button = FindInactive("Level 5 Button");
+        submenuUnlockedlevel5stats = FindInactive("Level 5 Button Back Ground");
+        currScene = SceneManager.GetActiveScene();
+        playerHPBar = FindInactive("Player HP Fill").GetComponent<Image>();
+        playerHPLabel = FindInactive("Player HP Label").GetComponent<TMP_Text>();
+        ammoCurrent = FindInactive("Ammo Current").GetComponent<TMP_Text>();
+        ammoMax = FindInactive("Ammo Max").GetComponent<TMP_Text>();
+        checkpointLabel = FindInactive("Checkpoint Label");
+        playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();
+        playerHealScreen = FindInactive("Player Heal Screen")?.GetComponent<Image>();
+        PlayerHPDisplay = FindInactive("Player HP");
+        PlayerAmmoDisplay = FindInactive("Ammo");
+        PlayerReticleDisplay = FindInactive("Reticle");
+        LoadGameLevelSelect();
+        levelLocks();
+        if (OpenLevelSelect == true && mainMenu.name != null && menuLevelSelect != null && currScene.name == "Main Menu Scene")
         {
-            playerHPBar = FindInactive("Player HP Fill")?.GetComponent<Image>();
-            playerHPLabel = FindInactive("Player HP Label")?.GetComponent<TMP_Text>();
-            ammoCurrent = FindInactive("Ammo Current")?.GetComponent<TMP_Text>();
-            ammoMax = FindInactive("Ammo Max")?.GetComponent<TMP_Text>();
-            checkpointLabel = FindInactive("Checkpoint Label");
-            playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();
-            playerHealScreen = FindInactive("Player Heal Screen")?.GetComponent<Image>();
+            menuActive = mainMenu;
+            menuActive.SetActive(true);
+            menuActive.SetActive(false);
+            menuActive = null;
+            menuActive = menuLevelSelect;
+            menuActive.SetActive(true);
+            OpenLevelSelect = false;
+        }
+        else if (OpenMainMenu == true && mainMenu.name != null && currScene.name == "Main Menu Scene")
+        {
+            menuActive = mainMenu;
+            menuActive.SetActive(true);
+            OpenMainMenu = false;
         }
 
         Debug.Log("UI linked.");
     }
+
 
     private IEnumerator ReinitializeAfterLoad(Scene scene)
     {
@@ -485,6 +653,7 @@ public class GameManager : MonoBehaviour
         // Refresh UI
         GetUI();
 
+
         // Load player data only if the scene changed
         if (SceneManager.GetActiveScene().name != persistentPlayerState.lastScene)
             LoadPlayerFromMemory();
@@ -499,8 +668,11 @@ public class GameManager : MonoBehaviour
     }
     public void menuChange(GameObject menuchoice)
     {
-        menuActive.SetActive(false);
-        menuActive = null;
+        if (menuActive != null)
+        {
+            menuActive.SetActive(false);
+            menuActive = null;
+        }
         menuActive = menuchoice;
         menuActive.SetActive(true);
     }
@@ -510,6 +682,16 @@ public class GameManager : MonoBehaviour
         submenuActive = null;
         submenuActive = submenuchoice;
         submenuActive.SetActive(true);
+    }
+    public void emptyActive()
+    {
+        menuActive.SetActive(false);
+        menuActive = null;
+    }
+    public void menuTolevel()
+    {
+        menuChange(mainMenu);
+        menuChange(menuLevelSelect);
     }
     public void statetoSettings()
     {
@@ -525,8 +707,11 @@ public class GameManager : MonoBehaviour
     }
     public void backtoMainmenu()
     {
+        if (currScene.name != "Main Menu Scene")
+        {
+            GetUI();
+        }
         menuChange(mainMenu);
-
     }
     public void settoMainmenu()
     {
@@ -536,7 +721,7 @@ public class GameManager : MonoBehaviour
     public void statetoLevelSelect()
     {
 
-        menuChange(menuLevelSelect); 
+        menuChange(menuLevelSelect);
     }
 
     public void openGameplaySubmenu()
@@ -547,31 +732,76 @@ public class GameManager : MonoBehaviour
     {
         submenuChange(submenuAudioSettings);
     }
-
-    public void InLevelUpdate()
+    public void levelLocks() //used to keep track of locked and unlocked levels 
     {
-        if (GameObject.FindWithTag("Player") != null)
+        if (Level2lock == true)
         {
-          player = GameObject.FindWithTag("Player");
-            playerScript = player.GetComponent<PlayerController>(); 
-            playerSpawn = GameObject.FindWithTag("PlayerSpawn");
-            playerSpawnOrig = playerSpawn;
-            goalObject = GameObject.FindWithTag("Goal");
-            GetUI();
-    #if UNITY_EDITOR
-            if (playerScript.DebugSpawnAtCamera)
-            {
-                if (playerSpawn != null)
-                {
-                    Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
-                    playerSpawn.transform.position = cameraTransform.position;
-                    playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
-                    playerSpawnOrig = playerSpawn;
-                }
-                else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
-            }
-        
-    #endif
+            submenuLockedlevel2.SetActive(true);
+            submenuUnlockedlevel2button.SetActive(false);
+            submenuUnlockedlevel2stats.SetActive(false);
         }
+        else
+        {
+            submenuLockedlevel2.SetActive(false);
+            submenuUnlockedlevel2button.SetActive(true);
+            submenuUnlockedlevel2stats.SetActive(true);
+        }
+        if (Level3lock == true)
+        {
+            submenuLockedlevel3.SetActive(true);
+            submenuUnlockedlevel3button.SetActive(false);
+            submenuUnlockedlevel3stats.SetActive(false);
+        }
+        else
+        {
+            submenuLockedlevel3.SetActive(false);
+            submenuUnlockedlevel3button.SetActive(true);
+            submenuUnlockedlevel3stats.SetActive(true);
+        }
+        if (Level4lock == true)
+        {
+            submenuLockedlevel4.SetActive(true);
+            submenuUnlockedlevel4button.SetActive(false);
+            submenuUnlockedlevel4stats.SetActive(false);
+        }
+        else
+        {
+            submenuLockedlevel4.SetActive(false);
+            submenuUnlockedlevel4button.SetActive(true);
+            submenuUnlockedlevel4stats.SetActive(true);
+        }
+        if (Level5lock == true)
+        {
+            submenuLockedlevel5.SetActive(true);
+            submenuUnlockedlevel5button.SetActive(false);
+            submenuUnlockedlevel5stats.SetActive(false);
+        }
+        else
+        {
+            submenuLockedlevel5.SetActive(false);
+            submenuUnlockedlevel5button.SetActive(true);
+            submenuUnlockedlevel5stats.SetActive(true);
+        }
+    }
+    public void clearActive()
+    {
+        if (menuActive.activeInHierarchy == true)
+        {
+            menuActive.SetActive(false);
+        }
+        menuActive = null;
+    }
+
+    public void enablePlayerUI()
+    {
+        PlayerHPDisplay.SetActive(true);
+        PlayerAmmoDisplay.SetActive(true);
+        PlayerReticleDisplay.SetActive(true);
+    }
+    public void disablePlayerUI()
+    {
+        PlayerHPDisplay.SetActive(false);
+        PlayerAmmoDisplay.SetActive(false);
+        PlayerReticleDisplay.SetActive(false);
     }
 }
