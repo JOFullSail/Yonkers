@@ -572,9 +572,11 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Heal player and place them where the last checkpoint they hit was.
     /// </summary>
-    public void RespawnFromCheckpoint()
+    public void RespawnFromCheckpoint(bool heal)
     {
-        playerScript.CurrentHealth = playerScript.OriginalHealth;
+        if(heal)
+            playerScript.CurrentHealth = playerScript.OriginalHealth;
+
         playerScript.transform.position = playerSpawn.transform.position;
         playerScript.transform.rotation = playerSpawn.transform.rotation;
 
