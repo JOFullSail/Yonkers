@@ -251,6 +251,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         set { frozenOn = value; }
     }
 
+    public Vector3 PlayerVel
+    {
+        get { return playerVel; }
+        set { playerVel = value; }
+    }
+
     public List<GunStats> GunList
     {
         get { return gunList; }
@@ -1041,10 +1047,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void dash() // Dash in a direction. Bool for if you want dash to increase your movement speed
     {
+        // Dash Cooldown UI
+        GameManager.instance.playerDashCooldown.fillAmount = ButtonFunctions.normalize(0f, dashCooldown, dashCooldownTimer);
+        
         //v2
         if (Input.GetButton("Shift") && (Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true) && isClimbing == false && isInRagdoll == false && gravityOn)
         {
-
             if (dashCooldownTimer >= dashCooldown)
             {
                 isDashing = true;
@@ -1187,6 +1195,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             dashTimer += Time.deltaTime;
             controller.Move(move);
+            GameManager.instance.playerDashCooldown.fillAmount = ButtonFunctions.normalize(dashLength, 0f, dashTimer);
             yield return null;
         }
     }
@@ -1432,6 +1441,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             GameManager.instance.ammoCurrent.text = gunList[gunListIdx].ammoCurrent.ToString("F0");
             GameManager.instance.ammoMax.text = gunList[gunListIdx].ammoMax.ToString("F0");
+            GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
         }
     }
 }
