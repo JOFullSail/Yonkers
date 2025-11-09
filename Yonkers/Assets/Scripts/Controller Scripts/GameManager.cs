@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     public GameObject checkpointLabel;
     public Image playerDamageScreen;
     public Image playerHealScreen;
-    public TMP_Text ammoCurrent, ammoMax;
+    public TMP_Text ammoCurrent, ammoMax, ammoReserves;
     public Image playerDashCooldown;
 
     public bool isPaused;
@@ -109,16 +109,20 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         if (playerScript.DebugSpawnAtCamera)
         {
+            Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
             if (playerSpawn != null)
             {
-                Transform cameraTransform = SceneView.lastActiveSceneView.camera.transform;
                 playerSpawn.transform.position = cameraTransform.position;
-                playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, 1);
+                playerSpawn.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, cameraTransform.rotation.w);
                 playerSpawnOrig = playerSpawn;
             }
-            else player.transform.position = SceneView.lastActiveSceneView.camera.transform.position;
+            else
+            {
+                player.transform.position = cameraTransform.position;
+                player.transform.rotation = new Quaternion(0, cameraTransform.rotation.y, 0, cameraTransform.rotation.w);
+            }
         }
-#endif
+    #endif
     }
 
     private void Start()
@@ -434,6 +438,7 @@ public class GameManager : MonoBehaviour
         playerHPLabel = FindInactive("Player HP Label")?.GetComponent<TMP_Text>();
         ammoCurrent = FindInactive("Ammo Current")?.GetComponent<TMP_Text>();
         ammoMax = FindInactive("Ammo Max")?.GetComponent<TMP_Text>();
+        ammoReserves = FindInactive("Ammo Reserves")?.GetComponent<TMP_Text>();
         playerDashCooldown = FindInactive("Player Dash Cooldown Fill")?.GetComponent<Image>();
 
         checkpointLabel = FindInactive("Checkpoint Label");
