@@ -95,6 +95,8 @@ public class GameManager : MonoBehaviour
 
     private HashSet<string> unlockedLevels = new HashSet<string>();
 
+    Color colorOrig;
+
     [Serializable]
     public class PlayerSaveData
     {
@@ -169,10 +171,12 @@ public class GameManager : MonoBehaviour
             timeScaleOrig = Time.timeScale;
             instance.GetUI();
             menuActive = mainMenu;
+            colorOrig = playerDamageScreen.color;
             menuActive.SetActive(true);
 
             if (playerScript != null)
                 playerScript.updatePlayerUI();
+            
 
             PlayMenuMusic();
         }
@@ -726,6 +730,7 @@ public class GameManager : MonoBehaviour
 
         // Refresh UI
         GetUI();
+        playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0f);
 
         // Load player data only if the scene changed
         if (SceneManager.GetActiveScene().name != persistentPlayerState.lastScene)
