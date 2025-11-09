@@ -10,6 +10,7 @@ public class GunStats : ScriptableObject
     public int ammoCurrent;
     [Range(1, 50)] public int ammoMax;
     [Range(0, 999)] public int ammoReserves;
+    [Range(0, 999)] public int maxAmmoReserves;
     [Range(0, 60)] public float recoilToCamera;
     [Range(0, 500)] public float recoilToUser;
 
