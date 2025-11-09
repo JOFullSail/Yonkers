@@ -171,16 +171,10 @@ public class GameManager : MonoBehaviour
             menuActive = mainMenu;
             menuActive.SetActive(true);
 
-            bool loaded = LoadGame();
-
-            if (!loaded && playerScript != null)
-            {
-                // No save found = start with full health
-                playerScript.CurrentHealth = playerScript.OriginalHealth;
-            }
-
             if (playerScript != null)
                 playerScript.updatePlayerUI();
+
+            PlayMenuMusic();
         }
         else
         {
@@ -322,12 +316,6 @@ public class GameManager : MonoBehaviour
             string encoded = PlayerPrefs.GetString(SaveKey);
             string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
             PlayerSaveData data = JsonUtility.FromJson<PlayerSaveData>(json);
-
-            // If the wrong scene is open, load the correct one
-            if (SceneManager.GetActiveScene().name != data.currentScene)
-            {
-                SceneManager.LoadScene(data.currentScene);
-            }
 
             // Restore player
             GameObject spawn = GameObject.Find(data.lastCheckpointName);
@@ -571,6 +559,13 @@ public class GameManager : MonoBehaviour
     {
         SavePlayerToMemory();  // Save to memory first
         SceneManager.LoadScene(nextScene);  // Then load the new scene
+        bool loaded = LoadGame();
+
+        if (!loaded && playerScript != null)
+        {
+            // No save found = start with full health
+            playerScript.CurrentHealth = playerScript.OriginalHealth;
+        }
     }
 
     /// <summary>
@@ -740,6 +735,9 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"Scene '{scene.name}' initialized.");
         isReloadingScene = false;
+
+        isPaused = false;
+        Time.timeScale = timeScaleOrig;
     }
 
     public void menuChange(GameObject menuchoice)
