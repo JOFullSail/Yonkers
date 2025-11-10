@@ -14,7 +14,10 @@ public class ButtonFunctions : MonoBehaviour
     {
         if(SettingsData.instance != null)
         {
-            GameManager.instance.cam.fieldOfView = SettingsData.instance.FOV;
+            if(GameManager.instance.cam != null)
+            {
+                GameManager.instance.cam.fieldOfView = SettingsData.instance.FOV;
+            }
             if(FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
             {
                 FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOV, SettingsData.instance.FOVMin, SettingsData.instance.FOVMax);

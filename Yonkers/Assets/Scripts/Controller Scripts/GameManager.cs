@@ -179,7 +179,7 @@ public class GameManager : MonoBehaviour
                 goalObject = GameObject.FindWithTag("Goal");
                 MainCamera = GameObject.FindWithTag("MainCamera");
                 CameraScript = MainCamera.GetComponent<CameraController>();
-                cam = MainCamera.GetComponent<Camera>();
+                cam = MainCamera.GetComponent<Camera>(); 
             }
 
             timeScaleOrig = Time.timeScale;
@@ -653,6 +653,7 @@ public class GameManager : MonoBehaviour
             playerHealScreen = null;
             needUIReload = false;
             playerBrightnessOverlay = null;
+           
         }
         else
         {
