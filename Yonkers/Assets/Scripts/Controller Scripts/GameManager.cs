@@ -1,14 +1,15 @@
-using System;
-using System.Text;
-using System.Collections.Generic;
 using NUnit.Framework;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Linq;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -41,8 +42,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject PlayerHPDisplay;
     [SerializeField] GameObject PlayerAmmoDisplay;
     [SerializeField] GameObject PlayerReticleDisplay;
-
-    [SerializeField] bool enableMainMenu = false;
+    [SerializeField] GameObject PlayerDashCoolDownDisplay;
 
     [Header("Audio")]
     [SerializeField] private AudioSource musicSource;
@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
     public GameObject goalObject;
     public GameObject MainCamera;
     public CameraController CameraScript;
+    public Camera cam;
     public GameObject blindScreen;
     public GameObject hypnoScreen;
     public GameObject webScreen;
@@ -63,6 +64,18 @@ public class GameManager : MonoBehaviour
     public Image playerBrightnessOverlay;
     public Image playerHPBar;
     public TMP_Text playerHPLabel;
+    public TMP_Text ScoreLC; //for when you comeplete levels
+    public TMP_Text GradeLC;//for when you comeplete levels
+    public TMP_Text ScoreLVL1;
+    public TMP_Text ScoreLVL2;
+    public TMP_Text ScoreLVL3;
+    public TMP_Text ScoreLVL4;
+    public TMP_Text ScoreLVL5;
+    public Image GradeLVL1;
+    public Image GradeLVL2;
+    public Image GradeLVL3;
+    public Image GradeLVL4;
+    public Image GradeLVL5;
     public GameObject checkpointLabel;
     public Image playerDamageScreen;
     public Image playerHealScreen;
@@ -166,6 +179,7 @@ public class GameManager : MonoBehaviour
                 goalObject = GameObject.FindWithTag("Goal");
                 MainCamera = GameObject.FindWithTag("MainCamera");
                 CameraScript = MainCamera.GetComponent<CameraController>();
+                cam = MainCamera.GetComponent<Camera>();
             }
 
             timeScaleOrig = Time.timeScale;
@@ -207,6 +221,7 @@ public class GameManager : MonoBehaviour
     {
         statePause();
         menuActive = menuLevelComplete;
+        
         menuActive.SetActive(true);
     }
     public void stateMainMenuOpen()
@@ -321,47 +336,51 @@ public class GameManager : MonoBehaviour
             string encoded = PlayerPrefs.GetString(SaveKey);
             string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
             PlayerSaveData data = JsonUtility.FromJson<PlayerSaveData>(json);
-
-            // Restore player
-            GameObject spawn = GameObject.Find(data.lastCheckpointName);
-            if (spawn != null)
+            if(data.lastCheckpointName != null && data.lastCheckpointName != "")
             {
-                Checkpoint checkpoint = spawn.GetComponent<Checkpoint>();
-                if (checkpoint != null)
+                GameObject spawn = GameObject.Find(data.lastCheckpointName);
+                if (spawn != null)
                 {
-                    Transform spawnPos = checkpoint.SpawnPos;
-
-                    if (spawnPos != null)
+                    Checkpoint checkpoint = spawn.GetComponent<Checkpoint>();
+                    if (checkpoint != null)
                     {
-                        playerSpawn.transform.position = spawnPos.position;
-                        playerSpawn.transform.rotation = spawnPos.rotation;
+                        Transform spawnPos = checkpoint.SpawnPos;
+                        if (spawnPos != null)
+                        {
+                            playerSpawn.transform.position = spawnPos.position;
+                            playerSpawn.transform.rotation = spawnPos.rotation;
+                        }
+                    }
+                }
+            }
+            // Restore player
+            
+            if(player != null)
+            {
+                playerScript.CurrentHealth = data.HP;
+                player.transform.position = playerSpawn.transform.position;
+                player.transform.rotation = playerSpawn.transform.rotation;
+
+                // Restore gun list
+                playerScript.GunList.Clear();
+                foreach (GunStatsData g in data.guns)
+                {
+                    GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+                    if (gun == null)
+                    {
+                        Debug.LogWarning($"Gun '{g.gunName}' not found in database!");
+                        continue;
                     }
 
-                }
-            }
-
-            playerScript.CurrentHealth = data.HP;
-            player.transform.position = playerSpawn.transform.position;
-            player.transform.rotation = playerSpawn.transform.rotation;
-
-            // Restore gun list
-            playerScript.GunList.Clear();
-            foreach (GunStatsData g in data.guns)
-            {
-                GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
-                if (gun == null)
-                {
-                    Debug.LogWarning($"Gun '{g.gunName}' not found in database!");
-                    continue;
+                    gun.ammoCurrent = g.ammoCurrent;
+                    gun.ammoReserves = g.ammoReserves;
+                    playerScript.GunList.Add(gun);
                 }
 
-                gun.ammoCurrent = g.ammoCurrent;
-                gun.ammoReserves = g.ammoReserves;
-                playerScript.GunList.Add(gun);
+                playerScript.GunListIndex = data.selectedGun;
+                playerScript.changeGun();
             }
-
-            playerScript.GunListIndex = data.selectedGun;
-            playerScript.changeGun();
+            
 
             Debug.Log($"Loaded checkpoint '{data.lastCheckpointName}'");
             return true;
@@ -496,13 +515,16 @@ public class GameManager : MonoBehaviour
         if (playerScript.CurrentHealth <= 0)
             playerScript.CurrentHealth = playerScript.OriginalHealth;
         playerScript.GunList.Clear();
-
+        
         foreach (GunStatsData g in persistentPlayerState.guns)
         {
-            GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
-            gun.ammoCurrent = g.ammoCurrent;
-            gun.ammoReserves = g.ammoReserves;
-            playerScript.GunList.Add(gun);
+            if (g != null && gunDatabase.GetGunByName(g.gunName) != null)
+            {
+                GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+                gun.ammoCurrent = g.ammoCurrent;
+                gun.ammoReserves = g.ammoReserves;
+                playerScript.GunList.Add(gun);
+            }
         }
 
         playerScript.GunListIndex = 0;
@@ -555,6 +577,7 @@ public class GameManager : MonoBehaviour
         goalObject = null;
         MainCamera = null;
         CameraScript = null;
+        cam = null;
 
         // Wait a short delay before relinking
         StartCoroutine(ReinitializeAfterLoad(scene));
@@ -673,6 +696,18 @@ public class GameManager : MonoBehaviour
         currScene = SceneManager.GetActiveScene();
         playerHPBar = FindInactive("Player HP Fill").GetComponent<Image>();
         playerHPLabel = FindInactive("Player HP Label").GetComponent<TMP_Text>();
+        ScoreLC = FindInactive("ScoreNumber").GetComponent<TMP_Text>();
+        GradeLC = FindInactive("Grade Letter").GetComponent<TMP_Text>();
+        ScoreLVL1 = FindInactive("Score Text 1").GetComponent<TMP_Text>();
+        ScoreLVL2 = FindInactive("Score Text 2").GetComponent<TMP_Text>();
+        ScoreLVL3 = FindInactive("Score Text 3").GetComponent<TMP_Text>();
+        ScoreLVL4 = FindInactive("Score Text 4").GetComponent<TMP_Text>();
+        ScoreLVL5 = FindInactive("Score Text 5").GetComponent<TMP_Text>();
+        GradeLVL1 = FindInactive("Grade Image 1").GetComponent<Image>(); 
+        GradeLVL2 = FindInactive("Grade Image 2").GetComponent<Image>();
+        GradeLVL3 = FindInactive("Grade Image 3").GetComponent<Image>();
+        GradeLVL4 = FindInactive("Grade Image 4").GetComponent<Image>();
+        GradeLVL5 = FindInactive("Grade Image 5").GetComponent<Image>();
         ammoCurrent = FindInactive("Ammo Current").GetComponent<TMP_Text>();
         ammoMax = FindInactive("Ammo Max").GetComponent<TMP_Text>();
         ammoReserves = FindInactive("Ammo Reserves").GetComponent<TMP_Text>();
@@ -682,6 +717,7 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay = FindInactive("Player HP");
         PlayerAmmoDisplay = FindInactive("Ammo");
         PlayerReticleDisplay = FindInactive("Reticle");
+        PlayerDashCoolDownDisplay = FindInactive("Player Dash Cooldown");
 
         if (OpenLevelSelect == true && mainMenu.name != null && menuLevelSelect != null && currScene.name == "Main Menu Scene")
         {
@@ -722,7 +758,10 @@ public class GameManager : MonoBehaviour
         goalObject = GameObject.FindWithTag("Goal");
         MainCamera = GameObject.FindWithTag("MainCamera");
         if (MainCamera != null)
+        {
             CameraScript = MainCamera.GetComponent<CameraController>();
+            cam = MainCamera.GetComponent<Camera>();
+        }
 
         // Refresh UI
         GetUI();
@@ -836,6 +875,7 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay.SetActive(true);
         PlayerAmmoDisplay.SetActive(true);
         PlayerReticleDisplay.SetActive(true);
+        PlayerDashCoolDownDisplay.SetActive(true);
         playerDashCooldown.gameObject.SetActive(true);
     }
     public void disablePlayerUI()
@@ -843,6 +883,8 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay.SetActive(false);
         PlayerAmmoDisplay.SetActive(false);
         PlayerReticleDisplay.SetActive(false);
+        PlayerDashCoolDownDisplay.SetActive(false);
+        playerDashCooldown.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -851,8 +893,11 @@ public class GameManager : MonoBehaviour
     public void RecordLevelScore(int score, char grade)
     {
         string levelName = SceneManager.GetActiveScene().name;
+
         levelScores[levelName] = score;
         levelGrades[levelName] = grade;
+        ScoreLC.text = score.ToString();
+        GradeLC.text = grade.ToString();
 
         Debug.Log((char)levelGrades[levelName] + " rank recorded for " + levelName);
     }
@@ -918,6 +963,7 @@ public class GameManager : MonoBehaviour
     {
         // TODO - Play cutscene
         finalGrade = GetFinalGrade();
+        GradeLC.text = finalGrade.ToString();
         Debug.Log("Final Grade is " + finalGrade);
         stateWin();
     }
@@ -943,7 +989,7 @@ public class GameManager : MonoBehaviour
     }
     public void levelLocks() //used to keep track of locked and unlocked levels 
     {
-        int index = 1;
+        int index = 2;
         int maxIndex = levelOrder.Count() - 1;
         if (!IsLevelUnlocked(levelOrder[index]))
         {

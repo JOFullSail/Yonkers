@@ -11542,6 +11542,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1465309062}
     - target: {fileID: 4510749989317414373, guid: 9001800429e67964284fe8f5ab9ed0bc, type: 3}
+      propertyPath: reach
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4510749989317414373, guid: 9001800429e67964284fe8f5ab9ed0bc, type: 3}
       propertyPath: pushForce
       value: 60
       objectReference: {fileID: 0}

@@ -44,15 +44,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 3889376186125966826}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b90d0054653776c4089e3da4b93a488f, type: 3}
+  m_Script: {fileID: 11500000, guid: 8c7f77064c38e6842bd97cf9d67dfeb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::damage
-  type: 1
+  type: 2
   rb: {fileID: 0}
   damageAmount: 1
+  isExplosive: 0
+  respawnUponTouch: 0
+  delayRespawnUponTouch: 0
+  delayTime: 0.5
+  splashDamageAmount: 0
   damageRate: 0.5
   speed: 0
   destroyTime: 0
+  explosionPrefab: {fileID: 0}
 --- !u!33 &2677573356827267213
 MeshFilter:
   m_ObjectHideFlags: 0
