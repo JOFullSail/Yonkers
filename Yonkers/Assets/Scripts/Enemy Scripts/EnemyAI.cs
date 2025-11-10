@@ -190,8 +190,11 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     protected void enemyRoutine() // roamRoutine();
     {
-
-        animator.SetFloat("Speed", agent.velocity.normalized.magnitude);
+        if(animator != null)
+        {
+            animator.SetFloat("Speed", agent.velocity.normalized.magnitude);
+        }
+        
 
         timers();
 

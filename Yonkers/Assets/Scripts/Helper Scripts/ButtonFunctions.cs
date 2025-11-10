@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using UnityEngine.Rendering;
 
 public class ButtonFunctions : MonoBehaviour

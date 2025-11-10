@@ -44,8 +44,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject PlayerReticleDisplay;
     [SerializeField] GameObject PlayerDashCoolDownDisplay;
 
-    [SerializeField] bool enableMainMenu = false;
-
     [Header("Audio")]
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip menuMusic;
@@ -336,47 +334,51 @@ public class GameManager : MonoBehaviour
             string encoded = PlayerPrefs.GetString(SaveKey);
             string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
             PlayerSaveData data = JsonUtility.FromJson<PlayerSaveData>(json);
-
-            // Restore player
-            GameObject spawn = GameObject.Find(data.lastCheckpointName);
-            if (spawn != null)
+            if(data.lastCheckpointName != null && data.lastCheckpointName != "")
             {
-                Checkpoint checkpoint = spawn.GetComponent<Checkpoint>();
-                if (checkpoint != null)
+                GameObject spawn = GameObject.Find(data.lastCheckpointName);
+                if (spawn != null)
                 {
-                    Transform spawnPos = checkpoint.SpawnPos;
-
-                    if (spawnPos != null)
+                    Checkpoint checkpoint = spawn.GetComponent<Checkpoint>();
+                    if (checkpoint != null)
                     {
-                        playerSpawn.transform.position = spawnPos.position;
-                        playerSpawn.transform.rotation = spawnPos.rotation;
+                        Transform spawnPos = checkpoint.SpawnPos;
+                        if (spawnPos != null)
+                        {
+                            playerSpawn.transform.position = spawnPos.position;
+                            playerSpawn.transform.rotation = spawnPos.rotation;
+                        }
+                    }
+                }
+            }
+            // Restore player
+            
+            if(player != null)
+            {
+                playerScript.CurrentHealth = data.HP;
+                player.transform.position = playerSpawn.transform.position;
+                player.transform.rotation = playerSpawn.transform.rotation;
+
+                // Restore gun list
+                playerScript.GunList.Clear();
+                foreach (GunStatsData g in data.guns)
+                {
+                    GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+                    if (gun == null)
+                    {
+                        Debug.LogWarning($"Gun '{g.gunName}' not found in database!");
+                        continue;
                     }
 
-                }
-            }
-
-            playerScript.CurrentHealth = data.HP;
-            player.transform.position = playerSpawn.transform.position;
-            player.transform.rotation = playerSpawn.transform.rotation;
-
-            // Restore gun list
-            playerScript.GunList.Clear();
-            foreach (GunStatsData g in data.guns)
-            {
-                GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
-                if (gun == null)
-                {
-                    Debug.LogWarning($"Gun '{g.gunName}' not found in database!");
-                    continue;
+                    gun.ammoCurrent = g.ammoCurrent;
+                    gun.ammoReserves = g.ammoReserves;
+                    playerScript.GunList.Add(gun);
                 }
 
-                gun.ammoCurrent = g.ammoCurrent;
-                gun.ammoReserves = g.ammoReserves;
-                playerScript.GunList.Add(gun);
+                playerScript.GunListIndex = data.selectedGun;
+                playerScript.changeGun();
             }
-
-            playerScript.GunListIndex = data.selectedGun;
-            playerScript.changeGun();
+            
 
             Debug.Log($"Loaded checkpoint '{data.lastCheckpointName}'");
             return true;
@@ -511,13 +513,16 @@ public class GameManager : MonoBehaviour
         if (playerScript.CurrentHealth <= 0)
             playerScript.CurrentHealth = playerScript.OriginalHealth;
         playerScript.GunList.Clear();
-
+        
         foreach (GunStatsData g in persistentPlayerState.guns)
         {
-            GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
-            gun.ammoCurrent = g.ammoCurrent;
-            gun.ammoReserves = g.ammoReserves;
-            playerScript.GunList.Add(gun);
+            if (g != null && gunDatabase.GetGunByName(g.gunName) != null)
+            {
+                GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+                gun.ammoCurrent = g.ammoCurrent;
+                gun.ammoReserves = g.ammoReserves;
+                playerScript.GunList.Add(gun);
+            }
         }
 
         playerScript.GunListIndex = 0;
