@@ -1,14 +1,15 @@
-using System;
-using System.Text;
-using System.Collections.Generic;
 using NUnit.Framework;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Linq;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -63,6 +64,18 @@ public class GameManager : MonoBehaviour
     public Image playerBrightnessOverlay;
     public Image playerHPBar;
     public TMP_Text playerHPLabel;
+    public TMP_Text ScoreLC; //for when you comeplete levels
+    public TMP_Text GradeLC;//for when you comeplete levels
+    public TMP_Text ScoreLVL1;
+    public TMP_Text ScoreLVL2;
+    public TMP_Text ScoreLVL3;
+    public TMP_Text ScoreLVL4;
+    public TMP_Text ScoreLVL5;
+    public Image GradeLVL1;
+    public Image GradeLVL2;
+    public Image GradeLVL3;
+    public Image GradeLVL4;
+    public Image GradeLVL5;
     public GameObject checkpointLabel;
     public Image playerDamageScreen;
     public Image playerHealScreen;
@@ -207,6 +220,7 @@ public class GameManager : MonoBehaviour
     {
         statePause();
         menuActive = menuLevelComplete;
+        
         menuActive.SetActive(true);
     }
     public void stateMainMenuOpen()
@@ -673,6 +687,18 @@ public class GameManager : MonoBehaviour
         currScene = SceneManager.GetActiveScene();
         playerHPBar = FindInactive("Player HP Fill").GetComponent<Image>();
         playerHPLabel = FindInactive("Player HP Label").GetComponent<TMP_Text>();
+        ScoreLC = FindInactive("ScoreNumber").GetComponent<TMP_Text>();
+        GradeLC = FindInactive("Grade Letter").GetComponent<TMP_Text>();
+        ScoreLVL1 = FindInactive("Score Text 1").GetComponent<TMP_Text>();
+        ScoreLVL2 = FindInactive("Score Text 2").GetComponent<TMP_Text>();
+        ScoreLVL3 = FindInactive("Score Text 3").GetComponent<TMP_Text>();
+        ScoreLVL4 = FindInactive("Score Text 4").GetComponent<TMP_Text>();
+        ScoreLVL5 = FindInactive("Score Text 5").GetComponent<TMP_Text>();
+        GradeLVL1 = FindInactive("Grade Image 1").GetComponent<Image>(); 
+        GradeLVL2 = FindInactive("Grade Image 2").GetComponent<Image>();
+        GradeLVL3 = FindInactive("Grade Image 3").GetComponent<Image>();
+        GradeLVL4 = FindInactive("Grade Image 4").GetComponent<Image>();
+        GradeLVL5 = FindInactive("Grade Image 5").GetComponent<Image>();
         ammoCurrent = FindInactive("Ammo Current").GetComponent<TMP_Text>();
         ammoMax = FindInactive("Ammo Max").GetComponent<TMP_Text>();
         ammoReserves = FindInactive("Ammo Reserves").GetComponent<TMP_Text>();
@@ -851,8 +877,11 @@ public class GameManager : MonoBehaviour
     public void RecordLevelScore(int score, char grade)
     {
         string levelName = SceneManager.GetActiveScene().name;
+
         levelScores[levelName] = score;
         levelGrades[levelName] = grade;
+        ScoreLC.text = score.ToString();
+        GradeLC.text = grade.ToString();
 
         Debug.Log((char)levelGrades[levelName] + " rank recorded for " + levelName);
     }
@@ -918,6 +947,7 @@ public class GameManager : MonoBehaviour
     {
         // TODO - Play cutscene
         finalGrade = GetFinalGrade();
+        GradeLC.text = finalGrade.ToString();
         Debug.Log("Final Grade is " + finalGrade);
         stateWin();
     }
@@ -943,7 +973,7 @@ public class GameManager : MonoBehaviour
     }
     public void levelLocks() //used to keep track of locked and unlocked levels 
     {
-        int index = 1;
+        int index = 2;
         int maxIndex = levelOrder.Count() - 1;
         if (!IsLevelUnlocked(levelOrder[index]))
         {

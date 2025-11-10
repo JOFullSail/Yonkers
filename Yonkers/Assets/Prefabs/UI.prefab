@@ -1149,7 +1149,7 @@ GameObject:
   - component: {fileID: 2470482958903260401}
   - component: {fileID: 2991265848908713391}
   m_Layer: 5
-  m_Name: Grade Image
+  m_Name: Grade Image 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5186,7 +5186,7 @@ GameObject:
   - component: {fileID: 1505711139121308697}
   - component: {fileID: 7981995575793311206}
   m_Layer: 5
-  m_Name: Score Text
+  m_Name: Score Text 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6639,7 +6639,7 @@ GameObject:
   - component: {fileID: 6221409798453126974}
   - component: {fileID: 6496142016515348749}
   m_Layer: 5
-  m_Name: Score Text
+  m_Name: Score Text 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12717,7 +12717,7 @@ GameObject:
   - component: {fileID: 4674542895443953929}
   - component: {fileID: 7889728420218918305}
   m_Layer: 5
-  m_Name: Grade Image
+  m_Name: Grade Image 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12792,7 +12792,7 @@ GameObject:
   - component: {fileID: 1204611869447559727}
   - component: {fileID: 5866619663180406034}
   m_Layer: 5
-  m_Name: Score Text
+  m_Name: Score Text 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14762,7 +14762,7 @@ GameObject:
   - component: {fileID: 5059390760378028126}
   - component: {fileID: 428639171184663273}
   m_Layer: 5
-  m_Name: Score Text
+  m_Name: Score Text 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15998,7 +15998,7 @@ GameObject:
   - component: {fileID: 6533621576950693291}
   - component: {fileID: 3554813075694681123}
   m_Layer: 5
-  m_Name: Grade Image
+  m_Name: Grade Image 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18001,7 +18001,7 @@ GameObject:
   - component: {fileID: 7976939525293774831}
   - component: {fileID: 7512206357675208462}
   m_Layer: 5
-  m_Name: Grade Image
+  m_Name: Grade Image 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19147,7 +19147,7 @@ GameObject:
   - component: {fileID: 6819955082739623885}
   - component: {fileID: 8210915275558629126}
   m_Layer: 5
-  m_Name: Grade Image
+  m_Name: Grade Image 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21504,7 +21504,7 @@ GameObject:
   - component: {fileID: 4121681065637921755}
   - component: {fileID: 5268971859038384861}
   m_Layer: 5
-  m_Name: Score Text
+  m_Name: Score Text 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -222,9 +222,9 @@ public class ButtonFunctions : MonoBehaviour
     }
     public void gotoLevel3()//head to level 3
     {
-        //GameManager.instance.stateUnpause();
-        //GameManager.instance.enablePlayerUI();
-        //GameManager.instance.LoadNextLevel(levelName);
+        GameManager.instance.stateUnpause();
+        GameManager.instance.enablePlayerUI();
+        GameManager.instance.LoadNextLevel("Level 3- The Wall");
     } 
     public void gotoLevel4()//head to level 4
     {
@@ -240,8 +240,8 @@ public class ButtonFunctions : MonoBehaviour
     }
     public void gotoShowcase()//head to Showcase
     {
-        //GameManager.instance.stateUnpause();
-        //GameManager.instance.enablePlayerUI();
-        //GameManager.instance.LoadNextLevel(levelName);
+        GameManager.instance.stateUnpause();
+        GameManager.instance.enablePlayerUI();
+        GameManager.instance.LoadNextLevel("Showcase level");
     }
 }
