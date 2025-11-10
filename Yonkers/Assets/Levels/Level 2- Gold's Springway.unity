@@ -2197,7 +2197,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 310242553}
-  - component: {fileID: 310242552}
   - component: {fileID: 310242551}
   m_Layer: 0
   m_Name: Enemy Room
@@ -2227,32 +2226,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 20, y: 9, z: 45}
   m_Center: {x: -9, y: 5, z: 0}
---- !u!114 &310242552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 310242550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c37a06407f3eb0e4c9c7fa94c808d3a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RoomScript
-  door1: {fileID: 0}
-  Enemy:
-  - {fileID: 2212698571786369518, guid: 9001800429e67964284fe8f5ab9ed0bc, type: 3}
-  - {fileID: 5900499558154895673, guid: dfb02c7494c4cf44c87d96481b86b6da, type: 3}
-  InvisWalls: {fileID: 0}
-  MaxEnemy: 5
-  spawnRate: 0.5
-  spawnPos:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  audDoor:
-  - {fileID: 8300000, guid: b1443d1016f364a4ca4730189fdff545, type: 3}
-  audDoorVol: 0.6
 --- !u!4 &310242553
 Transform:
   m_ObjectHideFlags: 0

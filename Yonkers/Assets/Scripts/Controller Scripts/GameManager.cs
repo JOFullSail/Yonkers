@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject PlayerHPDisplay;
     [SerializeField] GameObject PlayerAmmoDisplay;
     [SerializeField] GameObject PlayerReticleDisplay;
+    [SerializeField] GameObject PlayerDashCoolDownDisplay;
 
     [SerializeField] bool enableMainMenu = false;
 
@@ -708,6 +709,7 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay = FindInactive("Player HP");
         PlayerAmmoDisplay = FindInactive("Ammo");
         PlayerReticleDisplay = FindInactive("Reticle");
+        PlayerDashCoolDownDisplay = FindInactive("Player Dash Cooldown");
 
         if (OpenLevelSelect == true && mainMenu.name != null && menuLevelSelect != null && currScene.name == "Main Menu Scene")
         {
@@ -862,6 +864,7 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay.SetActive(true);
         PlayerAmmoDisplay.SetActive(true);
         PlayerReticleDisplay.SetActive(true);
+        PlayerDashCoolDownDisplay.SetActive(true);
         playerDashCooldown.gameObject.SetActive(true);
     }
     public void disablePlayerUI()
@@ -869,6 +872,8 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay.SetActive(false);
         PlayerAmmoDisplay.SetActive(false);
         PlayerReticleDisplay.SetActive(false);
+        PlayerDashCoolDownDisplay.SetActive(false);
+        playerDashCooldown.gameObject.SetActive(false);
     }
 
     /// <summary>
