@@ -981,8 +981,11 @@ public class GameManager : MonoBehaviour
 
     public void PlayLevelMusic()
     {
-        if (musicSource == null || levelMusic == null) return;
+        if (musicSource == null) return;
         if (musicSource.clip == levelMusic && musicSource.isPlaying) return;
+
+        if(LevelManager.instance != null && LevelManager.instance.levelMusic != null)
+            levelMusic = LevelManager.instance.levelMusic;
 
         musicSource.clip = levelMusic;
         musicSource.loop = true;
