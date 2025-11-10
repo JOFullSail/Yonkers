@@ -9,18 +9,12 @@ public class ButtonFunctions : MonoBehaviour
     public Image FOVSliderParent;
     public Image mouSensSliderParent;
     public Image brightnessSliderParent;
-
-    List<GameObject> menuStack;
-
-    Camera cam;
+    
     void Start()
     {
-        if(GameManager.instance.CameraScript != null)
-            cam = GameManager.instance.CameraScript.GetComponent<Camera>();
-
         if(SettingsData.instance != null)
         {
-            if (cam) cam.fieldOfView = SettingsData.instance.FOV;
+            GameManager.instance.cam.fieldOfView = SettingsData.instance.FOV;
             if(FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
             {
                 FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOV, SettingsData.instance.FOVMin, SettingsData.instance.FOVMax);
@@ -79,10 +73,10 @@ public class ButtonFunctions : MonoBehaviour
 
         // Applying Values
         SettingsData.instance.FOV = sliderValue;
-        if (cam && cam.fieldOfView > 0) cam.fieldOfView = sliderValue;
+        if (GameManager.instance.cam.fieldOfView > 0) GameManager.instance.cam.fieldOfView = sliderValue;
 
         // Updating UI Bars
-        FOVSliderParent.fillAmount = normalize(sliderValue, slider.minValue, slider.maxValue);
+        FOVSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
 
     public void mouSens(Slider slider)
@@ -96,7 +90,7 @@ public class ButtonFunctions : MonoBehaviour
         if (GameManager.instance.CameraScript) GameManager.instance.CameraScript.mouSens = sliderValue;
 
         // Updating UI Bars
-        mouSensSliderParent.fillAmount = normalize(sliderValue, slider.minValue, slider.maxValue);
+        mouSensSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
 
     public void brightness(Slider slider)
@@ -124,8 +118,9 @@ public class ButtonFunctions : MonoBehaviour
             clr.a = alphaValue;
             GameManager.instance.playerBrightnessOverlay.color = clr;
         }
-        brightnessSliderParent.fillAmount = normalize(sliderValue, slider.minValue, slider.maxValue);
+        brightnessSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
+    
     //new game goes to level select and refreshes player data
     public void NewGametoLevelSelect()
     {

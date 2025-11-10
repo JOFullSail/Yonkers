@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
     public GameObject goalObject;
     public GameObject MainCamera;
     public CameraController CameraScript;
+    public Camera cam;
     public GameObject blindScreen;
     public GameObject hypnoScreen;
     public GameObject webScreen;
@@ -178,6 +179,7 @@ public class GameManager : MonoBehaviour
                 goalObject = GameObject.FindWithTag("Goal");
                 MainCamera = GameObject.FindWithTag("MainCamera");
                 CameraScript = MainCamera.GetComponent<CameraController>();
+                cam = MainCamera.GetComponent<Camera>();
             }
 
             timeScaleOrig = Time.timeScale;
@@ -575,6 +577,7 @@ public class GameManager : MonoBehaviour
         goalObject = null;
         MainCamera = null;
         CameraScript = null;
+        cam = null;
 
         // Wait a short delay before relinking
         StartCoroutine(ReinitializeAfterLoad(scene));
@@ -755,7 +758,10 @@ public class GameManager : MonoBehaviour
         goalObject = GameObject.FindWithTag("Goal");
         MainCamera = GameObject.FindWithTag("MainCamera");
         if (MainCamera != null)
+        {
             CameraScript = MainCamera.GetComponent<CameraController>();
+            cam = MainCamera.GetComponent<Camera>();
+        }
 
         // Refresh UI
         GetUI();
