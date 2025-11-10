@@ -43,7 +43,7 @@ public class SettingsData : MonoBehaviour
 
                     slider.minValue = (int)FOVMin;
                     slider.maxValue = (int)FOVMax;
-                    slider.value = (int)FOVOrig;
+                    slider.value = FOVOrig;
                 }
                 else
                 {

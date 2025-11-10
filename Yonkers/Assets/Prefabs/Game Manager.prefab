@@ -49,8 +49,30 @@ MonoBehaviour:
   menuPause: {fileID: 0}
   menuWin: {fileID: 0}
   menuDead: {fileID: 0}
+  menuLevelComplete: {fileID: 0}
   mainMenu: {fileID: 0}
-  enableMainMenu: 0
+  submenuActive: {fileID: 0}
+  menuSettings: {fileID: 0}
+  menuLevelSelect: {fileID: 0}
+  CreditsScreen: {fileID: 0}
+  submenuGameplaySettings: {fileID: 0}
+  submenuAudioSettings: {fileID: 0}
+  submenuLockedlevel2: {fileID: 0}
+  submenuLockedlevel3: {fileID: 0}
+  submenuLockedlevel4: {fileID: 0}
+  submenuLockedlevel5: {fileID: 0}
+  submenuUnlockedlevel2button: {fileID: 0}
+  submenuUnlockedlevel2stats: {fileID: 0}
+  submenuUnlockedlevel3button: {fileID: 0}
+  submenuUnlockedlevel3stats: {fileID: 0}
+  submenuUnlockedlevel4button: {fileID: 0}
+  submenuUnlockedlevel4stats: {fileID: 0}
+  submenuUnlockedlevel5button: {fileID: 0}
+  submenuUnlockedlevel5stats: {fileID: 0}
+  PlayerHPDisplay: {fileID: 0}
+  PlayerAmmoDisplay: {fileID: 0}
+  PlayerReticleDisplay: {fileID: 0}
+  PlayerDashCoolDownDisplay: {fileID: 0}
   musicSource: {fileID: 779934335232736755}
   menuMusic: {fileID: 8300000, guid: 79abb3c956b145b4db7db505b0bb22a2, type: 3}
   levelMusic: {fileID: 8300000, guid: 938260ab6ccdf1e4d92886088bc64b46, type: 3}
@@ -60,21 +82,41 @@ MonoBehaviour:
   goalObject: {fileID: 0}
   MainCamera: {fileID: 0}
   CameraScript: {fileID: 0}
+  cam: {fileID: 0}
   blindScreen: {fileID: 8776983562900730942, guid: 65253a87d55477d4b95f3c38e3b9e852, type: 3}
   hypnoScreen: {fileID: 5658346767865897733, guid: eef845be00cd7f242b1f4986a0f031d9, type: 3}
   webScreen: {fileID: 7526445377226203194, guid: c1c5751dbdf0e2a41bba900676451d1c, type: 3}
+  playerBrightnessOverlay: {fileID: 0}
   playerHPBar: {fileID: 0}
   playerHPLabel: {fileID: 0}
+  ScoreLC: {fileID: 0}
+  GradeLC: {fileID: 0}
+  ScoreLVL1: {fileID: 0}
+  ScoreLVL2: {fileID: 0}
+  ScoreLVL3: {fileID: 0}
+  ScoreLVL4: {fileID: 0}
+  ScoreLVL5: {fileID: 0}
+  GradeLVL1: {fileID: 0}
+  GradeLVL2: {fileID: 0}
+  GradeLVL3: {fileID: 0}
+  GradeLVL4: {fileID: 0}
+  GradeLVL5: {fileID: 0}
   checkpointLabel: {fileID: 0}
   playerDamageScreen: {fileID: 0}
   playerHealScreen: {fileID: 0}
   ammoCurrent: {fileID: 0}
   ammoMax: {fileID: 0}
+  ammoReserves: {fileID: 0}
+  playerDashCooldown: {fileID: 0}
   isPaused: 0
   playerSpawnOrig: {fileID: 0}
+  currScene:
+    m_Handle: 0
+  finalGrade: 0
   gunDatabase: {fileID: 11400000, guid: 4633ffc775b32884a88301d9a133d162, type: 2}
+  levelOrder: []
   persistentPlayerState:
-    HP: 0
+    HP: 4
     lastScene: 
     guns: []
 --- !u!82 &779934335232736755
