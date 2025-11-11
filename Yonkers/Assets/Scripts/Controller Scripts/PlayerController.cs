@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //Ints
     int gunListIdx;
     int jumpCount;
-    int hpOrig;
+    int hpOrig = 4;
     //bools
     bool isDashing;
     bool isClimbing;
@@ -251,6 +251,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         set { frozenOn = value; }
     }
 
+    public Vector3 PlayerVel
+    {
+        get { return playerVel; }
+        set { playerVel = value; }
+    }
+
     public List<GunStats> GunList
     {
         get { return gunList; }
@@ -260,8 +266,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        respawnPlayer(false, false);
-        hpOrig = HP;
         currentSpeedX = speedZero;
         currentSpeedZ = speedZero;
         currentSpeedAccelX = minAccel;
@@ -458,7 +462,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             updatePlayerUI();
             if(amount > 0)
             {
-                StartCoroutine(flashDmgScreen());
+                if (HP > 0)
+                {
+                    StartCoroutine(flashDmgScreen());
+                }
                 aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
             }
             else
@@ -568,7 +575,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             aud.PlayOneShot(audGun[Random.Range(0, audGun.Length)], audGunVol);
             int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
-            gunList[gunListIdx].ammoReserves -= (gunList[gunListIdx].ammoMax - gunList[gunListIdx].ammoCurrent);
+            gunList[gunListIdx].ammoReserves -= ammoToLoad;
             gunList[gunListIdx].ammoCurrent = ammoToLoad;
 
             updatePlayerUI();
@@ -1042,10 +1049,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void dash() // Dash in a direction. Bool for if you want dash to increase your movement speed
     {
+        // Dash Cooldown UI
+        GameManager.instance.playerDashCooldown.fillAmount = ButtonFunctions.normalize(0f, dashCooldown, dashCooldownTimer);
+        
         //v2
         if (Input.GetButton("Shift") && (Input.GetButton("UP") == true || Input.GetButton("DOWN") == true || Input.GetButton("LEFT") == true || Input.GetButton("RIGHT") == true) && isClimbing == false && isInRagdoll == false && gravityOn)
         {
-
             if (dashCooldownTimer >= dashCooldown)
             {
                 isDashing = true;
@@ -1188,6 +1197,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             dashTimer += Time.deltaTime;
             controller.Move(move);
+            GameManager.instance.playerDashCooldown.fillAmount = ButtonFunctions.normalize(dashLength, 0f, dashTimer);
             yield return null;
         }
     }
@@ -1351,33 +1361,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     }
 
-    public void respawnPlayer(bool resetPlayer, bool resetHealth)
-    {
-        if (GameManager.instance.playerSpawn != null)
-        {
-
-            controller.enabled = false;
-            controller.transform.position = GameManager.instance.playerSpawn.transform.position;
-            controller.transform.rotation = GameManager.instance.playerSpawn.transform.rotation;
-            aud.PlayOneShot(audSpawn[Random.Range(0, audSpawn.Length)], audSpawnVol);
-            controller.enabled = true;
-        }
-
-        if (resetPlayer)
-        {
-            knockbacked = false;
-            isInRagdoll = false;
-            knockbackTimer = 0f;
-            playerVel = Vector3.zero;
-        }
-
-        if (resetHealth)
-        {
-            HP = hpOrig;
-            updatePlayerUI();
-        }
-    }
-
     public void Blind()
     {
         StartCoroutine(BlindTime());
@@ -1433,6 +1416,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             GameManager.instance.ammoCurrent.text = gunList[gunListIdx].ammoCurrent.ToString("F0");
             GameManager.instance.ammoMax.text = gunList[gunListIdx].ammoMax.ToString("F0");
+            GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
         }
     }
 }

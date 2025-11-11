@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] int mouSens; // 300
-    [SerializeField] int vertLockMin; // -60 // Allows the player to still climb the wall while looking up.
+    [SerializeField] int vertLockMin; // -60 // Allows the player to still climb a wall while looking up.
     [SerializeField] int vertLockMax; // 90
     [SerializeField] bool invertY; // false
 
+    public float mouSens;
+    
     float rotX;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -15,8 +16,12 @@ public class CameraController : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
+        if (SettingsData.instance.mouSensWholeNumbers)
+            mouSens = (int)SettingsData.instance.mouSens;
+        else
+            mouSens = SettingsData.instance.mouSens;
     }
-
+    
     // Update is called once per frame
     void Update()
     {
