@@ -7851,7 +7851,7 @@ GameObject:
   - component: {fileID: 1266586199}
   - component: {fileID: 1266586198}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Stunning Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14087,7 +14087,7 @@ MonoBehaviour:
   isExplosive: 0
   respawnUponTouch: 1
   delayRespawnUponTouch: 1
-  delayTime: 5
+  delayTime: 1
   splashDamageAmount: 0
   damageRate: 0
   speed: 0
