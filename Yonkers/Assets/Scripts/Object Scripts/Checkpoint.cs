@@ -26,7 +26,8 @@ public class Checkpoint : MonoBehaviour
     bool hasTriggered;
     Material matOrig;
 
-
+    public Transform SpawnPos
+    { get { return spawnPos; } }
     private void Start()
     {
         if (objects.Length > 0) matOrig = objects[0].material;
@@ -38,6 +39,8 @@ public class Checkpoint : MonoBehaviour
         if (other.CompareTag("Player") && !hasTriggered)
         {
             hasTriggered = true;
+
+            GameManager.instance.SaveGame(gameObject.name);
             if (GameManager.instance.playerSpawn != null)
             {
                 GameManager.instance.playerSpawn.transform.position = spawnPos.transform.position;

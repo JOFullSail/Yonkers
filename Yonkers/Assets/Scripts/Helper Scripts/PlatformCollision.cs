@@ -13,6 +13,7 @@ public class PlatformCollision : MonoBehaviour
         }
     }
 
+    [System.Obsolete]
     private void OnTriggerExit(Collider other)
     {
         if (!other.CompareTag(playerTag)) return;
