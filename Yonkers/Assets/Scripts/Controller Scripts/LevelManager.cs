@@ -4,6 +4,8 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
 
+    public AudioClip levelMusic;
+
     [Header("Grade Scaling")]
     [SerializeField] int levelMaxScore = 600;
     [SerializeField] int gradeSMinScore = 500;
