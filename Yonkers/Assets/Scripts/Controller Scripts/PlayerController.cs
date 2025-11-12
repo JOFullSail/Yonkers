@@ -174,6 +174,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 	float newWallHeight = 0f;
     
     // For Jump()
+    Vector3 ceilingRayUp;
     List<Vector3> ceilingRays;
 
     // - UNUSED -
@@ -423,26 +424,45 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     // Hardcoded, but could be serialized later
     void ceilingRayInit()
     {
-        Quaternion pitch = Quaternion.AngleAxis(315f, transform.right);
-        Vector3 direction = pitch * GameManager.instance.MainCamera.transform.forward;
-        for (int i = 0; i < 8; ++i)
+        ceilingRays = new List<Vector3>();
+        Vector3 ray;
+        Quaternion pitch = Quaternion.AngleAxis(330f, transform.right);
+        Vector3 direction = pitch * Camera.main.transform.forward;
+        ceilingRayUp = Camera.main.transform.up; // Distance = 0.4f
+        
+        for (int i = 0; i < 8; ++i) // Distance = 0.6f
         {
-            Quaternion yaw = Quaternion.AngleAxis(45 * i, GameManager.instance.MainCamera.transform.up);
-            Vector3 ray = yaw * direction;
+            Quaternion yaw = Quaternion.AngleAxis(45f * i, Camera.main.transform.up);
+            ray = yaw * direction;
             ceilingRays.Add(ray);
         }
     }
 
     void jump()
     {
-        foreach (Vector3 ray in ceilingRays)
+        Debug.DrawRay(Camera.main.transform.position, ceilingRayUp * 0.4f);
+        foreach (Vector3 ray in ceilingRays) 
+            Debug.DrawRay(Camera.main.transform.position, ray * 0.6f);
+        if (playerVel.y <= 0) ceilingHit = false;
+        else if (Physics.Raycast(Camera.main.transform.position, ceilingRayUp, out hit, 0.4f))
         {
-            Debug.DrawRay(GameManager.instance.MainCamera.transform.position, ray);
-            if (Physics.Raycast(Camera.main.transform.position, ray, out hit, 1f))
+            ceilingHit = true;
+        }
+        else
+        {
+            for (int i = 0; i < ceilingRays.Count; ++i)
             {
-                ceilingHit = true;
-                return;
+                if (Physics.Raycast(Camera.main.transform.position, ceilingRays[i], out hit, 0.6f))
+                {
+                    ceilingHit = true;
+                }
             }
+        }
+
+        if (ceilingHit)
+        {
+            playerVel.y = 0;
+            ceilingHit = false;
         }
         
         if (!isClimbing && Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && gravityOn)
