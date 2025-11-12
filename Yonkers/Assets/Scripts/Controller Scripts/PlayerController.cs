@@ -123,6 +123,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool frozenOn; //false = not frozen //true = frozen
     public bool invertMove;
     bool isPlayingSteps;
+    bool ceilingHit;
+    
     //Floats
     public float gravityOffTimer; // Used to time a duration of having no gravity.
     public float gravityLockout = 0; //amount of time gravity is disabled
@@ -170,6 +172,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     Vector3 prevWallNorm;
     Vector3 newWallNorm;
 	float newWallHeight = 0f;
+    
+    // For Jump()
+    List<Vector3> ceilingRays;
 
     // - UNUSED -
     //[SerializeField] Collider slopecheck; // no use yet
@@ -284,6 +289,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
         if (debugClimbInfinitely) climbDuration = float.MaxValue;
         if (debugFastClimb) climbSpeed = debugClimbSpeed;
+        
+        ceilingRayInit();
     }
 
     // Update is called once per frame
@@ -412,9 +419,32 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isClimbing = false;
         }
     }
+    
+    // Hardcoded, but could be serialized later
+    void ceilingRayInit()
+    {
+        Quaternion pitch = Quaternion.AngleAxis(315f, transform.right);
+        Vector3 direction = pitch * GameManager.instance.MainCamera.transform.forward;
+        for (int i = 0; i < 8; ++i)
+        {
+            Quaternion yaw = Quaternion.AngleAxis(45 * i, GameManager.instance.MainCamera.transform.up);
+            Vector3 ray = yaw * direction;
+            ceilingRays.Add(ray);
+        }
+    }
 
     void jump()
     {
+        foreach (Vector3 ray in ceilingRays)
+        {
+            Debug.DrawRay(GameManager.instance.MainCamera.transform.position, ray);
+            if (Physics.Raycast(Camera.main.transform.position, ray, out hit, 1f))
+            {
+                ceilingHit = true;
+                return;
+            }
+        }
+        
         if (!isClimbing && Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && gravityOn)
         {
             if (jumpTimer >= jumpGracePeriod && jumpCount == 0)
@@ -1209,7 +1239,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             //Debug.Log("Dashing or Jumping");
             playerVel.y = 0.0f;
         }
-        else if (isJumping == true)
+        else if (isJumping == true && ceilingHit == false)
         {
             ++jumpCount;
             playerVel.y = jumpSpeed;
