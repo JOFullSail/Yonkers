@@ -43,14 +43,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject PlayerAmmoDisplay;
     [SerializeField] GameObject PlayerReticleDisplay;
     [SerializeField] GameObject PlayerDashCoolDownDisplay;
+    [SerializeField] GameObject LoadingScreen;
 
-    [Header("Audio")]
+   [Header("Audio")]
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip menuMusic;
     [SerializeField] private AudioClip levelMusic;
 
     public GameObject playerSpawn;
-
     public GameObject player;
     public PlayerController playerScript;
     public GameObject goalObject;
@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour
     public Image playerHealScreen;
     public TMP_Text ammoCurrent, ammoMax, ammoReserves;
     public Image playerDashCooldown;
+    public TMP_Text LoadingScreendotdotdot; // the "..." of teh loading screen!
 
     public bool isPaused;
     private bool isReloadingScene = false;
@@ -91,6 +92,7 @@ public class GameManager : MonoBehaviour
 
     int gameGoalCount;
     public Scene currScene;
+    int loadingdottick;
 
     public char finalGrade;
 
@@ -194,11 +196,6 @@ public class GameManager : MonoBehaviour
 
             PlayMenuMusic();
         }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
     }
     void Update()
     {
@@ -210,7 +207,7 @@ public class GameManager : MonoBehaviour
                 menuActive = menuPause;
                 menuActive.SetActive(true);
             }
-            else if (menuActive == menuPause || menuActive != null)
+            else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen)
             {
                 stateUnpause();
             }
@@ -589,7 +586,8 @@ public class GameManager : MonoBehaviour
     public void LoadNextLevel(string nextScene)
     {
         SavePlayerToMemory();  // Save to memory first
-        SceneManager.LoadScene(nextScene);  // Then load the new scene
+        StartCoroutine(LoadingScreenEnable(nextScene));
+        
     }
 
     /// <summary>
@@ -719,6 +717,8 @@ public class GameManager : MonoBehaviour
         PlayerAmmoDisplay = FindInactive("Ammo");
         PlayerReticleDisplay = FindInactive("Reticle");
         PlayerDashCoolDownDisplay = FindInactive("Player Dash Cooldown");
+        LoadingScreen = FindInactive("Loading Screen");
+        LoadingScreendotdotdot = FindInactive("Loading Text ...").GetComponent<TMP_Text>();
 
         if (OpenLevelSelect == true && mainMenu.name != null && menuLevelSelect != null && currScene.name == "Main Menu Scene")
         {
@@ -1069,5 +1069,44 @@ public class GameManager : MonoBehaviour
             submenuUnlockedlevel5button.SetActive(true);
             submenuUnlockedlevel5stats.SetActive(true);
         }
+    }
+        IEnumerator LoadingScreenEnable(string level)
+        {
+            menuChange(LoadingScreen);
+        AsyncOperation Loading = SceneManager.LoadSceneAsync(level);
+        loadingdottick = 0;
+        while (!Loading.isDone)
+        { 
+            if (loadingdottick == 0)
+            {
+                LoadingScreendotdotdot.text = "";
+            }else if (loadingdottick == 1)
+            {
+                LoadingScreendotdotdot.text = ".";
+            }
+            else if (loadingdottick == 2)
+            {
+                LoadingScreendotdotdot.text = "..";
+            }
+            else if (loadingdottick == 3)
+            {
+                LoadingScreendotdotdot.text = "...";
+            }
+            loadingdottick++;
+            if(loadingdottick == 4)
+            {
+                loadingdottick = 0;
+            }
+            yield return null;
+        }
+        if(level != "Main Menu Scene")
+        {
+            clearActive();
+        }
+
+    }
+    IEnumerator Loadingdots()
+    { 
+        yield return new WaitForSecondsRealtime(1f);
     }
 }
