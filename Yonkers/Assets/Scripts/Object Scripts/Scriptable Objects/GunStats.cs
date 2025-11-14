@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GunStats", menuName = "Scriptable Objects/GunStats")]
@@ -30,6 +31,8 @@ public class GunStats : ScriptableObject
     [Header("Audio")]
     public AudioClip[] shootSound;
     [Range(0, 1)] public float shootSoundVol;
+    public AudioClip[] reloadSound;
+    [Range(0, 1)] public float reloadSoundVol;
 
     [Header("Transform Modifiers")]
     public Vector3 positionWhenHeld = new Vector3(0.2850304f, -0.2229996f, 0.4335518f);

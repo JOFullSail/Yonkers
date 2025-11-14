@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.PlayerLoop;
 
-public class MovingPlatform : MonoBehaviour
+public class MovingPlatform : MonoBehaviour, IActivate
 {
     [Header("Platform")]
     public Transform platform;
@@ -11,6 +12,8 @@ public class MovingPlatform : MonoBehaviour
     public float delay, stopThreshold = 0.01f;
     public bool rotateTowardsPath = true;
     public float rotationSpeed = 5f;
+    public bool UseActivate; //true to wait for the switch call to start moving or false to always move.
+    bool onetimeactivate; //to prevent more than one call for the coroutine;
 
     [System.Serializable]
     public class TriggerInfo
@@ -38,6 +41,7 @@ public class MovingPlatform : MonoBehaviour
 
     void Start()
     {
+        onetimeactivate = true;
         if (waypoints.Count < 2) return;
         while (segSpeeds.Count < waypoints.Count) segSpeeds.Add(DefSpeed);
         while (segSpeeds.Count > waypoints.Count) segSpeeds.RemoveAt(segSpeeds.Count - 1);
@@ -55,7 +59,18 @@ public class MovingPlatform : MonoBehaviour
 
         platform.position = waypoints[0].position;
         index = 1;
-        StartCoroutine(Move());
+        
+    }
+    void Update()
+    {
+        if (UseActivate == false)
+        {
+            if (onetimeactivate == true)
+            {
+                onetimeactivate = false;
+                StartCoroutine(Move());
+            }
+        }  
     }
     IEnumerator Move()
     {
@@ -123,5 +138,10 @@ public class MovingPlatform : MonoBehaviour
             if (waypoints[i] && waypoints[(i + 1) % waypoints.Count])
                 Gizmos.DrawLine(waypoints[i].position, waypoints[(i + 1) % waypoints.Count].position);
         }
+    }
+
+    public void activate() 
+    {
+        UseActivate = false;
     }
 }

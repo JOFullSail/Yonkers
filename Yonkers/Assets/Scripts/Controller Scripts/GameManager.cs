@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject PlayerHPDisplay;
     [SerializeField] GameObject PlayerAmmoDisplay;
     [SerializeField] GameObject PlayerReticleDisplay;
-    [SerializeField] GameObject PlayerDashCoolDownDisplay;
+    [SerializeField] GameObject PlayerClimbStaminaDisplay;
     [SerializeField] GameObject LoadingScreen;
 
    [Header("Audio")]
@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
     public Image playerDamageScreen;
     public Image playerHealScreen;
     public TMP_Text ammoCurrent, ammoMax, ammoReserves;
-    public Image playerDashCooldown;
+    public Image playerClimbStamina;
     public TMP_Text LoadingScreendotdotdot; // the "..." of teh loading screen!
 
     public bool isPaused;
@@ -643,7 +643,7 @@ public class GameManager : MonoBehaviour
             submenuAudioSettings = null;
             playerHPBar = null;
             playerHPLabel = null;
-            playerDashCooldown = null;
+            playerClimbStamina = null;
             ammoCurrent = null;
             ammoMax = null;
             checkpointLabel = null;
@@ -669,7 +669,7 @@ public class GameManager : MonoBehaviour
 
         menuLevelComplete = FindInactive("Level Complete Menu");
         playerBrightnessOverlay = FindInactive("Brightness Overlay")?.GetComponent<Image>();
-        playerDashCooldown = FindInactive("Player Dash Cooldown Fill")?.GetComponent<Image>();
+        playerClimbStamina = FindInactive("Player Climb Stamina Fill")?.GetComponent<Image>();
 
         menuWin = FindInactive("Win Menu");
         menuDead = FindInactive("Restart Menu");
@@ -716,7 +716,7 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay = FindInactive("Player HP");
         PlayerAmmoDisplay = FindInactive("Ammo");
         PlayerReticleDisplay = FindInactive("Reticle");
-        PlayerDashCoolDownDisplay = FindInactive("Player Dash Cooldown");
+        PlayerClimbStaminaDisplay = FindInactive("Player Climb Stamina");
         LoadingScreen = FindInactive("Loading Screen");
         LoadingScreendotdotdot = FindInactive("Loading Text ...").GetComponent<TMP_Text>();
 
@@ -876,16 +876,16 @@ public class GameManager : MonoBehaviour
         PlayerHPDisplay.SetActive(true);
         PlayerAmmoDisplay.SetActive(true);
         PlayerReticleDisplay.SetActive(true);
-        PlayerDashCoolDownDisplay.SetActive(true);
-        playerDashCooldown.gameObject.SetActive(true);
+        PlayerClimbStaminaDisplay.SetActive(true);
+        playerClimbStamina.gameObject.SetActive(true);
     }
     public void disablePlayerUI()
     {
         PlayerHPDisplay.SetActive(false);
         PlayerAmmoDisplay.SetActive(false);
         PlayerReticleDisplay.SetActive(false);
-        PlayerDashCoolDownDisplay.SetActive(false);
-        playerDashCooldown.gameObject.SetActive(false);
+        PlayerClimbStaminaDisplay.SetActive(false);
+        playerClimbStamina.gameObject.SetActive(false);
     }
 
     /// <summary>
