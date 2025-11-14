@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using UnityEditor;
+using System.Linq;
 
 public class TheCartoonKing : MonoBehaviour, IDamage
 {
@@ -56,6 +57,20 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     [SerializeField] float laserRate;
     [SerializeField] float laserMax;
 
+    [Header("Audio")]
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip[] bulletFiringSounds;
+    [SerializeField] AudioClip[] rocketFiringSounds;
+    [SerializeField] AudioClip[] sniperFiringSounds;
+    [SerializeField] AudioClip[] laserFiringSounds;
+    [SerializeField] AudioClip[] dashWindupSounds;
+    [SerializeField] AudioClip[] dashAttackSounds;
+    [SerializeField] AudioClip[] punchImpactSounds;
+    [SerializeField] AudioClip[] hurtSounds;
+    [SerializeField] AudioClip deathSound;
+    [SerializeField] AudioClip entryMonologue;
+    [SerializeField] AudioClip battleStartSound;
+
     [Header("Misc")]
     [Tooltip("How long the game will wait in seconds after the boss dies before triggering the Win State")]
     [SerializeField] int afterDeathTimer = 10;
@@ -70,6 +85,10 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     int HP;
     int HPP2;
     bool isDead = false;
+    bool isEntryMono;
+    float entryMonoTimer;
+    float entryMonoLength;
+    bool canBeDamaged;
     //DICE BOOLEANS:
     bool strafediceRolled = false;
 
@@ -129,19 +148,38 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         HP = Health;
         HPP2 = HP / 2;
         agent.speed = originalSpeed;
+
+        if (entryMonologue != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(entryMonologue);
+            entryMonoLength = entryMonologue.length;
+            isEntryMono = true;
+            entryMonoTimer = 0;
+            canBeDamaged = false;
+        }
     }
 
     //UPDATE:
     //Where all the styles and 
     void Update()
     {
-        if(!isDead)
+        if (isEntryMono)
+        {
+            entryMonoTimer += Time.deltaTime;
+            if(entryMonoTimer > entryMonoLength)
+            {
+                isEntryMono = false;
+                canBeDamaged = true;
+                if(battleStartSound != null)
+                    audioSource.PlayOneShot(battleStartSound);
+            }
+        }
+
+
+        if(!isDead && !isEntryMono)
         {
             playerDir = GameManager.instance.player.transform.position - transform.position;
             playerTarget = GameManager.instance.player.transform.position;
-
-
-
 
             //STYLE SWITCH TIMER:
             //Once the timer is more or equal to the switch time you set.
@@ -209,6 +247,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                 if (dashLocalfound == true)
                 {
                     animator.SetTrigger("ExecuteDash");
+                    if(dashAttackSounds.Count() > 0)
+                        audioSource.PlayOneShot(dashAttackSounds[Random.Range(0, dashAttackSounds.Length)]);
                     transform.position = Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
                     punch(punchForce, (GameManager.instance.player.transform.position - transform.position));
                     dashTimer += Time.deltaTime;
@@ -343,6 +383,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         {
             dashState = true;
             SetAngry();
+            if (dashWindupSounds.Count() > 0)
+                audioSource.PlayOneShot(dashWindupSounds[Random.Range(0, dashWindupSounds.Length)]);
         }
 
         if(diceRoll == 2)
@@ -413,18 +455,24 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     void shootPellets()
     {
         shootTimer = 0;
+        if (bulletFiringSounds.Count() > 0)
+            audioSource.PlayOneShot(bulletFiringSounds[Random.Range(0, bulletFiringSounds.Length)]);
         Instantiate(smallProjectile, shootPos.position, transform.rotation);
     }
 
     void shootRockets()
     {
         shootTimer = 0;
+        if (rocketFiringSounds.Count() > 0)
+            audioSource.PlayOneShot(rocketFiringSounds[Random.Range(0, rocketFiringSounds.Length)]);
         Instantiate(rocketProjectile, shootPos.position, transform.rotation);
     }
 
     void shootSniper()
     {
         shootTimer = 0;
+        if (sniperFiringSounds.Count() > 0)
+            audioSource.PlayOneShot(sniperFiringSounds[Random.Range(0, sniperFiringSounds.Length)]);
         Instantiate(sniperProjectile, shootPos.position, transform.rotation);
         shotSniper = true;
     }
@@ -432,6 +480,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     void shootLaser()
     {
         shootTimer = 0;
+        if (laserFiringSounds.Count() > 0)
+            audioSource.PlayOneShot(laserFiringSounds[Random.Range(0, laserFiringSounds.Length)]);
 
         if (HLaserB == true)
         {
@@ -459,6 +509,9 @@ public class TheCartoonKing : MonoBehaviour, IDamage
 
         if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= meleeReach)
         {
+            if(punchImpactSounds.Count() > 0)
+                audioSource.PlayOneShot(punchImpactSounds[Random.Range(0, punchImpactSounds.Length)]);
+
             Debug.Log("Ouch!!!");
             GameManager.instance.playerScript.Knockbacked = true;
             GameManager.instance.playerScript.applyPushback(totalPunch);
@@ -478,15 +531,26 @@ public class TheCartoonKing : MonoBehaviour, IDamage
 
     public void takeDamage(int amount)
     {
+        if (!canBeDamaged) return;
+
         HP -= amount;
         animator.SetTrigger("Hurt");
         StartCoroutine(flashRed());
         StartCoroutine(GetHurt());
 
+        if(HP > 0 && hurtSounds.Count() > 0)
+            audioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
+
         if(HP <= 0)
         {
             isDead = true;
             defaultState = false;
+            if(deathSound != null)
+            {
+                audioSource.Stop();
+                audioSource.PlayOneShot(deathSound);
+            }
+                
             if(collisionBox != null)
             {
                 collisionBox.enabled = false;
