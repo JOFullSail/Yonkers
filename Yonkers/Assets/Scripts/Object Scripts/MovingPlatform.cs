@@ -4,103 +4,124 @@ using System.Collections.Generic;
 
 public class MovingPlatform : MonoBehaviour
 {
-    [Header("Platform Settings")]
-    [SerializeField] private Transform platform;
-    [SerializeField] private List<Transform> waypoints = new List<Transform>();
+    [Header("Platform")]
+    public Transform platform;
+    public List<Transform> waypoints = new();
+    public List<float> segSpeeds = new();
+    public float delay, stopThreshold = 0.01f;
+    public bool rotateTowardsPath = true;
+    public float rotationSpeed = 5f;
 
-    [Header("Movement Settings")]
-    [SerializeField] private List<float> segSpeeds = new List<float>();
-    [SerializeField] private float delay = 0f;
-    [SerializeField] private float stopThreshold = 0.01f;
-
-    [Header("Rotation Settings")]
-    [SerializeField] private bool rotateTowardsPath = true;
-    [SerializeField] private float rotationSpeed = 5f;
-
-    private int waypointIndex = 0;
-    private const float DefSpeed = 50f;
-
-    private void OnValidate()
+    [System.Serializable]
+    public class TriggerInfo
     {
-        if (waypoints == null) return;
-
-        int requiredCount = waypoints.Count;
-
-        if (segSpeeds == null)
-        {
-            segSpeeds = new List<float>();
-        }
-
-        while (segSpeeds.Count < requiredCount)
-        {
-            if (segSpeeds.Count == 0) 
-                segSpeeds.Add(DefSpeed);
-            else
-                segSpeeds.Add(segSpeeds[segSpeeds.Count - 1]);
-        }
-
-        while (segSpeeds.Count > requiredCount)
-        {
-            segSpeeds.RemoveAt(segSpeeds.Count - 1);
-        }
+        public Collider trigger;
+        public bool stayTriggered;
     }
 
-    private void Start()
+    [System.Serializable]
+    public class Condition
     {
-        if (waypoints == null || waypoints.Count < 2)
-            return;
+        [Header("Condition Settings")]
+        public int waypointIndex;              // Which waypoint to check
+        public int targetIndex;                // Where to move if condition met
+        public bool requireAll = true;         // All or any triggers required
+        public bool whenTriggered = true;      // Activate when triggered or not
+        [Header("Triggers")]
+        public List<TriggerInfo> triggers = new();
+        [HideInInspector] public List<bool> states = new();
+    }
+
+    public List<Condition> conditions = new();
+
+    int index; const float DefSpeed = 50f;
+
+    void Start()
+    {
+        if (waypoints.Count < 2) return;
+        while (segSpeeds.Count < waypoints.Count) segSpeeds.Add(DefSpeed);
+        while (segSpeeds.Count > waypoints.Count) segSpeeds.RemoveAt(segSpeeds.Count - 1);
+
+        foreach (var c in conditions)
+        {
+            c.states = new List<bool>(new bool[c.triggers.Count]);
+            for (int i = 0; i < c.triggers.Count; i++)
+            {
+                if (!c.triggers[i].trigger) continue;
+                var relay = c.triggers[i].trigger.gameObject.AddComponent<TriggerRelay>();
+                relay.Setup(c, i);
+            }
+        }
 
         platform.position = waypoints[0].position;
-        waypointIndex = 1;
-        StartCoroutine(MovePlatform());
+        index = 1;
+        StartCoroutine(Move());
     }
-
-    private IEnumerator MovePlatform()
+    IEnumerator Move()
     {
         while (true)
         {
-            Vector3 targetPosition = waypoints[waypointIndex].position;
+            Vector3 target = waypoints[index].position;
+            float speed = segSpeeds[Mathf.Clamp(index - 1, 0, segSpeeds.Count - 1)];
 
-            int previousIndex = (waypointIndex - 1 + waypoints.Count) % waypoints.Count;
-            float currentSpeed = segSpeeds[previousIndex];
-
-            while ((targetPosition - platform.position).sqrMagnitude > stopThreshold * stopThreshold)
+            while ((target - platform.position).sqrMagnitude > stopThreshold * stopThreshold)
             {
-                platform.position = Vector3.MoveTowards(platform.position, targetPosition, currentSpeed * Time.deltaTime);
-
+                platform.position = Vector3.MoveTowards(platform.position, target, speed * Time.deltaTime);
                 if (rotateTowardsPath)
                 {
-                    Vector3 direction = (targetPosition - platform.position).normalized;
-                    if (direction.sqrMagnitude > 0.01f)
-                    {
-                        Quaternion targetRotation = Quaternion.LookRotation(direction);
-                        platform.rotation = Quaternion.Slerp(platform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-                    }
+                    Vector3 dir = (target - platform.position).normalized;
+                    if (dir.sqrMagnitude > 0.01f)
+                        platform.rotation = Quaternion.Slerp(platform.rotation, Quaternion.LookRotation(dir), rotationSpeed * Time.deltaTime);
                 }
-
                 yield return null;
             }
 
             yield return new WaitForSeconds(delay);
-
-            waypointIndex = (waypointIndex + 1) % waypoints.Count;
+            index = GetNextIndex(index);
         }
     }
 
-    private void OnDrawGizmos()
+    int GetNextIndex(int current)
+    {
+        foreach (var c in conditions)
+        {
+            if (c.waypointIndex != current) continue;
+
+            int active = 0;
+            for (int i = 0; i < c.states.Count; i++)
+                if (c.states[i]) active++;
+
+            bool met = c.requireAll ? active == c.states.Count : active > 0;
+            if (c.whenTriggered ? met : !met)
+                return Mathf.Clamp(c.targetIndex, 0, waypoints.Count - 1);
+        }
+        return (current + 1) % waypoints.Count;
+    }
+
+    class TriggerRelay : MonoBehaviour
+    {
+        Condition cond; int id;
+        public void Setup(Condition c, int i) { cond = c; id = i; }
+        void OnTriggerEnter(Collider o)
+        {
+            if (o.CompareTag("Player")) cond.states[id] = true;
+        }
+        void OnTriggerExit(Collider o)
+        {
+            if (!o.CompareTag("Player")) return;
+            if (cond.triggers[id].stayTriggered) return;
+            cond.states[id] = false;
+        }
+    }
+
+    void OnDrawGizmos()
     {
         if (waypoints == null || waypoints.Count < 2) return;
-
         Gizmos.color = Color.red;
         for (int i = 0; i < waypoints.Count; i++)
         {
-            Transform currentWaypoint = waypoints[i];
-            Transform nextWaypoint = waypoints[(i + 1) % waypoints.Count];
-            if (currentWaypoint != null && nextWaypoint != null)
-            {
-                Gizmos.DrawLine(currentWaypoint.position, nextWaypoint.position);
-                Gizmos.DrawSphere(currentWaypoint.position, 0.1f);
-            }
+            if (waypoints[i] && waypoints[(i + 1) % waypoints.Count])
+                Gizmos.DrawLine(waypoints[i].position, waypoints[(i + 1) % waypoints.Count].position);
         }
     }
 }
