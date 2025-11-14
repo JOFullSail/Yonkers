@@ -15,6 +15,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     //The POV of the enemy:
     [Header("POV of King")]
     [SerializeField] Transform POV;
+    [SerializeField] Animator animator;
     //All the projectiles and game objects used for damaging or knocking back the player:
     [Header("Projectiles and Weapons")]
     [SerializeField] GameObject smallProjectile;
@@ -55,10 +56,12 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     [SerializeField] float laserRate;
     [SerializeField] float laserMax;
 
+    [SerializeField] int afterDeathTimer = 10;
 
 
     int HP;
     int HPP2;
+    bool isDead = false;
     //DICE BOOLEANS:
     bool strafediceRolled = false;
 
@@ -123,180 +126,182 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     //Where all the styles and 
     void Update()
     {
-        playerDir = GameManager.instance.player.transform.position - transform.position;
-        playerTarget = GameManager.instance.player.transform.position;
-        
-
-        
-
-        //STYLE SWITCH TIMER:
-        //Once the timer is more or equal to the switch time you set.
-        if (switchTimer >= styleSwitchTime)
+        if(!isDead)
         {
-            
-            defaultState = false;
-            diceRollCheck();
-            switchTimer = 0;
-        }
+            playerDir = GameManager.instance.player.transform.position - transform.position;
+            playerTarget = GameManager.instance.player.transform.position;
 
-        //DEFAULT STYLE:
-        //The Cartoon King will begin to walk toward the player. He will always shoot rapidly toward the player. If he gets too close, he will begin strafing around you.
-        if (defaultState == true)
-        {
-            faceTarget();
-            movementCheck();
-            switchTimer += Time.deltaTime;
-            shootTimer += Time.deltaTime;
 
-            if(shootTimer >= pelletRate)
-            shootPellets();
 
-            if (canMove == true)
+
+            //STYLE SWITCH TIMER:
+            //Once the timer is more or equal to the switch time you set.
+            if (switchTimer >= styleSwitchTime)
             {
-                agent.SetDestination(playerTarget);
+
+                defaultState = false;
+                diceRollCheck();
+                switchTimer = 0;
             }
 
-            if (strafeMode == true)
+            //DEFAULT STYLE:
+            //The Cartoon King will begin to walk toward the player. He will always shoot rapidly toward the player. If he gets too close, he will begin strafing around you.
+            if (defaultState == true)
             {
-                if (strafediceRolled == false)
-                {
-                    strafediceRoll = Random.Range(1, 3);
-                    strafediceRolled = true;
-                }
-
-                if (strafediceRoll == 1)
-                {
-                    strafeRight();
-                }
-                else if (strafediceRoll == 2)
-                {
-                    strafeLeft();
-                }
-
-            }
-        }
-
-        //DASH STYLE NOTES:
-        if (dashState == true)
-        {
-            
-            model.material.color = Color.blue;
-            agent.SetDestination(transform.position);
-            chargeTimer += Time.deltaTime;
-
-            if (chargeTimer >= punchMax && dashLocalfound == false)
-            {
-                
-                savePlayerposition();
-                dashLocalfound = true;
-
-            }
-            if (dashLocalfound == true)
-            {
-                
-                transform.position = Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
-                punch(punchForce, (GameManager.instance.player.transform.position - transform.position));
-                dashTimer += Time.deltaTime;
-            }
-
-            if (transform.position == Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed) || punched == true || dashTimer >= punchSpeed)
-            {
-                chargeTimer = 0;
-                model.material.color = kingColor;
-                punched = false;
-                defaultState = true;
-                dashLocalfound = false;
-                dashState = false;
-
-            }
-
-        }
-
-        //ROCKET STANCE NOTES:
-        //The King will stand still and shoot rockets at you
-        if (rocketState)
-        {
-            faceTarget();
-            model.material.color = Color.orangeRed;
-            agent.SetDestination(transform.position);
-            chargeTimer += Time.deltaTime;
-
-
-            if (chargeTimer >= attackRate)
-            {
+                faceTarget();
+                movementCheck();
+                switchTimer += Time.deltaTime;
                 shootTimer += Time.deltaTime;
-                stanceTimer += Time.deltaTime;
-                if(shootTimer >= rocketRate)
-                shootRockets();
 
-                if (stanceTimer >= rocketMax)
+                if (shootTimer >= pelletRate)
+                    shootPellets();
+
+                if (canMove == true)
                 {
-                    chargeTimer = 0;
-                    stanceTimer = 0;
-                    shootTimer = 0;
-                    model.material.color = kingColor;
-                    rocketState = false;
-                    defaultState = true;
+                    agent.SetDestination(playerTarget);
+                }
+
+                if (strafeMode == true)
+                {
+                    if (strafediceRolled == false)
+                    {
+                        strafediceRoll = Random.Range(1, 3);
+                        strafediceRolled = true;
+                    }
+
+                    if (strafediceRoll == 1)
+                    {
+                        strafeRight();
+                    }
+                    else if (strafediceRoll == 2)
+                    {
+                        strafeLeft();
+                    }
+
                 }
             }
-        }
 
-        //SNIPER STYLE NOTE:
-        //The King will stand still and take a shot. Be quick or you'll die immediatly.
-        if(sniperState)
-        {
-            faceTarget();
-            model.material.color = Color.purple;
-            agent.SetDestination(transform.position);
-            chargeTimer += Time.deltaTime;
-
-
-            if (chargeTimer >= sniperMax)
+            //DASH STYLE NOTES:
+            if (dashState == true)
             {
 
-                if (shotSniper == false)
-                    shootSniper();
+                model.material.color = Color.blue;
+                agent.SetDestination(transform.position);
+                chargeTimer += Time.deltaTime;
 
-                if (shotSniper == true)
+                if (chargeTimer >= punchMax && dashLocalfound == false)
+                {
+
+                    savePlayerposition();
+                    dashLocalfound = true;
+
+                }
+                if (dashLocalfound == true)
+                {
+
+                    transform.position = Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
+                    punch(punchForce, (GameManager.instance.player.transform.position - transform.position));
+                    dashTimer += Time.deltaTime;
+                }
+
+                if (transform.position == Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed) || punched == true || dashTimer >= punchSpeed)
                 {
                     chargeTimer = 0;
-                    shootTimer = 0;
                     model.material.color = kingColor;
-                    sniperState = false;
-                    shotSniper = false;
+                    punched = false;
                     defaultState = true;
+                    dashLocalfound = false;
+                    dashState = false;
+
                 }
+
             }
-        }
 
-        //LASER STATE:
-        if (laserState)
-        {
-            faceTarget();
-            model.material.color = Color.black;
-            agent.SetDestination(transform.position);
-            chargeTimer += Time.deltaTime;
-
-
-            if (chargeTimer >= attackRate)
+            //ROCKET STANCE NOTES:
+            //The King will stand still and shoot rockets at you
+            if (rocketState)
             {
-                shootTimer += Time.deltaTime;
-                stanceTimer += Time.deltaTime;
-                if (shootTimer >= laserRate)
-                    shootLaser();
+                faceTarget();
+                model.material.color = Color.orangeRed;
+                agent.SetDestination(transform.position);
+                chargeTimer += Time.deltaTime;
 
-                if (stanceTimer >= laserMax)
+
+                if (chargeTimer >= attackRate)
                 {
-                    chargeTimer = 0;
-                    stanceTimer = 0;
-                    shootTimer = 0;
-                    model.material.color = kingColor;
-                    laserState = false;
-                    defaultState = true;
+                    shootTimer += Time.deltaTime;
+                    stanceTimer += Time.deltaTime;
+                    if (shootTimer >= rocketRate)
+                        shootRockets();
+
+                    if (stanceTimer >= rocketMax)
+                    {
+                        chargeTimer = 0;
+                        stanceTimer = 0;
+                        shootTimer = 0;
+                        model.material.color = kingColor;
+                        rocketState = false;
+                        defaultState = true;
+                    }
+                }
+            }
+
+            //SNIPER STYLE NOTE:
+            //The King will stand still and take a shot. Be quick or you'll die immediatly.
+            if (sniperState)
+            {
+                faceTarget();
+                model.material.color = Color.purple;
+                agent.SetDestination(transform.position);
+                chargeTimer += Time.deltaTime;
+
+
+                if (chargeTimer >= sniperMax)
+                {
+
+                    if (shotSniper == false)
+                        shootSniper();
+
+                    if (shotSniper == true)
+                    {
+                        chargeTimer = 0;
+                        shootTimer = 0;
+                        model.material.color = kingColor;
+                        sniperState = false;
+                        shotSniper = false;
+                        defaultState = true;
+                    }
+                }
+            }
+
+            //LASER STATE:
+            if (laserState)
+            {
+                faceTarget();
+                model.material.color = Color.black;
+                agent.SetDestination(transform.position);
+                chargeTimer += Time.deltaTime;
+
+
+                if (chargeTimer >= attackRate)
+                {
+                    shootTimer += Time.deltaTime;
+                    stanceTimer += Time.deltaTime;
+                    if (shootTimer >= laserRate)
+                        shootLaser();
+
+                    if (stanceTimer >= laserMax)
+                    {
+                        chargeTimer = 0;
+                        stanceTimer = 0;
+                        shootTimer = 0;
+                        model.material.color = kingColor;
+                        laserState = false;
+                        defaultState = true;
+                    }
                 }
             }
         }
-
     }
 
     
@@ -395,6 +400,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     {
         shootTimer = 0;
         Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
+        animator.SetTrigger("Fire Rockets");
         Instantiate(rocketProjectile, shootposition, transform.rotation);
     }
 
@@ -457,15 +463,23 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     public void takeDamage(int amount)
     {
         HP -= amount;
+        animator.SetTrigger("Hurt");
         StartCoroutine(flashRed());
 
         if(HP <= 0)
         {
-            EventController.RaiseGameComplete();
-            Destroy(gameObject);
+            isDead = true;
+            animator.SetBool("isDead", true);
+            StartCoroutine(GameEndCountdownTimer(afterDeathTimer));
         }
             
         
+    }
+
+    IEnumerator GameEndCountdownTimer(int seconds)
+    {
+        yield return new WaitForSecondsRealtime(seconds);
+        EventController.RaiseGameComplete();
     }
 
     IEnumerator flashRed()
