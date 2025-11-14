@@ -42,7 +42,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float climbSpeed = 10.25f;
     [Tooltip("Amount of time the player is allowed to climb a wall.\n\n- Will be overriden once the player reaches the top of a wall.")]
     [SerializeField] float climbDuration = 0.6f;
-    [SerializeField] float climbWallDetection = 15f;
+    [SerializeField] float climbHighlightDetection = 15f;
+    [SerializeField] float climbHighlightMultiplier = 1.25f;
     [Tooltip("Max view distance between the player and the wall required for the player to climb a wall.")]
     [SerializeField] float climbWallDistance = 1.25f;
     [Tooltip("Max slope angle of a wall the player can climb.")]
@@ -181,6 +182,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool notSameWall;
     // Greater or equal to the minimum angle the new wall is compared to the previous.
     bool isAboveMinDiff;
+    // If the player is taller than the wall.
+    bool isTaller;
     bool climbTimeLeft;
     int noClimbLayers;
     string noClimbTag;
@@ -328,7 +331,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         // Debug Ray Displays
         //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.green);
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbHighlightDetection, Color.green);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDistance, Color.blue);
 
         if (!GameManager.instance.isPaused)
@@ -367,25 +370,47 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         else return false; 
     }
 
+    void highlightColor(Renderer obj)
+    {
+        if (highlightWall != null) // Looking at a new wall.
+        {
+            highlightWall.material.color /= climbHighlightMultiplier;
+        }
+        
+        highlightWall = obj;
+        obj.material.color *= climbHighlightMultiplier;
+    }
+
+    void highlightClear()
+    {
+        if (highlightWall)
+        {
+            highlightWall.material.color /= climbHighlightMultiplier;
+            highlightWall = null;
+        }
+    }
+
     void climb()
     {
         bool canClimb = false;
-        
-        
-        // Restting norm for vaulting over walls.
-        if (transform.position.y >= newWallHeight) 
-            prevWallNorm = new Vector3(7f, 7f, 7f);
+        bool isTaller;
         
         // Wall climb conditions and wall detection player visual feedback.
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDetection, ~noClimbLayers))
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbHighlightDetection,
+                ~noClimbLayers))
         {
+            // Wall Vaulting
             if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
             
+            isTaller = transform.position.y >= newWallHeight;
+            // Restting norm for vaulting over walls.
+            if (isTaller) prevWallNorm.y = 7f;
+
             // Storing data of the wall the player is currently facing.
             newWallPos = hit.transform.position;
             newWallPos.y = 0;
             newWallNorm = hit.normal;
-            
+
             // Angle Calculation
             int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
             int wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
@@ -400,33 +425,34 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= climbMinAngleDiff;
             climbTimeLeft = climbTimer <= climbDuration;
 
+            // Wall Check
             if ((canBeClimbed &&
-                 isAboveMinSlope && 
+                 isAboveMinSlope &&
                  isBelowMaxSlope &&
                  isAboveMinDiff &&
                  notSameWall && climbTimeLeft && gravityOn) ||
-                debugClimbAnything && canBeClimbed && isFallOrClimb) // For debugClimbAnything
+                debugClimbAnything && canBeClimbed && isFallOrClimb) // For debugClimbAnything.
             {
                 canClimb = true;
-                if (hit.collider.TryGetComponent<Renderer>(out var obj))
+
+                // Highlight Check
+                if (!isTaller && hit.collider.TryGetComponent<Renderer>(out var obj))
                 {
-                    if (highlightWall != obj)
-                    {
-                        if (highlightWall != null) // Looking at new wall
-                        {
-                            // Reset color of highlight wall before assigning it the new one
-                        }
-                        
-                        highlightWall = obj;
-                        obj.material.color = obj.material.color * 2f;
-                    }
+                    if (highlightWall != obj) highlightColor(obj);
+                }
+                else // Renderer not found.
+                {
+                    highlightClear();
                 }
             }
+            else // Not Climbing
+            {
+                highlightClear();
+            }
         }
-
-        if (!canClimb)
+        else // Not looking at a wall.
         {
-            // revert color to orig
+            highlightClear();
         }
         
         
@@ -436,7 +462,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             // Displays the normal of the wall the player is facing.
             Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
             
-            // Player climb authorization.
+            // Player Climb Authorization
             if (canClimb && !controller.isGrounded && isFallOrClimb)
             {
                 if (!isClimbing && jumpCount > 0) --jumpCount;
