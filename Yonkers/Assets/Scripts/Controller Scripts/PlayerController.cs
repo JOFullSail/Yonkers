@@ -20,7 +20,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] int jumpMaxCount = 2;
     [Tooltip("Amount of time (in seconds) the player has to trigger the first jump after falling off a platform. \n" +
         "If the player jumps after the grace period, the player will only trigger the second jump.")]
-    [SerializeField] float jumpGracePeriod = 0.175f;
+    [SerializeField] float jumpGraceFall = 0.175f;
+    [SerializeField] float jumpGraceClimb = 0.175f;
+    [SerializeField] float jumpGraceWall = 0.35f;
 
 
     [Header("Shooting")]
@@ -175,6 +177,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     
     // If the player's raycast detected a wall
     bool wallDetected;
+    // If the player wall jumped.
+    bool wallJumping;
     // If it doesn't have the "NoClimb" tag
     bool canBeClimbed;
     // Greater than or equal to the max angle a surface can have 
@@ -425,7 +429,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
             
             isTaller = transform.position.y >= newWallHeight;
-            // Restting norm for vaulting over walls.
+            // Resetting norm for vaulting over walls.
             if (isTaller) 
                 prevWallNorm.y = 7f;
             
@@ -487,10 +491,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
             
             // Player Climb Authorization
-            if (canClimb && !controller.isGrounded && isFallOrClimb && (jumpTimer >= jumpGracePeriod || !(isJumping && isClimbing)))
+            if (canClimb && !controller.isGrounded && isFallOrClimb && (jumpTimer < jumpGraceClimb || !(isJumping && isClimbing)))
             {
                 if (!isClimbing)
                 {
+                    wallJumping = false;
                     if (jumpCount > 0) --jumpCount;
                     audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
                 }
@@ -507,6 +512,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     jumpTimer = 0;
                     if (isClimbing)
                     {
+                        wallJumping = true;
                         climbTimeLeft = false;
                         audClimbSource.Stop();
                         GameManager.instance.playerClimbStamina.fillAmount = 0f;
@@ -539,14 +545,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             wallDetected = false;
         }
 
-        if (isJumping && prevWallNorm.z != 7f && jumpTimer >= jumpGracePeriod)
-        {
-            ++jumpCount;
+        if (!wallJumping && isJumping && prevWallNorm.z != 7f && jumpTimer >= jumpGraceWall)
+        { 
+            ++jumpCount; 
             jumpCheck();
         }
-        
+
         if (controller.isGrounded)
+        {
+            wallJumping = false;
             GameManager.instance.playerClimbStamina.fillAmount = 1f;
+        }
     }
     
     // Hardcoded, but could be serialized later
@@ -597,7 +606,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         // Jump
         if (isJumping)
         {
-            if (jumpTimer >= jumpGracePeriod && jumpCount == 0)
+            if (prevWallNorm.z == 7f && !isClimbing && jumpTimer >= jumpGraceFall && jumpCount == 0)
             {
                 ++jumpCount;
             }
