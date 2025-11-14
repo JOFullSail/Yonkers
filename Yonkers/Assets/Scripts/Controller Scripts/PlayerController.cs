@@ -42,8 +42,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float climbSpeed = 10.25f;
     [Tooltip("Amount of time the player is allowed to climb a wall.\n\n- Will be overriden once the player reaches the top of a wall.")]
     [SerializeField] float climbDuration = 0.6f;
+    [SerializeField] float climbWallDetection = 15f;
     [Tooltip("Max view distance between the player and the wall required for the player to climb a wall.")]
-    [SerializeField] float climbWallDetection = 1.25f;
+    [SerializeField] float climbWallDistance = 1.25f;
     [Tooltip("Max slope angle of a wall the player can climb.")]
     [Range(0, 180f)][SerializeField] float climbMaxSlopeAngle = 90f;
 
@@ -171,6 +172,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     Vector3 newWallPos;
     Vector3 prevWallNorm;
     Vector3 newWallNorm;
+    string noClimbTag;
+    int noClimbLayers;
 	float newWallHeight = 0f;
     
     // For Jump()
@@ -292,13 +295,25 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (debugFastClimb) climbSpeed = debugClimbSpeed;
         
         ceilingRayInit();
+        
+        if (useCanClimbTag) noClimbTag = "CanClimb";
+        else noClimbTag = "NoClimb";
+        
+        if (debugClimbAnything)
+        {
+            noClimbLayers = 0;
+            noClimbTag = "Player";
+        }
+        else noClimbLayers = ignoreClimbing.value;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.blue);
+        // Debug Ray Displays
+        //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDetection, Color.green);
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDistance, Color.blue);
 
         if (!GameManager.instance.isPaused)
         {
@@ -338,59 +353,66 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void climb()
     {
-        // Climb Layers
-        int noClimbLayers;
-        string noClimbTag;
-        if (useCanClimbTag) noClimbTag = "CanClimb";
-        else noClimbTag = "NoClimb";
+        bool canClimb = false;
+        bool canBeClimbed = false;
+        bool isAboveMinSlope = false;
+        bool isBelowMaxSlope = false;
+        bool isFallOrClimb = false;
+        bool notSameWall = false;
+        bool isAboveMinDiff = false;
+        bool climbTimeLeft = false;
         
-        if (debugClimbAnything)
-        {
-            noClimbLayers = 0;
-            noClimbTag = "Player";
-        }
-        else noClimbLayers = ignoreClimbing.value;
         
-        // Wall Vaulting
+        // Restting norm for vaulting over walls.
         if (transform.position.y >= newWallHeight) 
             prevWallNorm = new Vector3(7f, 7f, 7f);
         
-        // Wall Detection
+        // Wall climb conditions and wall detection player visual feedback.
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDetection, ~noClimbLayers))
         {
-            // Displays the normal of the object the player is facing.
+            if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
+            
+            // Angle Calculation
+            int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
+            int wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
+
+            // Climbing Wall Conditions
+            if (useCanClimbTag) canBeClimbed = hit.collider.CompareTag(noClimbTag);
+            else canBeClimbed = !hit.collider.CompareTag(noClimbTag);
+            isAboveMinSlope = controller.slopeLimit <= wallAngle;
+            isBelowMaxSlope = wallAngle <= climbMaxSlopeAngle;
+            isFallOrClimb = playerVel.y < -1 || isClimbing;
+            notSameWall = prevWallPos == null || newWallPos != prevWallPos;
+            isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= climbMinAngleDiff;
+            climbTimeLeft = climbTimer <= climbDuration;
+
+            if ((canBeClimbed && // If it doesn't have the "NoClimb" tag
+                 isAboveMinSlope && // Greater than or equal to the max angle a surface can have 
+                 isBelowMaxSlope && // Less than or equal to the max angle the player can climb
+                 !controller.isGrounded && // If not on the ground
+                 isFallOrClimb && // If velocity is less than 1 or if already climbing
+                 isAboveMinDiff && // Greater or equal to the minimum angle the new wall is compared to the previous.
+                 notSameWall && climbTimeLeft && gravityOn) ||
+                debugClimbAnything && canBeClimbed && isFallOrClimb) // For debugClimbAnything
+            {
+                canClimb = true;
+                //TODO: Wall lightup here
+            }
+        }
+        
+        // Wall Climbing
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDistance, ~noClimbLayers))
+        {
+            // Displays the normal of the wall the player is facing.
             Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
             
             // Storing data of the wall the player is currently facing.
             newWallPos = hit.transform.position;
             newWallPos.y = 0;
             newWallNorm = hit.normal;
-			if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
             
-            // Angle Calculation
-            int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
-            int wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
-
-            // Conditions 
-            bool canBeClimbed;
-            if (useCanClimbTag) canBeClimbed = hit.collider.CompareTag(noClimbTag);
-            else canBeClimbed = !hit.collider.CompareTag(noClimbTag);
-            bool isAboveMinSlope = controller.slopeLimit <= wallAngle;
-            bool isBelowMaxSlope = wallAngle <= climbMaxSlopeAngle;
-            bool isFallOrClimb = playerVel.y < -1 || isClimbing;
-            bool notSameWall = prevWallPos == null || newWallPos != prevWallPos;
-            bool isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= climbMinAngleDiff;
-            bool climbTimeLeft = climbTimer <= climbDuration;
-            
-            // Check for climbing walls
-            if ((canBeClimbed && // If it doesn't have the "NoClimb" tag
-                isAboveMinSlope && // Greater than or equal to the max angle a surface can have 
-                isBelowMaxSlope && // Less than or equal to the max angle the player can climb
-                !controller.isGrounded && // If not on the ground
-                isFallOrClimb && // If velocity is less than 1 or if already climbing
-                isAboveMinDiff && // Greater or equal to the minimum angle the new wall is compared to the previous.
-                notSameWall && climbTimeLeft && gravityOn) || 
-                debugClimbAnything && canBeClimbed && isFallOrClimb) // For debugClimbAnything
+            // Player climb authorization.
+            if (canClimb)
             {
                 if (!isClimbing && jumpCount > 0) --jumpCount;
                 playerVel.y = climbSpeed;
@@ -442,7 +464,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         Debug.DrawRay(Camera.main.transform.position, ceilingRayUp * 0.4f);
         foreach (Vector3 ray in ceilingRays) 
-            Debug.DrawRay(Camera.main.transform.position, ray * 0.6f);
+            Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
         if (playerVel.y <= 0) ceilingHit = false;
         else if (Physics.Raycast(Camera.main.transform.position, ceilingRayUp, out hit, 0.4f))
         {
@@ -452,7 +474,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             for (int i = 0; i < ceilingRays.Count; ++i)
             {
-                if (Physics.Raycast(Camera.main.transform.position, ceilingRays[i], out hit, 0.6f))
+                if (Physics.Raycast(Camera.main.transform.position, ceilingRays[i], out hit, 0.5f))
                 {
                     ceilingHit = true;
                 }
