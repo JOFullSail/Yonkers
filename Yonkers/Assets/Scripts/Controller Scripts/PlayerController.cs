@@ -168,13 +168,29 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     Vector3 knockback;   // Used to hold pushBack.x and z.
 
     // For climb()
+    
+    // If it doesn't have the "NoClimb" tag
+    bool canBeClimbed;
+    // Greater than or equal to the max angle a surface can have 
+    bool isAboveMinSlope;
+    // Less than or equal to the max angle the player can climb
+    bool isBelowMaxSlope;
+    // If not on the ground
+    bool isFallOrClimb;
+    // If velocity is less than 1 or if already climbing
+    bool notSameWall;
+    // Greater or equal to the minimum angle the new wall is compared to the previous.
+    bool isAboveMinDiff;
+    bool climbTimeLeft;
+    int noClimbLayers;
+    string noClimbTag;
+    float newWallHeight = 0f;
+    
+    Renderer highlightWall;
     Vector3 prevWallPos;
     Vector3 newWallPos;
     Vector3 prevWallNorm;
     Vector3 newWallNorm;
-    string noClimbTag;
-    int noClimbLayers;
-	float newWallHeight = 0f;
     
     // For Jump()
     Vector3 ceilingRayUp;
@@ -354,13 +370,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void climb()
     {
         bool canClimb = false;
-        bool canBeClimbed = false;
-        bool isAboveMinSlope = false;
-        bool isBelowMaxSlope = false;
-        bool isFallOrClimb = false;
-        bool notSameWall = false;
-        bool isAboveMinDiff = false;
-        bool climbTimeLeft = false;
         
         
         // Restting norm for vaulting over walls.
@@ -371,6 +380,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDetection, ~noClimbLayers))
         {
             if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
+            
+            // Storing data of the wall the player is currently facing.
+            newWallPos = hit.transform.position;
+            newWallPos.y = 0;
+            newWallNorm = hit.normal;
             
             // Angle Calculation
             int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
@@ -386,19 +400,35 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= climbMinAngleDiff;
             climbTimeLeft = climbTimer <= climbDuration;
 
-            if ((canBeClimbed && // If it doesn't have the "NoClimb" tag
-                 isAboveMinSlope && // Greater than or equal to the max angle a surface can have 
-                 isBelowMaxSlope && // Less than or equal to the max angle the player can climb
-                 !controller.isGrounded && // If not on the ground
-                 isFallOrClimb && // If velocity is less than 1 or if already climbing
-                 isAboveMinDiff && // Greater or equal to the minimum angle the new wall is compared to the previous.
+            if ((canBeClimbed &&
+                 isAboveMinSlope && 
+                 isBelowMaxSlope &&
+                 isAboveMinDiff &&
                  notSameWall && climbTimeLeft && gravityOn) ||
                 debugClimbAnything && canBeClimbed && isFallOrClimb) // For debugClimbAnything
             {
                 canClimb = true;
-                //TODO: Wall lightup here
+                if (hit.collider.TryGetComponent<Renderer>(out var obj))
+                {
+                    if (highlightWall != obj)
+                    {
+                        if (highlightWall != null) // Looking at new wall
+                        {
+                            // Reset color of highlight wall before assigning it the new one
+                        }
+                        
+                        highlightWall = obj;
+                        obj.material.color = obj.material.color * 2f;
+                    }
+                }
             }
         }
+
+        if (!canClimb)
+        {
+            // revert color to orig
+        }
+        
         
         // Wall Climbing
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDistance, ~noClimbLayers))
@@ -406,13 +436,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             // Displays the normal of the wall the player is facing.
             Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
             
-            // Storing data of the wall the player is currently facing.
-            newWallPos = hit.transform.position;
-            newWallPos.y = 0;
-            newWallNorm = hit.normal;
-            
             // Player climb authorization.
-            if (canClimb)
+            if (canClimb && !controller.isGrounded && isFallOrClimb)
             {
                 if (!isClimbing && jumpCount > 0) --jumpCount;
                 playerVel.y = climbSpeed;
@@ -452,7 +477,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         Vector3 direction = pitch * Camera.main.transform.forward;
         ceilingRayUp = Camera.main.transform.up; // Distance = 0.4f
         
-        for (int i = 0; i < 8; ++i) // Distance = 0.6f
+        for (int i = 0; i < 8; ++i) // Distance = 0.5f
         {
             Quaternion yaw = Quaternion.AngleAxis(45f * i, Camera.main.transform.up);
             ray = yaw * direction;
@@ -462,6 +487,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void jump()
     {
+        // Ceiling Hit (would have been better with a sphere collider)
         Debug.DrawRay(Camera.main.transform.position, ceilingRayUp * 0.4f);
         foreach (Vector3 ray in ceilingRays) 
             Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
@@ -487,6 +513,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             ceilingHit = false;
         }
         
+        // Jump
         if (!isClimbing && Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && gravityOn)
         {
             if (jumpTimer >= jumpGracePeriod && jumpCount == 0)
