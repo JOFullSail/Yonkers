@@ -22,7 +22,7 @@ public class Pickup : MonoBehaviour
     [Header("For Health Pickups")]
     [SerializeField] int healingAmount = 1;
 
-    Vector3 rotation = new Vector3(0, 0, 100);
+    public Vector3 rotation = new Vector3(0, 0, 100);
 
     private bool wasConsumed = false;
     private void OnTriggerEnter(Collider other)
