@@ -3710,7 +3710,7 @@ GameObject:
   - component: {fileID: 4513066276279277417}
   - component: {fileID: 7731035864177307297}
   m_Layer: 5
-  m_Name: Player Dash Cooldown Fill
+  m_Name: Player Climb Stamina Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20274,7 +20274,7 @@ GameObject:
   - component: {fileID: 7887739328024604060}
   - component: {fileID: 7649602989785930900}
   m_Layer: 5
-  m_Name: Player Dash Cooldown
+  m_Name: Player Climb Stamina
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
