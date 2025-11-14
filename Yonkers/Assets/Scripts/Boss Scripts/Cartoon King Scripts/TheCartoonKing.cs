@@ -56,7 +56,15 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     [SerializeField] float laserRate;
     [SerializeField] float laserMax;
 
+    [Header("Misc")]
+    [Tooltip("How long the game will wait in seconds after the boss dies before triggering the Win State")]
     [SerializeField] int afterDeathTimer = 10;
+    [SerializeField] Collider collisionBox;
+    [SerializeField] Texture2D neutralFace;
+    [SerializeField] Texture2D angryFace;
+    [SerializeField] Texture2D hurtFace;
+    [SerializeField] Texture2D deadFace;
+    [SerializeField] Transform shootPos;
 
 
     int HP;
@@ -114,6 +122,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     {
         //I will figure this out later, but I assume I will make the boss wait for the player to get ready
         defaultState = true;
+        SetNeutral();
         HLaserB = true;
         originalSpeed = baseMoveSpeed;
         kingColor = model.material.color;
@@ -188,6 +197,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                 model.material.color = Color.blue;
                 agent.SetDestination(transform.position);
                 chargeTimer += Time.deltaTime;
+                animator.SetTrigger("Dash");
 
                 if (chargeTimer >= punchMax && dashLocalfound == false)
                 {
@@ -198,7 +208,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                 }
                 if (dashLocalfound == true)
                 {
-
+                    animator.SetTrigger("ExecuteDash");
                     transform.position = Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
                     punch(punchForce, (GameManager.instance.player.transform.position - transform.position));
                     dashTimer += Time.deltaTime;
@@ -210,6 +220,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                     model.material.color = kingColor;
                     punched = false;
                     defaultState = true;
+                    SetNeutral();
                     dashLocalfound = false;
                     dashState = false;
 
@@ -221,6 +232,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             //The King will stand still and shoot rockets at you
             if (rocketState)
             {
+                animator.SetTrigger("Fire Rockets");
+
                 faceTarget();
                 model.material.color = Color.orangeRed;
                 agent.SetDestination(transform.position);
@@ -232,9 +245,12 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                     shootTimer += Time.deltaTime;
                     stanceTimer += Time.deltaTime;
                     if (shootTimer >= rocketRate)
+                    {
                         shootRockets();
+                    }
 
-                    if (stanceTimer >= rocketMax)
+
+                        if (stanceTimer >= rocketMax)
                     {
                         chargeTimer = 0;
                         stanceTimer = 0;
@@ -242,6 +258,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                         model.material.color = kingColor;
                         rocketState = false;
                         defaultState = true;
+                        SetNeutral();
                     }
                 }
             }
@@ -270,6 +287,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                         sniperState = false;
                         shotSniper = false;
                         defaultState = true;
+                        SetNeutral();
                     }
                 }
             }
@@ -298,6 +316,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                         model.material.color = kingColor;
                         laserState = false;
                         defaultState = true;
+                        SetNeutral();
                     }
                 }
             }
@@ -323,11 +342,13 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         if (diceRoll == 1)
         {
             dashState = true;
+            SetAngry();
         }
 
         if(diceRoll == 2)
         {
             rocketState = true;
+            SetAngry();
         }
 
         if(diceRoll == 3)
@@ -392,41 +413,36 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     void shootPellets()
     {
         shootTimer = 0;
-        Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
-        Instantiate(smallProjectile, shootposition, transform.rotation);
+        Instantiate(smallProjectile, shootPos.position, transform.rotation);
     }
 
     void shootRockets()
     {
         shootTimer = 0;
-        Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
-        animator.SetTrigger("Fire Rockets");
-        Instantiate(rocketProjectile, shootposition, transform.rotation);
+        Instantiate(rocketProjectile, shootPos.position, transform.rotation);
     }
 
     void shootSniper()
     {
         shootTimer = 0;
-        Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
-        Instantiate(sniperProjectile, shootposition, transform.rotation);
+        Instantiate(sniperProjectile, shootPos.position, transform.rotation);
         shotSniper = true;
     }
 
     void shootLaser()
     {
         shootTimer = 0;
-        Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
 
         if (HLaserB == true)
         {
-            Instantiate(HLaser, shootposition, transform.rotation);
+            Instantiate(HLaser, shootPos.position, transform.rotation);
             VLaserB = true;
             HLaserB = false;
             return;
         }
         if(VLaserB == true)
         {
-            Instantiate(VLaser, shootposition, transform.rotation);
+            Instantiate(VLaser, shootPos.position, transform.rotation);
             HLaserB = true;
             VLaserB = false;
             return;
@@ -465,10 +481,18 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         HP -= amount;
         animator.SetTrigger("Hurt");
         StartCoroutine(flashRed());
+        StartCoroutine(GetHurt());
 
         if(HP <= 0)
         {
             isDead = true;
+            defaultState = false;
+            if(collisionBox != null)
+            {
+                collisionBox.enabled = false;
+            }
+            agent.isStopped = true;
+            SetDead();
             animator.SetBool("isDead", true);
             StartCoroutine(GameEndCountdownTimer(afterDeathTimer));
         }
@@ -478,7 +502,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
 
     IEnumerator GameEndCountdownTimer(int seconds)
     {
-        yield return new WaitForSecondsRealtime(seconds);
+        yield return new WaitForSeconds(seconds);
         EventController.RaiseGameComplete();
     }
 
@@ -487,6 +511,22 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         model.material.color = Color.red;
         yield return new WaitForSeconds(0.1f);
         model.material.color = kingColor;
+    }
+
+    public void SetNeutral() => model.material.SetTexture("_BaseMap", neutralFace);
+    public void SetAngry() => model.material.SetTexture("_BaseMap", angryFace);
+    public void SetDead() => model.material.SetTexture("_BaseMap", deadFace);
+
+    IEnumerator GetHurt()
+    {
+        model.material.SetTexture("_BaseMap", hurtFace);
+        yield return new WaitForSeconds(0.458f);
+        if (defaultState)
+            SetNeutral();
+        else if (isDead)
+            SetDead();
+        else
+            SetAngry();
     }
 }
 

@@ -288,11 +288,14 @@ MonoBehaviour:
   damageAmount: 2
   isExplosive: 1
   respawnUponTouch: 0
+  delayRespawnUponTouch: 0
+  delayTime: 0
   splashDamageAmount: 0
   damageRate: 0
   speed: 35
   destroyTime: 2
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
+  isBossProjectile: 1
 --- !u!1001 &4483190134865152260
 PrefabInstance:
   m_ObjectHideFlags: 0

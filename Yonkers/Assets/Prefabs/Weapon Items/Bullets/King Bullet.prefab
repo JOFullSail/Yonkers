@@ -60,6 +60,7 @@ MonoBehaviour:
   speed: 100
   destroyTime: 1
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 1
 --- !u!33 &6850158720591536406
 MeshFilter:
   m_ObjectHideFlags: 0
