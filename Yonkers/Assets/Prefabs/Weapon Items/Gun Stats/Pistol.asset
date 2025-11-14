@@ -16,7 +16,7 @@ MonoBehaviour:
   shootRate: 0.5
   ammoCurrent: 10
   ammoMax: 10
-  ammoReserves: 1009
+  ammoReserves: 999
   maxAmmoReserves: 999
   recoilToCamera: 0
   recoilToUser: 0
