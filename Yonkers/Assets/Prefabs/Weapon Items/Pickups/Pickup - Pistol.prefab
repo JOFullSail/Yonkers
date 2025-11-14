@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 45085624250314382}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.0008333333}
+  m_LocalPosition: {x: 0, y: 0.0743, z: 0.001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 945503106394218648}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.0008333333}
+  m_LocalPosition: {x: 0, y: -0.0312, z: -0.0008}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -119,9 +119,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7719261823726253744}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.011614278, y: 0.7070114, z: 0.011614272, w: 0.7070114}
+  m_LocalRotation: {x: -0.011612739, y: 0.70701146, z: 0.011612739, w: 0.70701146}
   m_LocalPosition: {x: -16.7, y: 31.6, z: 30.25}
-  m_LocalScale: {x: 300, y: 300, z: 300}
+  m_LocalScale: {x: 7, y: 7, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6573098374151012135}
@@ -141,6 +141,7 @@ GameObject:
   - component: {fileID: 6925192763808612291}
   - component: {fileID: 5022904549976502909}
   - component: {fileID: 6591315086334617197}
+  - component: {fileID: 8095575523085413677}
   - component: {fileID: 8177324590483581995}
   - component: {fileID: 2411685731115452225}
   m_Layer: 0
@@ -182,8 +183,8 @@ MonoBehaviour:
   - {fileID: 4839272512747103771}
   - {fileID: 7935582384209838915}
   segSpeeds:
-  - 0.5
-  - 0.5
+  - 0.25
+  - 0.25
   delay: 0
   stopThreshold: 0.01
   rotateTowardsPath: 0
@@ -204,6 +205,7 @@ MonoBehaviour:
   gun: {fileID: 11400000, guid: 556bcc9a178cb5a4e941e8db545c986c, type: 2}
   ammoAmount: 0
   healingAmount: 1
+  rotation: {x: 0, y: 100, z: 0}
 --- !u!33 &5022904549976502909
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -260,6 +262,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8095575523085413677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8499650595465097558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ce79fc9d002de44692054e45a182d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovingPlatform
+  platform: {fileID: 6573098374151012135}
+  waypoints:
+  - {fileID: 4839272512747103771}
+  - {fileID: 7935582384209838915}
+  segSpeeds:
+  - 0.5
+  - 0.5
+  delay: 0
+  stopThreshold: 0.01
+  rotateTowardsPath: 0
+  rotationSpeed: 5
 --- !u!65 &8177324590483581995
 BoxCollider:
   m_ObjectHideFlags: 0
