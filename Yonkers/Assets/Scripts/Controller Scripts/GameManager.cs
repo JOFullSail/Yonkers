@@ -7,6 +7,7 @@ using System.Text;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject submenuLockedlevel3;
     [SerializeField] GameObject submenuLockedlevel4;
     [SerializeField] GameObject submenuLockedlevel5;
+    [SerializeField] GameObject submenuLockedlevel6;
     [SerializeField] GameObject submenuUnlockedlevel2button;
     [SerializeField] GameObject submenuUnlockedlevel2stats;
     [SerializeField] GameObject submenuUnlockedlevel3button;
@@ -39,13 +41,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject submenuUnlockedlevel4stats;
     [SerializeField] GameObject submenuUnlockedlevel5button;
     [SerializeField] GameObject submenuUnlockedlevel5stats;
+    [SerializeField] GameObject submenuUnlockedlevel6button;
+    [SerializeField] GameObject submenuUnlockedlevel6stats;
     [SerializeField] GameObject PlayerHPDisplay;
     [SerializeField] GameObject PlayerAmmoDisplay;
     [SerializeField] GameObject PlayerReticleDisplay;
     [SerializeField] GameObject PlayerClimbStaminaDisplay;
     [SerializeField] GameObject LoadingScreen;
+    [SerializeField] Sprite gradeiconS;
+    [SerializeField] Sprite gradeiconA;
+    [SerializeField] Sprite gradeiconB;
+    [SerializeField] Sprite gradeiconC;
+    [SerializeField] Sprite gradeiconD;
+    [SerializeField] Sprite gradeiconUn;//ungraded
 
-   [Header("Audio")]
+    [Header("Audio")]
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip menuMusic;
     [SerializeField] private AudioClip levelMusic;
@@ -65,17 +75,19 @@ public class GameManager : MonoBehaviour
     public Image playerHPBar;
     public TMP_Text playerHPLabel;
     public TMP_Text ScoreLC; //for when you comeplete levels
-    public TMP_Text GradeLC;//for when you comeplete levels
+    public Image GradeLC;//for when you comeplete levels
     public TMP_Text ScoreLVL1;
     public TMP_Text ScoreLVL2;
     public TMP_Text ScoreLVL3;
     public TMP_Text ScoreLVL4;
     public TMP_Text ScoreLVL5;
+    public TMP_Text ScoreLVL6;
     public Image GradeLVL1;
     public Image GradeLVL2;
     public Image GradeLVL3;
     public Image GradeLVL4;
     public Image GradeLVL5;
+    public Image GradeLVL6;
     public GameObject checkpointLabel;
     public Image playerDamageScreen;
     public Image playerHealScreen;
@@ -199,7 +211,7 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene")
+        if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene" && currScene.name != "Main Menu Scene First Open")
         {
             if (menuActive == null)
             {
@@ -333,23 +345,23 @@ public class GameManager : MonoBehaviour
             string encoded = PlayerPrefs.GetString(SaveKey);
             string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
             PlayerSaveData data = JsonUtility.FromJson<PlayerSaveData>(json);
-            if(data.lastCheckpointName != null && data.lastCheckpointName != "")
-            {
-                GameObject spawn = GameObject.Find(data.lastCheckpointName);
-                if (spawn != null)
-                {
-                    Checkpoint checkpoint = spawn.GetComponent<Checkpoint>();
-                    if (checkpoint != null)
-                    {
-                        Transform spawnPos = checkpoint.SpawnPos;
-                        if (spawnPos != null)
-                        {
-                            playerSpawn.transform.position = spawnPos.position;
-                            playerSpawn.transform.rotation = spawnPos.rotation;
-                        }
-                    }
-                }
-            }
+            //if(data.lastCheckpointName != null && data.lastCheckpointName != "")
+            //{
+            //    GameObject spawn = GameObject.Find(data.lastCheckpointName);
+            //    if (spawn != null)
+            //    {
+            //        Checkpoint checkpoint = spawn.GetComponent<Checkpoint>();
+            //        if (checkpoint != null)
+            //        {
+            //            Transform spawnPos = checkpoint.SpawnPos;
+            //            if (spawnPos != null)
+            //            {
+            //                playerSpawn.transform.position = spawnPos.position;
+            //                playerSpawn.transform.rotation = spawnPos.rotation;
+            //            }
+            //        }
+            //    }
+            //}
             // Restore player
             
             if(player != null)
@@ -379,7 +391,7 @@ public class GameManager : MonoBehaviour
             }
             
 
-            Debug.Log($"Loaded checkpoint '{data.lastCheckpointName}'");
+            Debug.Log($"Loaded in!");
             return true;
         }
         catch (Exception e)
@@ -481,7 +493,7 @@ public class GameManager : MonoBehaviour
     {
         if (playerScript == null) return;
 
-        persistentPlayerState.HP = playerScript.CurrentHealth;
+        persistentPlayerState.HP = playerScript.OriginalHealth;
         persistentPlayerState.guns.Clear();
 
         foreach (GunStats gun in playerScript.GunList)
@@ -508,7 +520,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        playerScript.CurrentHealth = persistentPlayerState.HP;
+        playerScript.CurrentHealth = playerScript.OriginalHealth;
         if (playerScript.CurrentHealth <= 0)
             playerScript.CurrentHealth = playerScript.OriginalHealth;
         playerScript.GunList.Clear();
@@ -684,6 +696,7 @@ public class GameManager : MonoBehaviour
         submenuLockedlevel3 = FindInactive("Locked 3");
         submenuLockedlevel4 = FindInactive("Locked 4");
         submenuLockedlevel5 = FindInactive("Locked 5");
+        submenuLockedlevel6 = FindInactive("Locked 6");
         submenuUnlockedlevel2button = FindInactive("Level 2 Button");
         submenuUnlockedlevel2stats = FindInactive("Level 2 Button Back Ground");
         submenuUnlockedlevel3button = FindInactive("Level 3 Button");
@@ -692,21 +705,25 @@ public class GameManager : MonoBehaviour
         submenuUnlockedlevel4stats = FindInactive("Level 4 Button Back Ground");
         submenuUnlockedlevel5button = FindInactive("Level 5 Button");
         submenuUnlockedlevel5stats = FindInactive("Level 5 Button Back Ground");
+        submenuUnlockedlevel6button = FindInactive("Level 6 Button");
+        submenuUnlockedlevel6stats = FindInactive("Level 6 Button Back Ground");
         currScene = SceneManager.GetActiveScene();
         playerHPBar = FindInactive("Player HP Fill").GetComponent<Image>();
         playerHPLabel = FindInactive("Player HP Label").GetComponent<TMP_Text>();
         ScoreLC = FindInactive("ScoreNumber").GetComponent<TMP_Text>();
-        GradeLC = FindInactive("Grade Letter").GetComponent<TMP_Text>();
+        GradeLC = FindInactive("Grade Image LC").GetComponent<Image>();
         ScoreLVL1 = FindInactive("Score Text 1").GetComponent<TMP_Text>();
         ScoreLVL2 = FindInactive("Score Text 2").GetComponent<TMP_Text>();
         ScoreLVL3 = FindInactive("Score Text 3").GetComponent<TMP_Text>();
         ScoreLVL4 = FindInactive("Score Text 4").GetComponent<TMP_Text>();
         ScoreLVL5 = FindInactive("Score Text 5").GetComponent<TMP_Text>();
+        ScoreLVL6 = FindInactive("Score Text 6").GetComponent<TMP_Text>();
         GradeLVL1 = FindInactive("Grade Image 1").GetComponent<Image>(); 
         GradeLVL2 = FindInactive("Grade Image 2").GetComponent<Image>();
         GradeLVL3 = FindInactive("Grade Image 3").GetComponent<Image>();
         GradeLVL4 = FindInactive("Grade Image 4").GetComponent<Image>();
         GradeLVL5 = FindInactive("Grade Image 5").GetComponent<Image>();
+        GradeLVL6 = FindInactive("Grade Image 6").GetComponent<Image>();
         ammoCurrent = FindInactive("Ammo Current").GetComponent<TMP_Text>();
         ammoMax = FindInactive("Ammo Max").GetComponent<TMP_Text>();
         ammoReserves = FindInactive("Ammo Reserves").GetComponent<TMP_Text>();
@@ -898,7 +915,7 @@ public class GameManager : MonoBehaviour
         levelScores[levelName] = score;
         levelGrades[levelName] = grade;
         ScoreLC.text = score.ToString();
-        GradeLC.text = grade.ToString();
+        GradeLC.sprite = GradeImageGetter(grade);
 
         Debug.Log((char)levelGrades[levelName] + " rank recorded for " + levelName);
     }
@@ -964,7 +981,7 @@ public class GameManager : MonoBehaviour
     {
         // TODO - Play cutscene
         finalGrade = GetFinalGrade();
-        GradeLC.text = finalGrade.ToString();
+        GradeLC.sprite = GradeImageGetter(finalGrade);
         Debug.Log("Final Grade is " + finalGrade);
         stateWin();
     }
@@ -1069,18 +1086,31 @@ public class GameManager : MonoBehaviour
             submenuUnlockedlevel5button.SetActive(true);
             submenuUnlockedlevel5stats.SetActive(true);
         }
-    }
-        IEnumerator LoadingScreenEnable(string level)
+        if (!IsLevelUnlocked(levelOrder[index]))
         {
-            menuChange(LoadingScreen);
+            submenuLockedlevel6.SetActive(true);
+            submenuUnlockedlevel6button.SetActive(false);
+            submenuUnlockedlevel6stats.SetActive(false);
+        }
+        else
+        {
+            submenuLockedlevel6.SetActive(false);
+            submenuUnlockedlevel6button.SetActive(true);
+            submenuUnlockedlevel6stats.SetActive(true);
+        }
+    }
+    IEnumerator LoadingScreenEnable(string level)
+    {
+        menuChange(LoadingScreen);
         AsyncOperation Loading = SceneManager.LoadSceneAsync(level);
         loadingdottick = 0;
         while (!Loading.isDone)
-        { 
+        {
             if (loadingdottick == 0)
             {
                 LoadingScreendotdotdot.text = "";
-            }else if (loadingdottick == 1)
+            }
+            else if (loadingdottick == 1)
             {
                 LoadingScreendotdotdot.text = ".";
             }
@@ -1093,17 +1123,46 @@ public class GameManager : MonoBehaviour
                 LoadingScreendotdotdot.text = "...";
             }
             loadingdottick++;
-            if(loadingdottick == 4)
+            if (loadingdottick == 4)
             {
                 loadingdottick = 0;
             }
             yield return null;
         }
-        if(level != "Main Menu Scene")
+        if (level != "Main Menu Scene")
         {
             clearActive();
         }
 
+    }
+    private Sprite GradeImageGetter(char letter)
+    {
+        Sprite gradetoReturn;
+        if (letter == 'S')
+        {
+            gradetoReturn = gradeiconS;
+        }
+        else if(letter == 'A')
+        {
+            gradetoReturn = gradeiconA;
+        }
+        else if (letter == 'B')
+        {
+            gradetoReturn = gradeiconB;
+        }
+        else if (letter == 'C')
+        {
+            gradetoReturn = gradeiconC;
+        }
+        else if (letter == 'D')
+        {
+            gradetoReturn = gradeiconD;
+        }
+        else
+        {
+            gradetoReturn = gradeiconUn;
+        }
+        return gradetoReturn;
     }
     IEnumerator Loadingdots()
     { 

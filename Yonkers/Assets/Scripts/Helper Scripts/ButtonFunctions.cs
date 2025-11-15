@@ -236,6 +236,13 @@ public class ButtonFunctions : MonoBehaviour
         //GameManager.instance.enablePlayerUI();
         //GameManager.instance.LoadNextLevel(levelName);
     }
+    public void gotoLevel6()//head to level 6
+    {
+        //GameManager.instance.stateUnpause();
+        //GameManager.instance.enablePlayerUI();
+        //GameManager.instance.LoadNextLevel(levelName);
+    }
+
     public void gotoShowcase()//head to Showcase
     {
         GameManager.instance.stateUnpause();
