@@ -520,17 +520,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bonkers
   model: {fileID: 1347618777}
-  smallProjectile: {fileID: 9133834467076832970, guid: 4d6f4ab05182e2345bb62c7d148e969f, type: 3}
-  rocketProjectile: {fileID: 0}
-  Lazer: {fileID: 0}
   agent: {fileID: 1347618781}
   POV: {fileID: 1347618779}
+  smallProjectile: {fileID: 9133834467076832970, guid: 4d6f4ab05182e2345bb62c7d148e969f, type: 3}
+  rocketProjectile: {fileID: 0}
+  sniperProjectile: {fileID: 0}
+  VLaser: {fileID: 0}
+  HLaser: {fileID: 0}
   Health: 200
-  moveSpeed: 20
-  strafeDist: 15
+  baseMoveSpeed: 1
   turningSpeed: 20
+  strafeDist: 15
   pelletRate: 0.15
   styleSwitchTime: 5
+  attackRate: 0
+  meleeReach: 0
+  meleeDamage: 0
+  punchSpeed: 0
+  punchForce: 0
+  punchMax: 0
+  rocketRate: 0
+  rocketMax: 0
+  sniperRate: 0
+  sniperMax: 0
+  laserRate: 0
+  laserMax: 0
 --- !u!136 &1347618776
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -639,17 +653,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheCartoonKing
   model: {fileID: 0}
-  smallProjectile: {fileID: 0}
-  rocketProjectile: {fileID: 0}
-  Lazer: {fileID: 0}
   agent: {fileID: 0}
   POV: {fileID: 0}
+  smallProjectile: {fileID: 0}
+  rocketProjectile: {fileID: 0}
+  sniperProjectile: {fileID: 0}
+  VLaser: {fileID: 0}
+  HLaser: {fileID: 0}
   Health: 200
-  moveSpeed: 1
-  strafeDist: 35
+  baseMoveSpeed: 1
   turningSpeed: 4
+  strafeDist: 35
   pelletRate: 0.15
   styleSwitchTime: 5
+  attackRate: 0
+  meleeReach: 0
+  meleeDamage: 0
+  punchSpeed: 0
+  punchForce: 0
+  punchMax: 0
+  rocketRate: 0
+  rocketMax: 0
+  sniperRate: 0
+  sniperMax: 0
+  laserRate: 0
+  laserMax: 0
 --- !u!195 &1347618781
 NavMeshAgent:
   m_ObjectHideFlags: 0
