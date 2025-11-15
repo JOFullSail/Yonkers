@@ -130,7 +130,7 @@ MonoBehaviour:
   hurtSounds: []
   deathSound: {fileID: 0}
   entryMonologue: {fileID: 0}
-  battleStartSound: {fileID: 0}
+  battleStartSound: {fileID: 8300000, guid: 3356804c82a21bc498b025cb18b17b49, type: 3}
   afterDeathTimer: 10
   collisionBox: {fileID: 7121337434076389582}
   neutralFace: {fileID: 2800000, guid: a5f867b248bfaf44895306ca9553a51a, type: 3}

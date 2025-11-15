@@ -233,6 +233,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             //DASH STYLE NOTES:
             if (dashState == true)
             {
+                agent.updateRotation = false;
+                agent.isStopped = true;
                 animator.SetTrigger("Dash");
                 model.material.color = Color.blue;
                 agent.SetDestination(transform.position);
@@ -255,9 +257,9 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                 }
                 if (dashLocalfound == true)
                 {
-                    animator.SetTrigger("ExecuteDash");
                     if(dashAttackSounds.Count() > 0 && doDashFX)
                     {
+                        animator.SetTrigger("ExecuteDash");
                         audioSource.PlayOneShot(dashAttackSounds[Random.Range(0, dashAttackSounds.Length)]);
                         doDashFX = false;
                     }
@@ -278,7 +280,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                     doDashFX = true;
                     dashLocalfound = false;
                     dashState = false;
-
+                    agent.updateRotation = true;
+                    agent.isStopped = false;
                 }
 
             }
