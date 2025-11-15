@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float jumpGraceFall = 0.175f;
     [SerializeField] float jumpGraceClimb = 0.175f;
     [SerializeField] float jumpGraceWall = 0.35f;
-
+    [SerializeField] ParticleSystem jumpDoubleParticles;
 
     [Header("Shooting")]
     [SerializeField] List<GunStats> gunList = new List<GunStats>();
@@ -205,6 +205,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     Vector3 newWallNorm;
     
     // For Jump()
+    int jumpCountEffect;
     Vector3 ceilingRayUp;
     List<Vector3> ceilingRays;
 
@@ -612,6 +613,23 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             }
             
             aud.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
+        }
+        
+        if (jumpCount == 0) jumpCountEffect = 0;
+    }
+    
+    void jumpEffect()
+    {
+        if (isJumping)
+        {
+            if (jumpCountEffect < jumpCount) ++jumpCountEffect;
+            
+            if (jumpCountEffect >= 2)
+            {
+                ParticleSystem vfx = Instantiate(jumpDoubleParticles, transform.position, Quaternion.Euler(90f, 0f, 0f));
+                ParticleSystem.MainModule mainModule = vfx.main;
+                mainModule.stopAction = ParticleSystemStopAction.Destroy;
+            }
         }
     }
 
@@ -1398,6 +1416,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             ++jumpCount;
             playerVel.y = jumpSpeed;
+            jumpEffect();
             isJumping = false;
         }
         else if (controller.isGrounded)
