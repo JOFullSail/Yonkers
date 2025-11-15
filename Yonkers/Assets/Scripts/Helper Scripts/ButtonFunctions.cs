@@ -131,6 +131,7 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.ResetProgression();
         GameManager.instance.levelLocks();
         GameManager.instance.statetoLevelSelect();
+        
     }
     //to settings menu
     public void toSettings()
