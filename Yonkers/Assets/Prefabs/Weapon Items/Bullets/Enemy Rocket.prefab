@@ -100,7 +100,7 @@ AudioSource:
   m_GameObject: {fileID: 1558915690740613495}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8079503862453138035, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: efce49ccb1492ce49ba3f7b6074f85ca, type: 3}
   m_PlayOnAwake: 1
@@ -288,6 +288,8 @@ MonoBehaviour:
   damageAmount: 1
   isExplosive: 1
   respawnUponTouch: 0
+  delayRespawnUponTouch: 0
+  delayTime: 0
   splashDamageAmount: 0
   damageRate: 0
   speed: 35

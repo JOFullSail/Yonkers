@@ -49,10 +49,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42dc9bcf03d722842b30dd1db8654993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
-  mouSens: 500
   vertLockMin: -60
   vertLockMax: 90
   invertY: 0
+  mouSens: 500
 --- !u!20 &6747077823688914818
 Camera:
   m_ObjectHideFlags: 0
@@ -346,7 +346,9 @@ MonoBehaviour:
   InvincibilityDuration: 2.5
   jumpSpeed: 12
   jumpMaxCount: 2
-  jumpGracePeriod: 0.175
+  jumpGraceFall: 0.175
+  jumpGraceClimb: 0.175
+  jumpGraceWall: 0.35
   gunList: []
   gunModel: {fileID: 7949522443913679913}
   shootDmg: 1
@@ -354,9 +356,14 @@ MonoBehaviour:
   shootRate: 0.5
   weaponIsHitscan: 1
   projectile: {fileID: 0}
+  useCanClimbTag: 0
   climbSpeed: 10.25
-  climbWallDetection: 1.25
-  climbMaxAngle: 90
+  climbDuration: 0.6
+  climbHighlightDetection: 15
+  climbHighlightMultiplier: 1.25
+  climbWallDistance: 1.25
+  climbMaxSlopeAngle: 90
+  climbMinAngleDiff: 135
   minSpeed: 3
   maxSpeed: 12
   minAccel: 20
@@ -375,14 +382,18 @@ MonoBehaviour:
   minRagdollTime: 1.25
   debugSpawnAtCamera: 0
   debugClimbAnything: 0
+  debugClimbInfinitely: 0
   debugFastClimb: 0
   debugClimbSpeed: 100
   aud: {fileID: 8840923805221367906}
+  audClimbSource: {fileID: 0}
   audJump:
   - {fileID: 8300000, guid: d1569ab251136574096e3dd6c7b77f4e, type: 3}
   - {fileID: 8300000, guid: d55e0deb0b0325a45abd341779a1d206, type: 3}
   - {fileID: 8300000, guid: d0ad55c32b33cd645b0e0a4ba2b0b03a, type: 3}
   audJumpVol: 0.5
+  audClimb: []
+  audClimbVol: 0
   audHurt:
   - {fileID: 8300000, guid: 659f08cf167e7db4a8165c59da812942, type: 3}
   - {fileID: 8300000, guid: f083b2d4006a43a4ab3acb6224eb27cd, type: 3}
@@ -508,7 +519,7 @@ AudioSource:
   m_GameObject: {fileID: 1722926959862536933}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4399841145372431200, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0

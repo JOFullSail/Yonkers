@@ -72,7 +72,8 @@ MonoBehaviour:
   PlayerHPDisplay: {fileID: 0}
   PlayerAmmoDisplay: {fileID: 0}
   PlayerReticleDisplay: {fileID: 0}
-  PlayerDashCoolDownDisplay: {fileID: 0}
+  PlayerClimbStaminaDisplay: {fileID: 0}
+  LoadingScreen: {fileID: 0}
   musicSource: {fileID: 779934335232736755}
   menuMusic: {fileID: 8300000, guid: 79abb3c956b145b4db7db505b0bb22a2, type: 3}
   levelMusic: {fileID: 8300000, guid: 938260ab6ccdf1e4d92886088bc64b46, type: 3}
@@ -107,7 +108,8 @@ MonoBehaviour:
   ammoCurrent: {fileID: 0}
   ammoMax: {fileID: 0}
   ammoReserves: {fileID: 0}
-  playerDashCooldown: {fileID: 0}
+  playerClimbStamina: {fileID: 0}
+  LoadingScreendotdotdot: {fileID: 0}
   isPaused: 0
   playerSpawnOrig: {fileID: 0}
   currScene:
@@ -128,7 +130,7 @@ AudioSource:
   m_GameObject: {fileID: 2105562033722360742}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -4651718147229610403, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0

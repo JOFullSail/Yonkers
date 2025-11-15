@@ -732,6 +732,7 @@ MonoBehaviour:
   animator: {fileID: 5437273660793681416}
   agent: {fileID: 5979280869925726344}
   headPos: {fileID: 6114452564262077564}
+  scoreValue: 10
   HP: 4
   FOV: 180
   baseMoveSpeed: 12
@@ -745,7 +746,6 @@ MonoBehaviour:
   damageWhenDelayed: 1
   damageWhenUndetected: 1
   enragesWhenDamaged: 0
-  explodesOnDeath: 0
   faceTargetSpeed: 10
   stoppingDistance: 10
   roamDist: 7
@@ -755,6 +755,7 @@ MonoBehaviour:
   initialAttackDelay: 1
   attackDelay: 1
   enrageSpeedIncrease: 0
+  explodesOnDeath: 0
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
   explosionDamage: 0
   canDropItems: 1
@@ -843,7 +844,7 @@ AudioSource:
   m_GameObject: {fileID: 5900499558154895673}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8079503862453138035, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
