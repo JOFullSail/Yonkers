@@ -59,10 +59,10 @@ public class TheCartoonKing : MonoBehaviour, IDamage
 
     [Header("Audio")]
     [SerializeField] AudioSource audioSource;
-    [SerializeField] AudioClip[] bulletFiringSounds;
-    [SerializeField] AudioClip[] rocketFiringSounds;
-    [SerializeField] AudioClip[] sniperFiringSounds;
-    [SerializeField] AudioClip[] laserFiringSounds;
+    [SerializeField] AudioClip[] bulletVoicelines;
+    [SerializeField] AudioClip[] rocketVoicelines;
+    [SerializeField] AudioClip[] sniperVoicelines;
+    [SerializeField] AudioClip[] laserVoicelines;
     [SerializeField] AudioClip[] dashWindupSounds;
     [SerializeField] AudioClip[] dashAttackSounds;
     [SerializeField] AudioClip[] punchImpactSounds;
@@ -88,7 +88,10 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     bool isEntryMono;
     float entryMonoTimer;
     float entryMonoLength;
-    bool canBeDamaged;
+    bool canBeDamaged = true;
+    bool doRocketFX = true;
+    bool doDashFX = true;
+    bool doDashWindupFX = true;
     //DICE BOOLEANS:
     bool strafediceRolled = false;
 
@@ -149,7 +152,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         HPP2 = HP / 2;
         agent.speed = originalSpeed;
 
-        if (entryMonologue != null && audioSource != null)
+        if (entryMonologue != null)
         {
             audioSource.PlayOneShot(entryMonologue);
             entryMonoLength = entryMonologue.length;
@@ -185,7 +188,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             //Once the timer is more or equal to the switch time you set.
             if (switchTimer >= styleSwitchTime)
             {
-
                 defaultState = false;
                 diceRollCheck();
                 switchTimer = 0;
@@ -231,11 +233,18 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             //DASH STYLE NOTES:
             if (dashState == true)
             {
-
+                animator.SetTrigger("Dash");
                 model.material.color = Color.blue;
                 agent.SetDestination(transform.position);
                 chargeTimer += Time.deltaTime;
-                animator.SetTrigger("Dash");
+                if(doDashWindupFX)
+                {
+                    if (dashWindupSounds.Count() > 0)
+                        audioSource.PlayOneShot(dashWindupSounds[Random.Range(0, dashWindupSounds.Length)]);
+
+                    doDashWindupFX = false;
+                }
+                
 
                 if (chargeTimer >= punchMax && dashLocalfound == false)
                 {
@@ -247,20 +256,26 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                 if (dashLocalfound == true)
                 {
                     animator.SetTrigger("ExecuteDash");
-                    if(dashAttackSounds.Count() > 0)
+                    if(dashAttackSounds.Count() > 0 && doDashFX)
+                    {
                         audioSource.PlayOneShot(dashAttackSounds[Random.Range(0, dashAttackSounds.Length)]);
+                        doDashFX = false;
+                    }
+                        
                     transform.position = Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
                     punch(punchForce, (GameManager.instance.player.transform.position - transform.position));
                     dashTimer += Time.deltaTime;
                 }
 
-                if (transform.position == Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed) || punched == true || dashTimer >= punchSpeed)
+                if (Vector3.Distance(transform.position, punchPosition) < 0.01f || punched == true || dashTimer >= punchSpeed)
                 {
+                    dashTimer = 0;
                     chargeTimer = 0;
                     model.material.color = kingColor;
                     punched = false;
                     defaultState = true;
                     SetNeutral();
+                    doDashFX = true;
                     dashLocalfound = false;
                     dashState = false;
 
@@ -272,7 +287,13 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             //The King will stand still and shoot rockets at you
             if (rocketState)
             {
-                animator.SetTrigger("Fire Rockets");
+                if (rocketVoicelines.Count() > 0 && doRocketFX)
+                {
+                    animator.SetTrigger("Fire Rockets");
+                    audioSource.PlayOneShot(rocketVoicelines[Random.Range(0, rocketVoicelines.Length)]);
+                    doRocketFX = false;
+                }
+                    
 
                 faceTarget();
                 model.material.color = Color.orangeRed;
@@ -297,6 +318,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                         shootTimer = 0;
                         model.material.color = kingColor;
                         rocketState = false;
+                        doRocketFX = true;
                         defaultState = true;
                         SetNeutral();
                     }
@@ -335,6 +357,9 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             //LASER STATE:
             if (laserState)
             {
+                if (laserVoicelines.Count() > 0)
+                    audioSource.PlayOneShot(laserVoicelines[Random.Range(0, laserVoicelines.Length)]);
+
                 faceTarget();
                 model.material.color = Color.black;
                 agent.SetDestination(transform.position);
@@ -383,8 +408,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         {
             dashState = true;
             SetAngry();
-            if (dashWindupSounds.Count() > 0)
-                audioSource.PlayOneShot(dashWindupSounds[Random.Range(0, dashWindupSounds.Length)]);
         }
 
         if(diceRoll == 2)
@@ -455,24 +478,20 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     void shootPellets()
     {
         shootTimer = 0;
-        if (bulletFiringSounds.Count() > 0)
-            audioSource.PlayOneShot(bulletFiringSounds[Random.Range(0, bulletFiringSounds.Length)]);
         Instantiate(smallProjectile, shootPos.position, transform.rotation);
     }
 
     void shootRockets()
     {
         shootTimer = 0;
-        if (rocketFiringSounds.Count() > 0)
-            audioSource.PlayOneShot(rocketFiringSounds[Random.Range(0, rocketFiringSounds.Length)]);
         Instantiate(rocketProjectile, shootPos.position, transform.rotation);
     }
 
     void shootSniper()
     {
         shootTimer = 0;
-        if (sniperFiringSounds.Count() > 0)
-            audioSource.PlayOneShot(sniperFiringSounds[Random.Range(0, sniperFiringSounds.Length)]);
+        if (sniperVoicelines.Count() > 0)
+            audioSource.PlayOneShot(sniperVoicelines[Random.Range(0, sniperVoicelines.Length)]);
         Instantiate(sniperProjectile, shootPos.position, transform.rotation);
         shotSniper = true;
     }
@@ -480,8 +499,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     void shootLaser()
     {
         shootTimer = 0;
-        if (laserFiringSounds.Count() > 0)
-            audioSource.PlayOneShot(laserFiringSounds[Random.Range(0, laserFiringSounds.Length)]);
 
         if (HLaserB == true)
         {
