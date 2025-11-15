@@ -58,7 +58,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     [SerializeField] float laserMax;
 
     [Header("Audio")]
-    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioSource sfxAudioSource;
+    [SerializeField] AudioSource voiceAudioSource;
     [SerializeField] AudioClip[] bulletVoicelines;
     [SerializeField] AudioClip[] rocketVoicelines;
     [SerializeField] AudioClip[] sniperVoicelines;
@@ -154,7 +155,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
 
         if (entryMonologue != null)
         {
-            audioSource.PlayOneShot(entryMonologue);
+            voiceAudioSource.PlayOneShot(entryMonologue);
             entryMonoLength = entryMonologue.length;
             isEntryMono = true;
             entryMonoTimer = 0;
@@ -174,7 +175,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                 isEntryMono = false;
                 canBeDamaged = true;
                 if(battleStartSound != null)
-                    audioSource.PlayOneShot(battleStartSound);
+                    sfxAudioSource.PlayOneShot(battleStartSound);
             }
         }
 
@@ -242,7 +243,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                 if(doDashWindupFX)
                 {
                     if (dashWindupSounds.Count() > 0)
-                        audioSource.PlayOneShot(dashWindupSounds[Random.Range(0, dashWindupSounds.Length)]);
+                        voiceAudioSource.PlayOneShot(dashWindupSounds[Random.Range(0, dashWindupSounds.Length)]);
 
                     doDashWindupFX = false;
                 }
@@ -260,7 +261,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                     if(dashAttackSounds.Count() > 0 && doDashFX)
                     {
                         animator.SetTrigger("ExecuteDash");
-                        audioSource.PlayOneShot(dashAttackSounds[Random.Range(0, dashAttackSounds.Length)]);
+                        sfxAudioSource.PlayOneShot(dashAttackSounds[Random.Range(0, dashAttackSounds.Length)]);
                         doDashFX = false;
                     }
                         
@@ -293,7 +294,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                 if (rocketVoicelines.Count() > 0 && doRocketFX)
                 {
                     animator.SetTrigger("Fire Rockets");
-                    audioSource.PlayOneShot(rocketVoicelines[Random.Range(0, rocketVoicelines.Length)]);
+                    voiceAudioSource.PlayOneShot(rocketVoicelines[Random.Range(0, rocketVoicelines.Length)]);
                     doRocketFX = false;
                 }
                     
@@ -361,7 +362,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             if (laserState)
             {
                 if (laserVoicelines.Count() > 0)
-                    audioSource.PlayOneShot(laserVoicelines[Random.Range(0, laserVoicelines.Length)]);
+                    voiceAudioSource.PlayOneShot(laserVoicelines[Random.Range(0, laserVoicelines.Length)]);
 
                 faceTarget();
                 model.material.color = Color.black;
@@ -494,7 +495,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     {
         shootTimer = 0;
         if (sniperVoicelines.Count() > 0)
-            audioSource.PlayOneShot(sniperVoicelines[Random.Range(0, sniperVoicelines.Length)]);
+            voiceAudioSource.PlayOneShot(sniperVoicelines[Random.Range(0, sniperVoicelines.Length)]);
         Instantiate(sniperProjectile, shootPos.position, transform.rotation);
         shotSniper = true;
     }
@@ -530,7 +531,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= meleeReach)
         {
             if(punchImpactSounds.Count() > 0)
-                audioSource.PlayOneShot(punchImpactSounds[Random.Range(0, punchImpactSounds.Length)]);
+                sfxAudioSource.PlayOneShot(punchImpactSounds[Random.Range(0, punchImpactSounds.Length)]);
 
             Debug.Log("Ouch!!!");
             GameManager.instance.playerScript.Knockbacked = true;
@@ -559,7 +560,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         StartCoroutine(GetHurt());
 
         if(HP > 0 && hurtSounds.Count() > 0)
-            audioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
+            voiceAudioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
 
         if(HP <= 0)
         {
@@ -567,8 +568,9 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             defaultState = false;
             if(deathSound != null)
             {
-                audioSource.Stop();
-                audioSource.PlayOneShot(deathSound);
+                voiceAudioSource.Stop();
+                sfxAudioSource.Stop();
+                voiceAudioSource.PlayOneShot(deathSound);
             }
                 
             if(collisionBox != null)
