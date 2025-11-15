@@ -100,8 +100,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [Header("Audio")]
     [SerializeField] AudioSource aud;
     [SerializeField] AudioSource audClimbSource;
-    [SerializeField] AudioClip[] audJump;
-    [Range(0, 1)][SerializeField] float audJumpVol;
+    [SerializeField] AudioClip[] audJumpVoice;
+    [Range(0, 1)][SerializeField] float audJumpVoiceVol;
+    [SerializeField] AudioClip[] audJumpInit;
+    [Range(0, 1)][SerializeField] float audJumpInitVol;
+    [SerializeField] AudioClip[] audJumpDouble;
+    [Range(0, 1)][SerializeField] float audJumpDoubleVol;
     [SerializeField] AudioClip[] audClimb;
     [Range(0, 1)][SerializeField] float audClimbVol;
     [SerializeField] AudioClip[] audHurt;
@@ -612,13 +616,13 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 ++jumpCount;
             }
             
-            aud.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
+            //aud.PlayOneShot(audJumpVoice[Random.Range(0, audJumpVoice.Length)], audJumpVoiceVol);
         }
         
         if (jumpCount == 0) jumpCountEffect = 0;
     }
     
-    void jumpEffect()
+    void jumpEffects()
     {
         if (isJumping)
         {
@@ -629,6 +633,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 ParticleSystem vfx = Instantiate(jumpDoubleParticles, transform.position, Quaternion.Euler(90f, 0f, 0f));
                 ParticleSystem.MainModule mainModule = vfx.main;
                 mainModule.stopAction = ParticleSystemStopAction.Destroy;
+                aud.PlayOneShot(audJumpDouble[Random.Range(0, audJumpDouble.Length)], audJumpDoubleVol);
+            }
+            else
+            {
+                aud.PlayOneShot(audJumpInit[Random.Range(0, audJumpInit.Length)], audJumpInitVol);
             }
         }
     }
@@ -1416,7 +1425,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             ++jumpCount;
             playerVel.y = jumpSpeed;
-            jumpEffect();
+            jumpEffects();
             isJumping = false;
         }
         else if (controller.isGrounded)
