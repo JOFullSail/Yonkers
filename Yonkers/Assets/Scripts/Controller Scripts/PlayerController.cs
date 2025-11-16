@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float jumpGraceFall = 0.25f;
     [SerializeField] float jumpGraceWall = 0.35f;
     [SerializeField] ParticleSystem jumpDoubleParticles;
+    [Range(0, 100)][SerializeField] int jumpVoiceChance = 50;
 
     [Header("Shooting")]
     [SerializeField] List<GunStats> gunList = new List<GunStats>();
@@ -98,6 +99,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     [Header("Audio")]
     [SerializeField] AudioSource sfxAudioSource;
+    [SerializeField] AudioSource vocAudioSource;
     [SerializeField] AudioClip[] audJumpVoice;
     [Range(0, 1)][SerializeField] float audJumpVoiceVol;
     [SerializeField] AudioClip[] audJumpInit;
@@ -425,14 +427,24 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isJumping = false;
     }
     
-    void jumpSounds()
+    void jumpSounds(bool doubleJumpVocals)
     {
         if (!(hasPlayed && jumpTimer < jumpGraceWall))
         {
-            if (jumpCount >= 2 || wallJumpDelayed && jumpCount == 1) 
+            if (jumpCount >= 2 || wallJumpDelayed && jumpCount == 1)
+            {
                 sfxAudioSource.PlayOneShot(audJumpDouble[Random.Range(0, audJumpDouble.Length)], audJumpDoubleVol);
+                
+                if (doubleJumpVocals && Random.Range(0, 100) <= jumpVoiceChance)
+                    vocAudioSource.PlayOneShot(audJumpVoice[Random.Range(0, audJumpVoice.Length)], audJumpVoiceVol);
+            }
             else 
+            {
                 sfxAudioSource.PlayOneShot(audJumpInit[Random.Range(0, audJumpInit.Length)], audJumpInitVol);
+                
+                if (Random.Range(0, 100) <= jumpVoiceChance)
+                    vocAudioSource.PlayOneShot(audJumpVoice[Random.Range(0, audJumpVoice.Length)], audJumpVoiceVol);
+            }
         }
     }
     
@@ -584,7 +596,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                         wallJumpDelayed = true;
                         prevWallPos = newWallPos;
                         prevWallNorm = newWallNorm;
-                        jumpSounds(); // allows player actual jump while climbing to sound
+                        jumpSounds(true); // allows player actual jump while climbing to sound
                         hasPlayed = true;
                         wallJumpDelayed = false;
                     }
@@ -601,7 +613,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 if (!isAboveMinSlope && playerVel.y > 0) 
                 {
                     sfxAudioSource.Stop();
-                    jumpSounds();
+                    jumpSounds(true);
                     hasPlayed = true;
                 }
                 
@@ -620,7 +632,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 if (!controller.isGrounded && playerVel.y > 0 && (!wallJumped && isClimbing || isSliding) && !hasPlayed/* || isTaller*/) // one goin backwards
                 {
                     sfxAudioSource.Stop();
-                    jumpSounds();
+                    jumpSounds(true);
                     hasPlayed = true;
                 }
                 GameManager.instance.playerClimbStamina.fillAmount = 0f;
@@ -640,6 +652,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (controller.isGrounded)
         {
             isTaller = false;
+            isSliding = false;
             hasPlayed = false;
             wallJumped = false;
             GameManager.instance.playerClimbStamina.fillAmount = 1f;
@@ -698,8 +711,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 ++jumpCount;
             }
-            
-            //sfxAudioSource.PlayOneShot(audJumpVoice[Random.Range(0, audJumpVoice.Length)], audJumpVoiceVol);
         }
         
         if (jumpCount == 0) jumpCountEffect = 0;
@@ -717,7 +728,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 ParticleSystem.MainModule mainModule = vfx.main;
                 mainModule.stopAction = ParticleSystemStopAction.Destroy;
             }
-            jumpSounds();
+            jumpSounds(false);
         }
     }
 
