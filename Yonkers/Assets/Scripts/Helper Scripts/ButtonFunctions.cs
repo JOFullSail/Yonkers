@@ -9,20 +9,45 @@ public class ButtonFunctions : MonoBehaviour
     public Image FOVSliderParent;
     public Image mouSensSliderParent;
     public Image brightnessSliderParent;
-    
+
     void Start()
     {
-        if(SettingsData.instance != null)
+        if (SettingsData.instance != null)
         {
-            if(GameManager.instance.cam != null)
+            if (GameManager.instance.cam != null)
             {
                 GameManager.instance.cam.fieldOfView = SettingsData.instance.FOV;
             }
-            if(FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
+            if (FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
             {
                 FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOV, SettingsData.instance.FOVMin, SettingsData.instance.FOVMax);
                 mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSens, SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax);
                 brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightness, SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax);
+            }
+        }
+    }
+    private void Update()
+    {
+        if (GameManager.instance.playerScript != null)
+        {
+            float FOVOrig = SettingsData.instance.FOV;
+            if (GameManager.instance.playerScript.IsDashing == true)
+            {
+                GameManager.instance.cam.fieldOfView += 20f * Time.deltaTime;
+            }
+            else
+            {
+                if (GameManager.instance.cam.fieldOfView > FOVOrig)
+                {
+                    if (GameManager.instance.cam.fieldOfView <= FOVOrig)
+                    {
+                        GameManager.instance.cam.fieldOfView = FOVOrig;
+                    }
+                    else
+                    {
+                        GameManager.instance.cam.fieldOfView -= 80f * Time.deltaTime;
+                    }
+                }
             }
         }
     }

@@ -1075,6 +1075,7 @@ public class GameManager : MonoBehaviour
 
         musicSource.clip = levelMusic;
         musicSource.loop = true;
+        musicSource.volume = LevelManager.instance.levelMusicVol;
         musicSource.Play();
     }
     public void levelLocks() //used to keep track of locked and unlocked levels 
