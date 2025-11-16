@@ -1448,8 +1448,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemy
   model: {fileID: 5441943427986960049}
   animator: {fileID: 7307838392047298509}
+  voiceSoundSource: {fileID: 0}
+  ambientVoicelines: []
+  playerDetectedVoicelines: []
+  combatVoicelines: []
+  timeBetweenCombatLines: 10
+  hurtSounds: []
+  deathSounds: []
+  deathVFX: {fileID: 8254294199374504725, guid: da67c3745d168eb47a3c86221c2241f3, type: 3}
   agent: {fileID: 5089994146430952583}
   headPos: {fileID: 3742555028645975712}
+  scoreValue: 10
   HP: 6
   FOV: 180
   baseMoveSpeed: 10

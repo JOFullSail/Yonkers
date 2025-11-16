@@ -721,7 +721,7 @@ MonoBehaviour:
   timeBetweenCombatLines: 10
   hurtSounds: []
   deathSounds: []
-  deathVFX: {fileID: 0}
+  deathVFX: {fileID: 8254294199374504725, guid: da67c3745d168eb47a3c86221c2241f3, type: 3}
   agent: {fileID: 5979280869925726344}
   headPos: {fileID: 3097507587587477903}
   scoreValue: 10
@@ -764,7 +764,6 @@ MonoBehaviour:
   audShoot:
   - {fileID: 8300000, guid: 5e6182b426c912542af8c163da231e58, type: 3}
   - {fileID: 8300000, guid: c3f6ca9eefb7201468ce02866ba7bde5, type: 3}
-  audShootVol: 0.35
 --- !u!135 &3411629711086631280
 SphereCollider:
   m_ObjectHideFlags: 0

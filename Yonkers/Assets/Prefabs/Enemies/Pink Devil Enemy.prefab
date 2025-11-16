@@ -52,8 +52,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   model: {fileID: 9211244660900718742}
   animator: {fileID: 0}
+  voiceSoundSource: {fileID: 0}
+  ambientVoicelines: []
+  playerDetectedVoicelines: []
+  combatVoicelines: []
+  timeBetweenCombatLines: 10
+  hurtSounds: []
+  deathSounds: []
+  deathVFX: {fileID: 8254294199374504725, guid: da67c3745d168eb47a3c86221c2241f3, type: 3}
   agent: {fileID: 6481507201461103199}
   headPos: {fileID: 0}
+  scoreValue: 10
   HP: 6
   FOV: 180
   baseMoveSpeed: 15
@@ -67,7 +76,6 @@ MonoBehaviour:
   damageWhenDelayed: 0
   damageWhenUndetected: 0
   enragesWhenDamaged: 0
-  explodesOnDeath: 0
   faceTargetSpeed: 10
   stoppingDistance: 10
   roamDist: 10
@@ -77,16 +85,20 @@ MonoBehaviour:
   initialAttackDelay: 2.5
   attackDelay: 1
   enrageSpeedIncrease: 0
+  explodesOnDeath: 0
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
   explosionDamage: 0
+  canDropItems: 0
+  possibleItemDrops: []
+  dropChance: 0
   room: {fileID: 0}
   projectile: {fileID: 4092872357349286730, guid: 94706be9cfa2f2d4b8593c6576516cee, type: 3}
+  projectileModel: {fileID: 0}
   shootPos: {fileID: 7444368081967920542}
   delayBetweenShots: 1
-  audEn: {fileID: -2362361552025667404}
+  shootSoundSource: {fileID: 0}
   audShoot:
   - {fileID: 8300000, guid: 68f213a6c2a775449b5f12c4e1b521eb, type: 3}
-  audShootVol: 0.4
 --- !u!33 &3048861046617605843
 MeshFilter:
   m_ObjectHideFlags: 0
