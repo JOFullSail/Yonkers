@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreShooting;
     [SerializeField] LayerMask ignoreClimbing;
+    [SerializeField] LayerMask ignorefeetNorm;
+    [SerializeField] LayerMask ignorefeetInvinc; 
 
     [Header("General")]
     [SerializeField] int HP = 10;
@@ -128,6 +130,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     int gunListIdx;
     int jumpCount;
     int hpOrig = 4;
+    public int footchecklength;
     //bools
     bool isDashing;
     bool isClimbing;
@@ -205,6 +208,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     int noClimbLayers;
     string noClimbTag;
     string currentFootsteptag;
+    
     float newWallHeight = 0f;
     
     Renderer highlightWall;
@@ -350,6 +354,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbHighlightDetection, Color.green);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDistance, Color.blue);
+        Debug.DrawRay(gameObject.transform.position, (-gameObject.transform.up) * footchecklength, Color.yellow);
 
         if (!GameManager.instance.isPaused)
         {
@@ -362,6 +367,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void playerMovement()
     {
         _Invincibility_();
+        footcheck();
         knockbackMovement();
         Frozen(); //checking if you're frozen
         if (frozenOn == false) // long as you're not frozen you can do all your usual movement
@@ -425,7 +431,29 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             yield return null;
         }
     }
-
+    void footcheck()
+    {
+        if(gameObject.layer == 3)
+        {
+            if((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetNorm))){
+                if (hit.collider.gameObject.tag == "Grass" || hit.collider.gameObject.tag == "Metal" || hit.collider.gameObject.tag == "Stone" || hit.collider.gameObject.tag == "Royal" || hit.collider.gameObject.tag == "Rock")
+                { 
+                    currentFootsteptag = hit.collider.tag;
+                }
+            }
+        }
+        else if(gameObject.layer ==11)
+        {
+            if ((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetInvinc)))
+            {
+                if (hit.collider.tag == "Grass" || hit.collider.tag == "Metal" || hit.collider.tag == "Stone" || hit.collider.tag == "Royal" || hit.collider.tag == "Rock")
+                {
+                    currentFootsteptag = hit.collider.tag;
+                }
+            }
+        }
+        
+    }
     void climb()
     {
         bool canClimb = false;
@@ -1639,15 +1667,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
         }
     }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.isTrigger)
-        {
-            return;
-        }
-        currentFootsteptag = other.tag;
-    }
+ 
 }
 
 

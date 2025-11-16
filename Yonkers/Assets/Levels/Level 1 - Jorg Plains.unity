@@ -2324,7 +2324,7 @@ GameObject:
   - component: {fileID: 149559099}
   m_Layer: 0
   m_Name: Terrain
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17065,7 +17065,7 @@ GameObject:
   - component: {fileID: 1524912961}
   m_Layer: 0
   m_Name: Dirt Path
-  m_TagString: Untagged
+  m_TagString: Rock
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23776,7 +23776,7 @@ GameObject:
   - component: {fileID: 2013122061}
   m_Layer: 0
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
