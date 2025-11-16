@@ -182,7 +182,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     // If the player's raycast detected a wall
     bool wallDetected;
     // If the player wall jumped.
-    bool wallJumping;
+    bool wallJumped;
     // If it doesn't have the "NoClimb" tag
     bool canBeClimbed;
     // Greater than or equal to the max angle a surface can have 
@@ -198,6 +198,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     // If the player is taller than the wall
     bool isTaller;
     bool climbTimeLeft;
+    bool wallJumpDelayed;
+    bool hasStamina;
     int noClimbLayers;
     string noClimbTag;
     float newWallHeight = 0f;
@@ -377,13 +379,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
     }
 
-    void jumpCheck()
-    {
-        if (Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && gravityOn)
-            isJumping = true;
-        else isJumping = false;
-    }
-
     bool angularDifference(float norm1, float norm2, float minDegrees)
     {
         float difference = (Mathf.Acos(norm1) * Mathf.Rad2Deg) - (Mathf.Acos(norm2) * Mathf.Rad2Deg);
@@ -419,6 +414,56 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             value = ButtonFunctions.normalize(time, 0, timer);
             timer += Time.deltaTime;
             yield return null;
+        }
+    }
+
+    void jumpCheck()
+    {
+        if (Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && gravityOn)
+            isJumping = true;
+        else 
+            isJumping = false;
+    }
+    
+    void jumpSounds()
+    {
+        if (jumpCount >= 2) aud.PlayOneShot(audJumpDouble[Random.Range(0, audJumpDouble.Length)], audJumpDoubleVol);
+        else aud.PlayOneShot(audJumpInit[Random.Range(0, audJumpInit.Length)], audJumpInitVol);
+    }
+    
+    
+    IEnumerator wallJumpIncrement()
+    {
+        Debug.Log("Started Co-routine");
+        wallJumpDelayed = true;
+        bool isLooping = true;
+        bool jumped = false;
+        jumpTimer = 0;
+        while (isLooping)
+        {
+            if (jumpTimer >= jumpGraceWall) 
+            {
+                isLooping = false;
+                wallJumpDelayed = false;
+                Debug.Log("jumpTimer >= jumpGraceWall");
+            }
+            
+            if (isJumping)
+            {
+                jumped = true;
+                isLooping = false;
+                wallJumpDelayed = false;
+                Debug.Log("isJumping");
+            }
+
+            yield return null;
+        }
+
+        if (!jumped)
+        {
+            ++jumpCount;
+            jumpCheck();
+            Debug.Log("!jumped");
         }
     }
 
@@ -500,7 +545,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 if (!isClimbing)
                 {
-                    wallJumping = false;
+                    wallJumped = false;
+                    hasStamina = true;
                     if (jumpCount > 0) --jumpCount;
                     audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
                 }
@@ -517,8 +563,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     jumpTimer = 0;
                     if (isClimbing)
                     {
-                        wallJumping = true;
-                        climbTimeLeft = false;
+                        Debug.Log("jumpes yay");//it aint triggering
+                        wallJumped = true;
+                        prevWallPos = newWallPos;
+                        prevWallNorm = newWallNorm;
                         audClimbSource.Stop();
                         GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     }
@@ -526,6 +574,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 
                 if (!climbTimeLeft)
                 {
+                    hasStamina = false;
                     prevWallPos = newWallPos;
                     prevWallNorm = newWallNorm;
                     GameManager.instance.playerClimbStamina.fillAmount = 0f;
@@ -539,7 +588,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             // Triggers only on the first frame
             if (wallDetected)
             {
-                jumpTimer = 0;
+                //jumpTimer = 0;
+                if (!wallJumped/*this should work what*/) StartCoroutine(wallJumpIncrement());
                 prevWallPos = newWallPos;
                 prevWallNorm = newWallNorm;
                 audClimbSource.Stop();
@@ -550,15 +600,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             wallDetected = false;
         }
 
-        if (!wallJumping && isJumping && prevWallNorm.z != 7f && jumpTimer >= jumpGraceWall)
-        { 
-            ++jumpCount; 
-            jumpCheck();
-        }
+        //if (!wallJumped && isJumping && prevWallNorm.z != 7f && jumpTimer >= jumpGraceWall)
+        //{ 
+            //++jumpCount; 
+            //jumpCheck();
+        //}
 
         if (controller.isGrounded)
         {
-            wallJumping = false;
+            wallJumped = false;
             GameManager.instance.playerClimbStamina.fillAmount = 1f;
         }
     }
@@ -1426,7 +1476,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             ++jumpCount;
             playerVel.y = jumpSpeed;
             jumpEffects();
-            isJumping = false;
+            if (!wallJumpDelayed) isJumping = false;
         }
         else if (controller.isGrounded)
         {
