@@ -392,6 +392,7 @@ MonoBehaviour:
   debugFastClimb: 0
   debugClimbSpeed: 100
   aud: {fileID: 8840923805221367906}
+  audClimbSource: {fileID: 0}
   audJump:
   - {fileID: 8300000, guid: d1569ab251136574096e3dd6c7b77f4e, type: 3}
   - {fileID: 8300000, guid: d55e0deb0b0325a45abd341779a1d206, type: 3}
@@ -561,7 +562,7 @@ AudioSource:
   m_GameObject: {fileID: 1722926959862536933}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4399841145372431200, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
