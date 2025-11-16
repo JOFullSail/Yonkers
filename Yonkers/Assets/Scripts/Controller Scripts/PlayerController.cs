@@ -434,7 +434,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     
     IEnumerator wallJumpIncrement()
     {
-        Debug.Log("Started Co-routine");
         wallJumpDelayed = true;
         bool isLooping = true;
         bool jumped = false;
@@ -447,6 +446,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 wallJumpDelayed = false;
                 Debug.Log("jumpTimer >= jumpGraceWall");
             }
+            // if isClimbing, make jump and loop tru so it can add jump count. make sure to add an or to the ++jumpcount if check
             
             if (isJumping)
             {
@@ -455,11 +455,18 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 wallJumpDelayed = false;
                 Debug.Log("isJumping");
             }
+            
+            if (isClimbing)
+            {
+                isLooping = false;
+                wallJumpDelayed = false;
+                Debug.Log("isClimbing AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            }
 
             yield return null;
         }
 
-        if (!jumped)
+        if (!jumped && !hasStamina || isClimbing)
         {
             ++jumpCount;
             jumpCheck();
@@ -561,14 +568,16 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 if (isJumping)
                 {
                     jumpTimer = 0;
+                    wallJumped = true;
+                    audClimbSource.Stop();
+                    GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     if (isClimbing)
                     {
-                        Debug.Log("jumpes yay");//it aint triggering
-                        wallJumped = true;
+                        //wallJumped = true
                         prevWallPos = newWallPos;
                         prevWallNorm = newWallNorm;
-                        audClimbSource.Stop();
-                        GameManager.instance.playerClimbStamina.fillAmount = 0f;
+                        //audClimbSource.Stop();
+                        //GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     }
                 }
                 
