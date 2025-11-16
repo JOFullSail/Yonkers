@@ -71424,19 +71424,13 @@ MonoBehaviour:
   platform: {fileID: 1449117137}
   waypoints:
   - {fileID: 482671816}
-  - {fileID: 1287789680}
-  - {fileID: 893835250}
-  - {fileID: 790638968}
   - {fileID: 644798240}
   - {fileID: 897155207}
   segSpeeds:
-  - 9
-  - 18
-  - 18
-  - 9
-  - 18
-  - 18
-  delay: 0
+  - 30
+  - 30
+  - 30
+  delay: 3
   stopThreshold: 0.1
   rotateTowardsPath: 0
   rotationSpeed: 5
