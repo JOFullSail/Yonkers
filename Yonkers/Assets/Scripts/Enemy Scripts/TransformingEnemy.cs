@@ -11,13 +11,25 @@ public class TransformingEnemy : EnemyAI
     [SerializeField][Range(0, 100)] int itemTransformChance;
 
     [SerializeField] ParticleSystem transformVFX;
-    
+    [SerializeField] float transformAnimationLength;
+
+    bool playerHasBeenDetected = false;
+    float transformTimer = 0;
     void Update()
     {
         enemyRoutine();
 
-        if (playerDetected)
-            Transform();
+        if (playerDetected || playerHasBeenDetected)
+        {
+            if(!playerHasBeenDetected)
+                animator.SetTrigger("Transform");
+
+            playerHasBeenDetected = true;
+            transformTimer += Time.deltaTime;
+
+            if(transformTimer >= transformAnimationLength)
+                Transform();
+        }            
     }
 
     private void Transform()
