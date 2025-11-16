@@ -279,6 +279,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                     defaultState = true;
                     SetNeutral();
                     doDashFX = true;
+                    doDashWindupFX = true;
                     dashLocalfound = false;
                     dashState = false;
                     agent.updateRotation = true;
