@@ -106820,23 +106820,13 @@ MonoBehaviour:
     whenTriggered: 1
     triggers: []
     states: 
-  - waypointIndex: 77
-    targetIndex: 76
-    requireAll: 1
-    whenTriggered: 0
-    triggers:
-    - trigger: {fileID: 894654133}
-      stayTriggered: 0
-    - trigger: {fileID: 1094439243}
-      stayTriggered: 1
-    states: 
   - waypointIndex: 78
     targetIndex: 80
     requireAll: 1
     whenTriggered: 0
     triggers:
-    - trigger: {fileID: 894654133}
-      stayTriggered: 0
+    - trigger: {fileID: 1267853792}
+      stayTriggered: 1
     states: 
   - waypointIndex: 89
     targetIndex: 88
