@@ -129,9 +129,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 40dc330824a87b64ab076a75a9d8ffa3, type: 3}
   punchImpactSounds:
   - {fileID: 8300000, guid: 33a2fed50c8906443a2f7926092db6b8, type: 3}
-  hurtSounds: []
-  deathSound: {fileID: 0}
-  entryMonologue: {fileID: 0}
+  hurtSounds:
+  - {fileID: 8300000, guid: 3a17e7716525f3f4b958d73b1ff3cc8f, type: 3}
+  - {fileID: 8300000, guid: ea8a95453dd689a4aaccb282ffaf167c, type: 3}
+  - {fileID: 8300000, guid: abe48e48770600a43aafb079fad1fb83, type: 3}
+  deathSound: {fileID: 8300000, guid: 2a2704bb31781ef4e8faded6b4d3f12f, type: 3}
+  entryMonologue: {fileID: 8300000, guid: b285dfc20b37ac54a9d0d83d757d6be4, type: 3}
   battleStartSound: {fileID: 8300000, guid: 3356804c82a21bc498b025cb18b17b49, type: 3}
   afterDeathTimer: 10
   collisionBox: {fileID: 7121337434076389582}
