@@ -20,8 +20,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] int jumpMaxCount = 2;
     [Tooltip("Amount of time (in seconds) the player has to trigger the first jump after falling off a platform. \n" +
         "If the player jumps after the grace period, the player will only trigger the second jump.")]
-    [SerializeField] float jumpGraceFall = 0.175f;
-    [SerializeField] float jumpGraceClimb = 0.175f;
+    [SerializeField] float jumpGraceFall = 0.25f;
     [SerializeField] float jumpGraceWall = 0.35f;
     [SerializeField] ParticleSystem jumpDoubleParticles;
 
@@ -98,8 +97,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float debugClimbSpeed = 50f;
 
     [Header("Audio")]
-    [SerializeField] AudioSource aud;
-    [SerializeField] AudioSource audClimbSource;
+    [SerializeField] AudioSource sfxAudioSource;
     [SerializeField] AudioClip[] audJumpVoice;
     [Range(0, 1)][SerializeField] float audJumpVoiceVol;
     [SerializeField] AudioClip[] audJumpInit;
@@ -427,8 +425,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     
     void jumpSounds()
     {
-        if (jumpCount >= 2) aud.PlayOneShot(audJumpDouble[Random.Range(0, audJumpDouble.Length)], audJumpDoubleVol);
-        else aud.PlayOneShot(audJumpInit[Random.Range(0, audJumpInit.Length)], audJumpInitVol);
+        if (jumpCount >= 2) sfxAudioSource.PlayOneShot(audJumpDouble[Random.Range(0, audJumpDouble.Length)], audJumpDoubleVol);
+        else sfxAudioSource.PlayOneShot(audJumpInit[Random.Range(0, audJumpInit.Length)], audJumpInitVol);
     }
     
     
@@ -444,33 +442,29 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 isLooping = false;
                 wallJumpDelayed = false;
-                Debug.Log("jumpTimer >= jumpGraceWall");
             }
-            // if isClimbing, make jump and loop tru so it can add jump count. make sure to add an or to the ++jumpcount if check
             
             if (isJumping)
             {
                 jumped = true;
                 isLooping = false;
                 wallJumpDelayed = false;
-                Debug.Log("isJumping");
             }
             
             if (isClimbing)
             {
+            ++jumpCount;
                 isLooping = false;
                 wallJumpDelayed = false;
-                Debug.Log("isClimbing AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             }
 
             yield return null;
         }
 
-        if (!jumped && !hasStamina || isClimbing)
+        if (!jumped && !hasStamina)
         {
             ++jumpCount;
             jumpCheck();
-            Debug.Log("!jumped");
         }
     }
 
@@ -482,19 +476,18 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbHighlightDetection,
                 ~noClimbLayers))
         {
-            // Wall Vaulting
-            if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
-            
-            isTaller = transform.position.y >= newWallHeight;
-            // Resetting norm for vaulting over walls.
-            if (isTaller) 
-                prevWallNorm.y = 7f;
-            
             // Storing data of the wall the player is currently facing.
             newWallPos = hit.transform.position;
             newWallPos.y = 0;
             newWallNorm = hit.normal;
 
+            // Wall Vaulting
+            if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.collider.bounds.size.y;
+            
+            // Resetting norm for vaulting over walls.
+            if (transform.position.y >= newWallHeight) 
+                prevWallNorm.y = 7f;
+                
             // Angle Calculation
             int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
             int wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
@@ -548,14 +541,14 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
             
             // Player Climb Authorization
-            if (canClimb && !controller.isGrounded && isFallOrClimb && (jumpTimer < jumpGraceClimb || !(isJumping && isClimbing)))
+            if (canClimb && !controller.isGrounded && isFallOrClimb && !(isJumping && isClimbing))
             {
                 if (!isClimbing)
                 {
                     wallJumped = false;
                     hasStamina = true;
-                    if (jumpCount > 0) --jumpCount;
-                    audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
+                    if (jumpCount > 0 && !wallJumpDelayed) --jumpCount;
+                    sfxAudioSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
                 }
                 
                 playerVel.y = climbSpeed;
@@ -569,15 +562,13 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     jumpTimer = 0;
                     wallJumped = true;
-                    audClimbSource.Stop();
+                    sfxAudioSource.Stop();
                     GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     if (isClimbing)
                     {
                         //wallJumped = true
                         prevWallPos = newWallPos;
                         prevWallNorm = newWallNorm;
-                        //audClimbSource.Stop();
-                        //GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     }
                 }
                 
@@ -598,10 +589,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             if (wallDetected)
             {
                 //jumpTimer = 0;
-                if (!wallJumped/*this should work what*/) StartCoroutine(wallJumpIncrement());
+                if (!wallJumped) StartCoroutine(wallJumpIncrement());
                 prevWallPos = newWallPos;
                 prevWallNorm = newWallNorm;
-                audClimbSource.Stop();
+                sfxAudioSource.Stop();
+                jumpSounds();
                 GameManager.instance.playerClimbStamina.fillAmount = 0f;
             }
 
@@ -675,7 +667,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 ++jumpCount;
             }
             
-            //aud.PlayOneShot(audJumpVoice[Random.Range(0, audJumpVoice.Length)], audJumpVoiceVol);
+            //sfxAudioSource.PlayOneShot(audJumpVoice[Random.Range(0, audJumpVoice.Length)], audJumpVoiceVol);
         }
         
         if (jumpCount == 0) jumpCountEffect = 0;
@@ -687,17 +679,13 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             if (jumpCountEffect < jumpCount) ++jumpCountEffect;
             
-            if (jumpCountEffect >= 2)
+            if (jumpCount >= 2)
             {
                 ParticleSystem vfx = Instantiate(jumpDoubleParticles, transform.position, Quaternion.Euler(90f, 0f, 0f));
                 ParticleSystem.MainModule mainModule = vfx.main;
                 mainModule.stopAction = ParticleSystemStopAction.Destroy;
-                aud.PlayOneShot(audJumpDouble[Random.Range(0, audJumpDouble.Length)], audJumpDoubleVol);
             }
-            else
-            {
-                aud.PlayOneShot(audJumpInit[Random.Range(0, audJumpInit.Length)], audJumpInitVol);
-            }
+            jumpSounds();
         }
     }
 
@@ -741,7 +729,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     StartCoroutine(flashDmgScreen());
                 }
-                aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
+                sfxAudioSource.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
             }
             else
             {
@@ -818,7 +806,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (Input.GetButton("Fire1") && gunList.Count > 0 && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate)
         {
             shootApply();
-            aud.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
+            sfxAudioSource.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
             // For special guns
             if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
             {
@@ -848,7 +836,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         if (Input.GetButtonDown("Reload") && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0)
         {
-            aud.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
+            sfxAudioSource.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
             int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
             gunList[gunListIdx].ammoReserves -= ammoToLoad;
             gunList[gunListIdx].ammoCurrent = ammoToLoad;
@@ -1356,7 +1344,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     currentDashSpeedZ = dashSpeed;
                 }
-                aud.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
+                sfxAudioSource.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
                 StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
             }
         }
@@ -1672,7 +1660,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     IEnumerator playStep()
     {
         isPlayingSteps = true;
-        aud.PlayOneShot(audSteps[Random.Range(0, audSteps.Length)], audStepsVol);
+        sfxAudioSource.PlayOneShot(audSteps[Random.Range(0, audSteps.Length)], audStepsVol);
 
         yield return new WaitForSeconds(0.3f);
 
