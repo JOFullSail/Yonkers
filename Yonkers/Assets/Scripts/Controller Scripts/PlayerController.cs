@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     [Header("Audio")]
     [SerializeField] AudioSource aud;
-    [SerializeField] AudioSource audClimbSource;
+    //[SerializeField] AudioSource audClimbSource;
     [SerializeField] AudioClip[] audJump;
     [Range(0, 1)][SerializeField] float audJumpVol;
     [SerializeField] AudioClip[] audClimb;
@@ -497,7 +497,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     wallJumping = false;
                     if (jumpCount > 0) --jumpCount;
-                    audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
+                    //audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
                 }
                 
                 playerVel.y = climbSpeed;
@@ -514,7 +514,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     {
                         wallJumping = true;
                         climbTimeLeft = false;
-                        audClimbSource.Stop();
+                        //audClimbSource.Stop();
                         GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     }
                 }
@@ -537,7 +537,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 jumpTimer = 0;
                 prevWallPos = newWallPos;
                 prevWallNorm = newWallNorm;
-                audClimbSource.Stop();
+                //audClimbSource.Stop();
                 GameManager.instance.playerClimbStamina.fillAmount = 0f;
             }
 
