@@ -61,6 +61,7 @@ MonoBehaviour:
   submenuLockedlevel3: {fileID: 0}
   submenuLockedlevel4: {fileID: 0}
   submenuLockedlevel5: {fileID: 0}
+  submenuLockedlevel6: {fileID: 0}
   submenuUnlockedlevel2button: {fileID: 0}
   submenuUnlockedlevel2stats: {fileID: 0}
   submenuUnlockedlevel3button: {fileID: 0}
@@ -69,13 +70,32 @@ MonoBehaviour:
   submenuUnlockedlevel4stats: {fileID: 0}
   submenuUnlockedlevel5button: {fileID: 0}
   submenuUnlockedlevel5stats: {fileID: 0}
+  submenuUnlockedlevel6button: {fileID: 0}
+  submenuUnlockedlevel6stats: {fileID: 0}
   PlayerHPDisplay: {fileID: 0}
   PlayerAmmoDisplay: {fileID: 0}
   PlayerReticleDisplay: {fileID: 0}
-  PlayerDashCoolDownDisplay: {fileID: 0}
+  PlayerClimbStaminaDisplay: {fileID: 0}
+  LoadingScreen: {fileID: 0}
+  gradeiconS: {fileID: 21300000, guid: 8504a53c29338b240a4d70ac4863c7ae, type: 3}
+  gradeiconA: {fileID: 21300000, guid: 306a7544296573148a9ee5096f117112, type: 3}
+  gradeiconB: {fileID: 21300000, guid: a5efdb04ca8559541bd2f7c234659b81, type: 3}
+  gradeiconC: {fileID: 21300000, guid: 41fac4e0e25464141afe10c9a251348b, type: 3}
+  gradeiconD: {fileID: 21300000, guid: 8ec1c37b6ab6acb4eb2668b8757e1b39, type: 3}
+  gradeiconUn: {fileID: 21300000, guid: e60550bc6dd22c342a620d62f16d92e8, type: 3}
+  inLVLScorenGrade: {fileID: 0}
+  hasAmmoGradient: {fileID: 11400000, guid: 2553ffa349416794687fad10cbbd7ced, type: 2}
+  NoAmmoGradient: {fileID: 11400000, guid: 10ca97315612ec748baa195f007f8833, type: 2}
+  SrankGradient: {fileID: 11400000, guid: e81a159acbf843544a4c73269cc404aa, type: 2}
+  ArankGradient: {fileID: 11400000, guid: d6244fad2e542f14d8d0f712dc4b727b, type: 2}
+  BrankGradient: {fileID: 11400000, guid: 99ea5aad012fba84f82cb4e73f3fa5df, type: 2}
+  CrankGradient: {fileID: 11400000, guid: 339332293099ee84a853d012d13ae406, type: 2}
+  DrankGradient: {fileID: 11400000, guid: 776096e0fe2bc314280b8132a2c42efb, type: 2}
+  UnrankedGradient: {fileID: 11400000, guid: 7bd995bfbcc7fa342ae0316defd0b70c, type: 2}
   musicSource: {fileID: 779934335232736755}
   menuMusic: {fileID: 8300000, guid: 79abb3c956b145b4db7db505b0bb22a2, type: 3}
-  levelMusic: {fileID: 8300000, guid: 938260ab6ccdf1e4d92886088bc64b46, type: 3}
+  levelMusic: {fileID: 0}
+  lvlManagerObj: {fileID: 0}
   playerSpawn: {fileID: 0}
   player: {fileID: 0}
   playerScript: {fileID: 0}
@@ -90,24 +110,31 @@ MonoBehaviour:
   playerHPBar: {fileID: 0}
   playerHPLabel: {fileID: 0}
   ScoreLC: {fileID: 0}
+  LevelnameLC: {fileID: 0}
   GradeLC: {fileID: 0}
   ScoreLVL1: {fileID: 0}
   ScoreLVL2: {fileID: 0}
   ScoreLVL3: {fileID: 0}
   ScoreLVL4: {fileID: 0}
   ScoreLVL5: {fileID: 0}
+  ScoreLVL6: {fileID: 0}
   GradeLVL1: {fileID: 0}
   GradeLVL2: {fileID: 0}
   GradeLVL3: {fileID: 0}
   GradeLVL4: {fileID: 0}
   GradeLVL5: {fileID: 0}
+  GradeLVL6: {fileID: 0}
   checkpointLabel: {fileID: 0}
   playerDamageScreen: {fileID: 0}
   playerHealScreen: {fileID: 0}
   ammoCurrent: {fileID: 0}
-  ammoMax: {fileID: 0}
   ammoReserves: {fileID: 0}
-  playerDashCooldown: {fileID: 0}
+  playerClimbStamina: {fileID: 0}
+  LoadingScreendotdotdot: {fileID: 0}
+  inLvLgrade: {fileID: 0}
+  inLvlgradetext: {fileID: 0}
+  inLvlScoreNumber: {fileID: 0}
+  currentlevelManager: {fileID: 0}
   isPaused: 0
   playerSpawnOrig: {fileID: 0}
   currScene:

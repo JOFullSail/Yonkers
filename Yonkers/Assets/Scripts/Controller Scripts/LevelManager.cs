@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour
     [Header("Score Modifiers")]
     public int pointsLostOnRespawn = 0;
 
-    private float currentScore;
+    public float currentScore;
     private int numberOfEnemies;
 
     public enum Grade
@@ -102,5 +102,30 @@ public class LevelManager : MonoBehaviour
         GameManager.instance.SaveProgression();
 
         GameManager.instance.stateLevelComplete();
+    }
+    public char currentGrade()
+    {
+        levelScore = (int)currentScore;
+
+        if (levelScore >= gradeSMinScore)
+        {
+            levelGrade = Grade.S;
+            if (sRankNeedsAllEnemiesDead && numberOfEnemies > 0)
+                levelGrade = Grade.A;
+        }
+
+        else if (levelScore >= gradeAMinScore)
+            levelGrade = Grade.A;
+        else if (levelScore >= gradeBMinScore)
+            levelGrade = Grade.B;
+        else if (levelScore >= gradeCMinScore)
+        {
+            levelGrade = Grade.C;
+        }
+        else
+        {
+            levelGrade = Grade.D;
+        }
+        return (char)levelGrade;
     }
 }
