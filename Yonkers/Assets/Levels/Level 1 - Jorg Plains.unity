@@ -1075,7 +1075,7 @@ GameObject:
   - component: {fileID: 71472806}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2089,6 +2089,8 @@ MonoBehaviour:
   stopThreshold: 0.0001
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!1 &134744632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2322,7 +2324,7 @@ GameObject:
   - component: {fileID: 149559099}
   m_Layer: 0
   m_Name: Terrain
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2856,7 +2858,7 @@ GameObject:
   - component: {fileID: 180968024}
   m_Layer: 9
   m_Name: Dirt Path
-  m_TagString: Untagged
+  m_TagString: Rock
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4607,6 +4609,8 @@ MonoBehaviour:
   stopThreshold: 0.0001
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!1 &341563758
 GameObject:
   m_ObjectHideFlags: 0
@@ -6469,6 +6473,8 @@ MonoBehaviour:
   stopThreshold: 0.01
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!114 &501976598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8216,6 +8222,8 @@ MonoBehaviour:
   stopThreshold: 0.0001
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!1 &722487606
 GameObject:
   m_ObjectHideFlags: 0
@@ -13184,6 +13192,8 @@ MonoBehaviour:
   stopThreshold: 0.001
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!1 &1150957297
 GameObject:
   m_ObjectHideFlags: 0
@@ -15140,6 +15150,8 @@ MonoBehaviour:
   stopThreshold: 0.0001
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!1 &1331911324
 GameObject:
   m_ObjectHideFlags: 0
@@ -15376,7 +15388,7 @@ GameObject:
   - component: {fileID: 1347210560}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17053,7 +17065,7 @@ GameObject:
   - component: {fileID: 1524912961}
   m_Layer: 0
   m_Name: Dirt Path
-  m_TagString: Untagged
+  m_TagString: Rock
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20224,7 +20236,15 @@ PrefabInstance:
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: levelMusic
       value: 
-      objectReference: {fileID: 8300000, guid: 938260ab6ccdf1e4d92886088bc64b46, type: 3}
+      objectReference: {fileID: 8300000, guid: f25f7f33b9aab2f42ba8c852e568d2da, type: 3}
+    - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
+      propertyPath: levelMusicVol
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
+      propertyPath: setlevelMusicVol
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20584,6 +20604,8 @@ MonoBehaviour:
   stopThreshold: 0.0001
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!1 &1801628842
 GameObject:
   m_ObjectHideFlags: 0
@@ -23754,7 +23776,7 @@ GameObject:
   - component: {fileID: 2013122061}
   m_Layer: 0
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -24,13 +24,14 @@ public class SettingsData : MonoBehaviour
 	public int brightnessMin = 10;
 	public int brightnessMax = 90;
 	public int brightnessHalf = 50;
-	public bool brightnessWholeNumbers = true;
+    public bool brightnessWholeNumbers = true;
     
-	// Initializes instance and sets all sliders to their correct position.
+
+    // Initializes instance and sets all sliders to their correct position.
     void Awake()
     {
         instance = this;
-        
+
         Slider slider;
         if (btnFunctions.FOVSliderParent != null)
         {
@@ -99,4 +100,5 @@ public class SettingsData : MonoBehaviour
         }
 
     }
+    
 }
