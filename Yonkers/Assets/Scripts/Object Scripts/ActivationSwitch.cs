@@ -44,14 +44,14 @@ public class ActivationSwitch : MonoBehaviour, IActivate
             return;
         }
 
-        if (coloredObjects.Count == 0 && TryGetComponent<Renderer>(out var ren))
-        {
-            coloredObjects.Add(ren);
-        }
-        else if (coloredObjects.Count == 0)
-        {
-            Debug.LogWarning("No Objects attached to the \"Colored Objects\" list. Please attach at least one.");
-        }
+        //if (coloredObjects.Count == 0 && TryGetComponent<Renderer>(out var ren))
+        //{
+        //    coloredObjects.Add(ren);
+        //}
+        //else if (coloredObjects.Count == 0)
+        //{
+        //    Debug.LogWarning("No Objects attached to the \"Colored Objects\" list. Please attach at least one.");
+        //}
     }
 
     public void activate()
@@ -62,20 +62,20 @@ public class ActivationSwitch : MonoBehaviour, IActivate
         {
             ++parentScript.ActiveCount;
 
-            if (!parentScript.EventTriggered && changeColorOnly || !parentScript.ActivationMaterial)
-            {
-                foreach (Renderer obj in coloredObjects)
-                {
-                    obj.material.color = parentScript.ActivationColor;
-                }
-            }
-            else if (!parentScript.EventTriggered)
-            {
-                foreach (Renderer obj in coloredObjects)
-                {
-                    obj.material = parentScript.ActivationMaterial;
-                }
-            }
+            //if (!parentScript.EventTriggered && changeColorOnly || !parentScript.ActivationMaterial)
+            //{
+            //    foreach (Renderer obj in coloredObjects)
+            //    {
+            //        obj.material.color = parentScript.ActivationColor;
+            //    }
+            //}
+            //else if (!parentScript.EventTriggered)
+            //{
+            //    foreach (Renderer obj in coloredObjects)
+            //    {
+            //        obj.material = parentScript.ActivationMaterial;
+            //    }
+            //}
         
             activated = true;
         }
