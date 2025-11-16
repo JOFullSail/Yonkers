@@ -195,9 +195,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool isAboveMinDiff;
     // If the player is taller than the wall
     bool isTaller;
+    bool isSliding;
+    bool hasStamina;
+    bool hasPlayed;
     bool climbTimeLeft;
     bool wallJumpDelayed;
-    bool hasStamina;
     int noClimbLayers;
     string noClimbTag;
     float newWallHeight = 0f;
@@ -425,13 +427,19 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     
     void jumpSounds()
     {
-        if (jumpCount >= 2) sfxAudioSource.PlayOneShot(audJumpDouble[Random.Range(0, audJumpDouble.Length)], audJumpDoubleVol);
-        else sfxAudioSource.PlayOneShot(audJumpInit[Random.Range(0, audJumpInit.Length)], audJumpInitVol);
+        if (!(hasPlayed && jumpTimer < jumpGraceWall))
+        {
+            if (jumpCount >= 2 || wallJumpDelayed && jumpCount == 1) 
+                sfxAudioSource.PlayOneShot(audJumpDouble[Random.Range(0, audJumpDouble.Length)], audJumpDoubleVol);
+            else 
+                sfxAudioSource.PlayOneShot(audJumpInit[Random.Range(0, audJumpInit.Length)], audJumpInitVol);
+        }
     }
     
     
     IEnumerator wallJumpIncrement()
     {
+        hasStamina = false;
         wallJumpDelayed = true;
         bool isLooping = true;
         bool jumped = false;
@@ -444,14 +452,14 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 wallJumpDelayed = false;
             }
             
-            if (isJumping)
+            if (isJumping || isTaller)
             {
                 jumped = true;
                 isLooping = false;
                 wallJumpDelayed = false;
             }
             
-            if (isClimbing)
+            if (hasStamina)
             {
             ++jumpCount;
                 isLooping = false;
@@ -484,9 +492,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             // Wall Vaulting
             if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.collider.bounds.size.y;
             
+            isTaller = GameManager.instance.MainCamera.transform.position.y >= newWallHeight;
             // Resetting norm for vaulting over walls.
-            if (transform.position.y >= newWallHeight) 
-                prevWallNorm.y = 7f;
+            if (isTaller) 
+            {
+            prevWallNorm.y = 7f;
+            }
                 
             // Angle Calculation
             int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
@@ -547,6 +558,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     wallJumped = false;
                     hasStamina = true;
+                    hasPlayed = false;
                     if (jumpCount > 0 && !wallJumpDelayed) --jumpCount;
                     sfxAudioSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
                 }
@@ -558,17 +570,23 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             }
             else // Not climbing
             {
+                isSliding = true;
                 if (isJumping)
                 {
                     jumpTimer = 0;
                     wallJumped = true;
-                    sfxAudioSource.Stop();
+                    sfxAudioSource.Stop(); // here to prevent climbing sound after nostamina and jump
                     GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     if (isClimbing)
                     {
                         //wallJumped = true
+                        //sfxAudioSource.Stop();
+                        wallJumpDelayed = true;
                         prevWallPos = newWallPos;
                         prevWallNorm = newWallNorm;
+                        jumpSounds(); // allows player actual jump while climbing to sound
+                        hasPlayed = true;
+                        wallJumpDelayed = false;
                     }
                 }
                 
@@ -580,6 +598,13 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     GameManager.instance.playerClimbStamina.fillAmount = 0f;
                 }
                 
+                if (!isAboveMinSlope && playerVel.y > 0) 
+                {
+                    sfxAudioSource.Stop();
+                    jumpSounds();
+                    hasPlayed = true;
+                }
+                
                 isClimbing = false;
             }
         }
@@ -589,14 +614,19 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             if (wallDetected)
             {
                 //jumpTimer = 0;
-                if (!wallJumped) StartCoroutine(wallJumpIncrement());
+                if (!wallJumped || isTaller) StartCoroutine(wallJumpIncrement());
                 prevWallPos = newWallPos;
                 prevWallNorm = newWallNorm;
-                sfxAudioSource.Stop();
-                jumpSounds();
+                if (!controller.isGrounded && playerVel.y > 0 && (!wallJumped && isClimbing || isSliding) && !hasPlayed/* || isTaller*/) // one goin backwards
+                {
+                    sfxAudioSource.Stop();
+                    jumpSounds();
+                    hasPlayed = true;
+                }
                 GameManager.instance.playerClimbStamina.fillAmount = 0f;
             }
-
+            
+            isSliding = false;
             isClimbing = false;
             wallDetected = false;
         }
@@ -609,6 +639,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
         if (controller.isGrounded)
         {
+            isTaller = false;
+            hasPlayed = false;
             wallJumped = false;
             GameManager.instance.playerClimbStamina.fillAmount = 1f;
         }
