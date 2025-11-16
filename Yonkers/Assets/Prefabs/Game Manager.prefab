@@ -83,9 +83,19 @@ MonoBehaviour:
   gradeiconC: {fileID: 21300000, guid: 41fac4e0e25464141afe10c9a251348b, type: 3}
   gradeiconD: {fileID: 21300000, guid: 8ec1c37b6ab6acb4eb2668b8757e1b39, type: 3}
   gradeiconUn: {fileID: 21300000, guid: e60550bc6dd22c342a620d62f16d92e8, type: 3}
+  inLVLScorenGrade: {fileID: 0}
+  hasAmmoGradient: {fileID: 11400000, guid: 2553ffa349416794687fad10cbbd7ced, type: 2}
+  NoAmmoGradient: {fileID: 11400000, guid: 10ca97315612ec748baa195f007f8833, type: 2}
+  SrankGradient: {fileID: 11400000, guid: e81a159acbf843544a4c73269cc404aa, type: 2}
+  ArankGradient: {fileID: 11400000, guid: d6244fad2e542f14d8d0f712dc4b727b, type: 2}
+  BrankGradient: {fileID: 11400000, guid: 99ea5aad012fba84f82cb4e73f3fa5df, type: 2}
+  CrankGradient: {fileID: 11400000, guid: 339332293099ee84a853d012d13ae406, type: 2}
+  DrankGradient: {fileID: 11400000, guid: 776096e0fe2bc314280b8132a2c42efb, type: 2}
+  UnrankedGradient: {fileID: 11400000, guid: 7bd995bfbcc7fa342ae0316defd0b70c, type: 2}
   musicSource: {fileID: 779934335232736755}
   menuMusic: {fileID: 8300000, guid: 79abb3c956b145b4db7db505b0bb22a2, type: 3}
   levelMusic: {fileID: 0}
+  lvlManagerObj: {fileID: 0}
   playerSpawn: {fileID: 0}
   player: {fileID: 0}
   playerScript: {fileID: 0}
@@ -100,6 +110,7 @@ MonoBehaviour:
   playerHPBar: {fileID: 0}
   playerHPLabel: {fileID: 0}
   ScoreLC: {fileID: 0}
+  LevelnameLC: {fileID: 0}
   GradeLC: {fileID: 0}
   ScoreLVL1: {fileID: 0}
   ScoreLVL2: {fileID: 0}
@@ -117,10 +128,13 @@ MonoBehaviour:
   playerDamageScreen: {fileID: 0}
   playerHealScreen: {fileID: 0}
   ammoCurrent: {fileID: 0}
-  ammoMax: {fileID: 0}
   ammoReserves: {fileID: 0}
   playerClimbStamina: {fileID: 0}
   LoadingScreendotdotdot: {fileID: 0}
+  inLvLgrade: {fileID: 0}
+  inLvlgradetext: {fileID: 0}
+  inLvlScoreNumber: {fileID: 0}
+  currentlevelManager: {fileID: 0}
   isPaused: 0
   playerSpawnOrig: {fileID: 0}
   currScene:

@@ -192,11 +192,34 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
     }
-    //to credits section not added yet
-    //public void toCredits()
-    //{
-
-    //}
+      public void Nextlevel()
+    {
+        if(SceneManager.GetActiveScene().name == "Level 1 - Jorg Plains")
+        {
+            gotoLevel2();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "Level 2- Gold's Springway")
+        {
+            gotoLevel3();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "Level 3- The Wall")//ADD NAMES!
+        {
+            gotoLevel4();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "")
+        {
+            gotoLevel5();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "")
+        {
+            gotoLevel6();
+            return;
+        }
+    }
     public void gotoMainmenu()
     {
         
