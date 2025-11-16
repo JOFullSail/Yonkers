@@ -1450,6 +1450,7 @@ MonoBehaviour:
   animator: {fileID: 7307838392047298509}
   agent: {fileID: 5089994146430952583}
   headPos: {fileID: 3742555028645975712}
+  scoreValue: 10
   HP: 6
   FOV: 180
   baseMoveSpeed: 10
@@ -1567,7 +1568,7 @@ AudioSource:
   m_GameObject: {fileID: 5891227225106869641}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8079503862453138035, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
