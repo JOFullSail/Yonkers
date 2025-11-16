@@ -676,6 +676,50 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.00451
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.49125987
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.47636005
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.523506
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.50762814
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -3.638
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90.112
+      objectReference: {fileID: 0}
+    - target: {fileID: 6573098374151012135, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -88.232
+      objectReference: {fileID: 0}
     - target: {fileID: 7719261823726253744, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
       propertyPath: m_Name
       value: Pickup - Pistol (2)
