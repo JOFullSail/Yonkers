@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     [Header("Audio")]
     [SerializeField] AudioSource aud;
-    [SerializeField] AudioSource audClimbSource;
+    //[SerializeField] AudioSource audClimbSource;
     [SerializeField] AudioClip[] audJump;
     [Range(0, 1)][SerializeField] float audJumpVol;
     [SerializeField] AudioClip[] audClimb;
@@ -497,7 +497,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     wallJumping = false;
                     if (jumpCount > 0) --jumpCount;
-                    audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
+                    //audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
                 }
                 
                 playerVel.y = climbSpeed;
@@ -514,7 +514,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     {
                         wallJumping = true;
                         climbTimeLeft = false;
-                        audClimbSource.Stop();
+                        //audClimbSource.Stop();
                         GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     }
                 }
@@ -537,7 +537,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 jumpTimer = 0;
                 prevWallPos = newWallPos;
                 prevWallNorm = newWallNorm;
-                audClimbSource.Stop();
+                //audClimbSource.Stop();
                 GameManager.instance.playerClimbStamina.fillAmount = 0f;
             }
 
@@ -1600,8 +1600,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (gunList.Count > 0)
         {
             GameManager.instance.ammoCurrent.text = gunList[gunListIdx].ammoCurrent.ToString("F0");
-            GameManager.instance.ammoMax.text = gunList[gunListIdx].ammoMax.ToString("F0");
-            GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
+            if (gunList[gunListIdx].ammoReserves > 0)
+            {
+                GameManager.instance.ammoReserves.colorGradientPreset = GameManager.instance.hasAmmoGradient;
+            }
+            else
+            {
+                GameManager.instance.ammoReserves.colorGradientPreset = GameManager.instance.NoAmmoGradient;
+            }
+                GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
         }
     }
 }
