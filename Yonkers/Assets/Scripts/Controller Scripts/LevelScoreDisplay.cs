@@ -25,31 +25,37 @@ public class LevelScoreDisplay : MonoBehaviour
             {
                 displayAspect.transform.parent.SetParent(OnTop.transform, false);
                 gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(315, -5, 0);
+                displayAspect.transform.localPosition = new Vector3(245, -5, 0);
             }
             else if (gameObject.name == "Level 2 Button")
             {
                 displayAspect.transform.parent.SetParent(OnTop.transform, false);
                 gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(315, -5, 0);
+                displayAspect.transform.localPosition = new Vector3(245, -5, 0);
             }
             else if (gameObject.name == "Level 3 Button")
             {
                 displayAspect.transform.parent.SetParent(OnTop.transform, false);
                 gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(315, -5, 0);
+                displayAspect.transform.localPosition = new Vector3(245, -5, 0);
             }
             else if (gameObject.name == "Level 4 Button")
             {
                 displayAspect.transform.parent.SetParent(OnTop.transform, false);
                 gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(315, -5, 0);
+                displayAspect.transform.localPosition = new Vector3(-245, -5, 0);
             }
             else if (gameObject.name == "Level 5 Button")
             {
                 displayAspect.transform.parent.SetParent(OnTop.transform, false);
                 gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(-315, -5, 0);
+                displayAspect.transform.localPosition = new Vector3(-245, -5, 0);
+            }
+            else if (gameObject.name == "Level 6 Button")
+            {
+                displayAspect.transform.parent.SetParent(OnTop.transform, false);
+                gameObject.transform.parent.SetParent(OnTop.transform, false);
+                displayAspect.transform.localPosition = new Vector3(-245, -5, 0); 
             }
             isDisplaying = true;
         }

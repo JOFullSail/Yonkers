@@ -7,12 +7,12 @@ public class RoomScript : MonoBehaviour
     public GameObject door1;
     [SerializeField] GameObject[] Enemy;
     public GameObject InvisWalls;
+    IActivate movingDoor;
+    bool useMove;
+
     [SerializeField] int MaxEnemy;
     [SerializeField] float spawnRate;
     [SerializeField] Transform[] spawnPos;
-    AudioSource AudDoorSource; //make sure door has audio source that's 3D!
-    [SerializeField] AudioClip[] audDoor; 
-    [Range(0, 1)][SerializeField] float audDoorVol;
     int currenemyCount;
     int enemyCounttotal;
     float spawnTimer;
@@ -23,7 +23,11 @@ public class RoomScript : MonoBehaviour
     {
         startspawning = false;
         hasentered = false;
-        AudDoorSource = door1.GetComponent(typeof(AudioSource)) as AudioSource;
+        door1.TryGetComponent<IActivate>(out movingDoor);
+        if (door1.TryGetComponent<IActivate>(out movingDoor))
+        {
+            useMove = true;
+        }
     }
 
     // Update is called once per frame
@@ -45,8 +49,6 @@ public class RoomScript : MonoBehaviour
         int EnemyarrayPos = Random.Range(0, Enemy.Length);
         GameObject EnemyClone = Instantiate(Enemy[EnemyarrayPos], spawnPos[SpawnarrayPos].position, spawnPos[SpawnarrayPos].rotation);
         EnemyClone.GetComponent<EnemyAI>().room = this;
-
-
         spawnTimer = 0;
         enemyCounttotal++;
     }
@@ -63,7 +65,15 @@ public class RoomScript : MonoBehaviour
     {
         if(door1!= null)
         {
-        door1.SetActive(state);
+            if(useMove == false)
+            {
+                door1.SetActive(state);
+            }
+            else if( state == false)
+            {
+                movingDoor.activate();
+            }
+        
         }
         if(InvisWalls != null)
         {
@@ -75,10 +85,8 @@ public class RoomScript : MonoBehaviour
         currenemyCount += amount;
         if (currenemyCount <= 0)
         {
-            AudDoorSource.PlayOneShot(audDoor[Random.Range(0, audDoor.Length)], audDoorVol);
             RoomState(false);
             startspawning = false;
         }
-
     }
 }

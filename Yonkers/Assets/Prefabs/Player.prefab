@@ -341,6 +341,12 @@ MonoBehaviour:
   ignoreClimbing:
     serializedVersion: 2
     m_Bits: 472
+  ignorefeetNorm:
+    serializedVersion: 2
+    m_Bits: 16375
+  ignorefeetInvinc:
+    serializedVersion: 2
+    m_Bits: 13311
   HP: 4
   freezeDelay: 0.5
   InvincibilityDuration: 2.5
@@ -392,29 +398,65 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d55e0deb0b0325a45abd341779a1d206, type: 3}
   - {fileID: 8300000, guid: d0ad55c32b33cd645b0e0a4ba2b0b03a, type: 3}
   audJumpVol: 0.5
-  audClimb: []
+  audClimb:
+  - {fileID: 8300000, guid: bcb72b3117897ba50aff8525d6c1596c, type: 3}
   audClimbVol: 0
   audHurt:
-  - {fileID: 8300000, guid: 659f08cf167e7db4a8165c59da812942, type: 3}
-  - {fileID: 8300000, guid: f083b2d4006a43a4ab3acb6224eb27cd, type: 3}
-  - {fileID: 8300000, guid: 9ea5e15838c3dc348817dcd2e91ad43d, type: 3}
-  - {fileID: 8300000, guid: 597a607d61a2dd442923f9576c8585dd, type: 3}
-  - {fileID: 8300000, guid: bd3bb613303aa6746af2070f006ada90, type: 3}
-  - {fileID: 8300000, guid: 62f839c3d7b9e8c4db7f3148ec7547fd, type: 3}
+  - {fileID: 8300000, guid: f7984d90a17c6334faf9b88b20182a88, type: 3}
+  - {fileID: 8300000, guid: 145f7e81435f3df40885b2a09bba7c3b, type: 3}
+  - {fileID: 8300000, guid: 74822a29a24611947b0dc3bab60f8dd9, type: 3}
+  - {fileID: 8300000, guid: fb2c888811b53cc449312892149c27f7, type: 3}
+  - {fileID: 8300000, guid: 966d870690ce41d4f8388865d71c19e2, type: 3}
+  - {fileID: 8300000, guid: 46fcf9b19e8c7f745a66c4f8a68824a2, type: 3}
+  - {fileID: 8300000, guid: 463ccb86a8411604e928f892cc7d94a2, type: 3}
   audHurtVol: 0.5
-  audSteps:
-  - {fileID: 8300000, guid: 804b354e9f4901b4f9a03ded81ae4d56, type: 3}
-  - {fileID: 8300000, guid: a61fbb41fe5133a48b83ad730bd157c4, type: 3}
-  - {fileID: 8300000, guid: c90e3ccb7755c80418a0b051e21477f3, type: 3}
-  - {fileID: 8300000, guid: 6b34c2e31f1213a40a34ed74b3faa415, type: 3}
-  - {fileID: 8300000, guid: c2682a39edef6e44eb3c6106ddea5c41, type: 3}
-  - {fileID: 8300000, guid: 5a6d8397ca9f2d041bea32e90e101b37, type: 3}
-  - {fileID: 8300000, guid: 551c52416da8db0409876423996900a1, type: 3}
-  - {fileID: 8300000, guid: 5c5374392735a4947b92a7a4f10bfe17, type: 3}
-  - {fileID: 8300000, guid: 2d25be9ad9eafee49bea0a7051b32df8, type: 3}
-  audStepsVol: 0.5
+  audMetalSteps:
+  - {fileID: 8300000, guid: 1e2f0e416fe2e594cbf00039261260b3, type: 3}
+  - {fileID: 8300000, guid: cf272f3dd6135244893a8236fa71f184, type: 3}
+  - {fileID: 8300000, guid: 5c4b7eb7d0fe63e478bef487fb8c9ab1, type: 3}
+  - {fileID: 8300000, guid: f4a1bd7e187d141419954ea820c8dd15, type: 3}
+  - {fileID: 8300000, guid: 2720aaacc71a91440a478a339a0f64b4, type: 3}
+  - {fileID: 8300000, guid: 677a9e80dcbfcfe46847774422be1286, type: 3}
+  - {fileID: 8300000, guid: 8d787e22a6b9f41468f3101972174a44, type: 3}
+  audMetalStepsVol: 1
+  audGrassSteps:
+  - {fileID: 8300000, guid: ffa9d20c820246b45b1c96ce2715825c, type: 3}
+  - {fileID: 8300000, guid: a15a33886d325d64e88e87f1e291dad9, type: 3}
+  - {fileID: 8300000, guid: 095f194c3acd4b641a8ee05abd2c9698, type: 3}
+  - {fileID: 8300000, guid: b92a0ed15341e5841b7d6df1675e400c, type: 3}
+  - {fileID: 8300000, guid: 460d63f93c4b63746beca3e5329491c1, type: 3}
+  - {fileID: 8300000, guid: 38001d2d9b8988c4e8987696e90bf887, type: 3}
+  - {fileID: 8300000, guid: 23450b9b7608a0b4384fff1b1423ca22, type: 3}
+  audGrassStepsVol: 1
+  audRoyalSteps:
+  - {fileID: 8300000, guid: 536e55a4a39edc047ba87d199c8f47c6, type: 3}
+  - {fileID: 8300000, guid: e5988ddfcfc3b7e44b010ce2bc5088f6, type: 3}
+  - {fileID: 8300000, guid: 3f91296f58084f94c81853da0ef0a6d9, type: 3}
+  - {fileID: 8300000, guid: 03329903793462f479571e3c5a266b6a, type: 3}
+  - {fileID: 8300000, guid: 627aa57889e4c0f4dbd6533a4dcdbbf1, type: 3}
+  - {fileID: 8300000, guid: c52a17d08fcec6e43931784567d17609, type: 3}
+  - {fileID: 8300000, guid: 8d12826031c59534bb7a831d00d8323a, type: 3}
+  audRoyalStepsVol: 1
+  audStoneSteps:
+  - {fileID: 8300000, guid: c574f75bf2ef35544a3dfd38d4964086, type: 3}
+  - {fileID: 8300000, guid: f430d9e3f6b655d419818d0d7016b39a, type: 3}
+  - {fileID: 8300000, guid: 400af9378fb258d41a75da824b347934, type: 3}
+  - {fileID: 8300000, guid: 11049697420508247b4a65994999d004, type: 3}
+  - {fileID: 8300000, guid: 1608f981b884cc14fa058c28796fd290, type: 3}
+  - {fileID: 8300000, guid: 8e705d09fbfc6a94191191c295faa3c3, type: 3}
+  - {fileID: 8300000, guid: 9ebfac4a1bcc130458f72baec1da5911, type: 3}
+  audStoneStepsVol: 1
+  audRockSteps:
+  - {fileID: 8300000, guid: b4d9a02538b2a644799d67c5b0a3329e, type: 3}
+  - {fileID: 8300000, guid: fbad684bc1017544799cdff48d25d2ab, type: 3}
+  - {fileID: 8300000, guid: 2e9421c8f037c534b8a0aae55f440930, type: 3}
+  - {fileID: 8300000, guid: 72dd7420d8ea9cf4e8352459d445d2dc, type: 3}
+  - {fileID: 8300000, guid: a7f8b093c8392f6419d25508ae10f4ef, type: 3}
+  - {fileID: 8300000, guid: 1e243aeac70b65442aa81faa1c33c192, type: 3}
+  - {fileID: 8300000, guid: 60435061565752243935c8cbd34d7af7, type: 3}
+  audRockStepsVol: 1
   audDash:
-  - {fileID: 8300000, guid: 2c71cf425ea8e984eb574b218412d934, type: 3}
+  - {fileID: 8300000, guid: 993fb6dd45c546d4093807ed7ebd8556, type: 3}
   audDashVol: 0.1
   audSpawn:
   - {fileID: 8300000, guid: e56905493899fe44e9e6122d7ba02a22, type: 3}
@@ -422,6 +464,7 @@ MonoBehaviour:
   audGun:
   - {fileID: 8300000, guid: dd22e7d230c0d1143984c2daef557181, type: 3}
   audGunVol: 0.5
+  footchecklength: 12
   invertMove: 0
   gravityOffTimer: 0
   gravityLockout: 0

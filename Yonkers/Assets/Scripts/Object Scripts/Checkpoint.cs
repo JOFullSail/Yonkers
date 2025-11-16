@@ -40,7 +40,7 @@ public class Checkpoint : MonoBehaviour
         {
             hasTriggered = true;
 
-            GameManager.instance.SaveGame(gameObject.name);
+            GameManager.instance.SaveGame();
             if (GameManager.instance.playerSpawn != null)
             {
                 GameManager.instance.playerSpawn.transform.position = spawnPos.transform.position;
