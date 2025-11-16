@@ -13,6 +13,11 @@ TagManager:
   - EnemySpawn
   - Enemy
   - LevelManager
+  - Grass
+  - Metal
+  - Royal
+  - Stone
+  - Rock
   layers:
   - Default
   - TransparentFX

@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using NUnit.Framework;
 using System;
 using System.Collections;
@@ -7,9 +8,11 @@ using System.Text;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
+using static UnityEngine.Analytics.IAnalytic;
 
 public class GameManager : MonoBehaviour
 {
@@ -31,6 +34,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject submenuLockedlevel3;
     [SerializeField] GameObject submenuLockedlevel4;
     [SerializeField] GameObject submenuLockedlevel5;
+    [SerializeField] GameObject submenuLockedlevel6;
     [SerializeField] GameObject submenuUnlockedlevel2button;
     [SerializeField] GameObject submenuUnlockedlevel2stats;
     [SerializeField] GameObject submenuUnlockedlevel3button;
@@ -39,17 +43,35 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject submenuUnlockedlevel4stats;
     [SerializeField] GameObject submenuUnlockedlevel5button;
     [SerializeField] GameObject submenuUnlockedlevel5stats;
+    [SerializeField] GameObject submenuUnlockedlevel6button;
+    [SerializeField] GameObject submenuUnlockedlevel6stats;
     [SerializeField] GameObject PlayerHPDisplay;
     [SerializeField] GameObject PlayerAmmoDisplay;
     [SerializeField] GameObject PlayerReticleDisplay;
     [SerializeField] GameObject PlayerClimbStaminaDisplay;
     [SerializeField] GameObject LoadingScreen;
+    [SerializeField] Sprite gradeiconS;
+    [SerializeField] Sprite gradeiconA;
+    [SerializeField] Sprite gradeiconB;
+    [SerializeField] Sprite gradeiconC;
+    [SerializeField] Sprite gradeiconD;
+    [SerializeField] Sprite gradeiconUn;//ungraded
+    
+    [SerializeField] GameObject inLVLScorenGrade;
+    public TMP_ColorGradient hasAmmoGradient;
+    public TMP_ColorGradient NoAmmoGradient;
+    public TMP_ColorGradient SrankGradient;
+    public TMP_ColorGradient ArankGradient;
+    public TMP_ColorGradient BrankGradient;
+    public TMP_ColorGradient CrankGradient;
+    public TMP_ColorGradient DrankGradient;
+    public TMP_ColorGradient UnrankedGradient;
 
-   [Header("Audio")]
+    [Header("Audio")]
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip menuMusic;
     [SerializeField] private AudioClip levelMusic;
-
+    public GameObject lvlManagerObj;
     public GameObject playerSpawn;
     public GameObject player;
     public PlayerController playerScript;
@@ -65,23 +87,32 @@ public class GameManager : MonoBehaviour
     public Image playerHPBar;
     public TMP_Text playerHPLabel;
     public TMP_Text ScoreLC; //for when you comeplete levels
-    public TMP_Text GradeLC;//for when you comeplete levels
+    public TMP_Text LevelnameLC; //for when you comeplete levels
+    public Image GradeLC;//for when you comeplete levels
     public TMP_Text ScoreLVL1;
     public TMP_Text ScoreLVL2;
     public TMP_Text ScoreLVL3;
     public TMP_Text ScoreLVL4;
     public TMP_Text ScoreLVL5;
+    public TMP_Text ScoreLVL6;
     public Image GradeLVL1;
     public Image GradeLVL2;
     public Image GradeLVL3;
     public Image GradeLVL4;
     public Image GradeLVL5;
+    public Image GradeLVL6;
     public GameObject checkpointLabel;
     public Image playerDamageScreen;
     public Image playerHealScreen;
-    public TMP_Text ammoCurrent, ammoMax, ammoReserves;
+    public TMP_Text ammoCurrent, ammoReserves;
     public Image playerClimbStamina;
     public TMP_Text LoadingScreendotdotdot; // the "..." of teh loading screen!
+    public Image inLvLgrade;
+    public TMP_Text inLvlgradetext;
+    public TMP_Text inLvlScoreNumber;
+    public LevelManager currentlevelManager;
+    public TMP_Text WinGradetxt;
+    public Image WinGradeImg;
 
     public bool isPaused;
     private bool isReloadingScene = false;
@@ -93,8 +124,9 @@ public class GameManager : MonoBehaviour
     int gameGoalCount;
     public Scene currScene;
     int loadingdottick;
-
+    char currentLvLgrade;
     public char finalGrade;
+
 
     [Header("Gun Database")]
     public GunDatabase gunDatabase;
@@ -118,7 +150,6 @@ public class GameManager : MonoBehaviour
         public int HP;
         public int selectedGun;
         public string currentScene;
-        public string lastCheckpointName;
         public List<GunStatsData> guns = new List<GunStatsData>();
     }
 
@@ -137,6 +168,8 @@ public class GameManager : MonoBehaviour
         public string gunName;
         public int ammoCurrent;
         public int ammoReserves;
+        public int Maxammo;
+        public int MaxammoReserves;
     }
 
     [Serializable]
@@ -161,7 +194,7 @@ public class GameManager : MonoBehaviour
             gameObject.name = "Game ManagaerA";
             currScene = SceneManager.GetActiveScene();
             instance.currScene = SceneManager.GetActiveScene();
-
+            GetUI();
             levelOrder.Clear();
             for (int i = 2; i < SceneManager.sceneCountInBuildSettings; i++)
             {
@@ -169,9 +202,7 @@ public class GameManager : MonoBehaviour
                 string name = System.IO.Path.GetFileNameWithoutExtension(path);
                 levelOrder.Add(name);
             }
-
             LoadProgression();
-
             if (currScene.name != "Main Menu Scene First Open")
             {
                 player = GameObject.FindWithTag("Player");
@@ -181,15 +212,13 @@ public class GameManager : MonoBehaviour
                 goalObject = GameObject.FindWithTag("Goal");
                 MainCamera = GameObject.FindWithTag("MainCamera");
                 CameraScript = MainCamera.GetComponent<CameraController>();
-                cam = MainCamera.GetComponent<Camera>(); 
+                cam = MainCamera.GetComponent<Camera>();  
             }
 
-            timeScaleOrig = Time.timeScale;
-            instance.GetUI();
+            timeScaleOrig = Time.timeScale;   
             menuActive = mainMenu;
             colorOrig = playerDamageScreen.color;
             menuActive.SetActive(true);
-
             if (playerScript != null)
                 playerScript.updatePlayerUI();
 
@@ -199,18 +228,44 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene")
+        if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene" && currScene.name != "Main Menu Scene First Open")
         {
             if (menuActive == null)
             {
+                disablePlayerUI();
                 statePause();
                 menuActive = menuPause;
                 menuActive.SetActive(true);
+
             }
             else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen)
             {
                 stateUnpause();
+                enablePlayerUI();
             }
+        }
+        if (playerScript != null)
+        {
+            if (playerScript.GunList.Count > 0 && SceneManager.GetActiveScene().name != "Main Menu Scene" && GameManager.instance.isPaused == false)
+            {
+                PlayerAmmoDisplay.SetActive(true);
+            }
+            else
+            {
+                PlayerAmmoDisplay.SetActive(false);
+            }
+        }
+        else if(GameManager.instance.isPaused) {
+        
+            PlayerAmmoDisplay.SetActive(false);
+        }
+        if (currentlevelManager != null)
+        {
+            currentLvLgrade = currentlevelManager.currentGrade();
+            inLvLgrade.sprite = GradeImageGetter(currentLvLgrade);
+            inLvlgradetext.colorGradientPreset = GradientGetter(currentLvLgrade);
+            inLvlScoreNumber.colorGradientPreset = GradientGetter(currentLvLgrade);
+            inLvlScoreNumber.text = currentlevelManager.currentScore.ToString("F0");
         }
     }
 
@@ -282,20 +337,16 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Save the player's current state along with the last checkpoint they hit.
     /// </summary>
-    public void SaveGame(string checkpointName = "")
+    public void SaveGame()
     {
         if (playerScript == null)
             return;
 
         PlayerSaveData data = new PlayerSaveData();
-        data.HP = playerScript.CurrentHealth;
+        data.HP = playerScript.OriginalHealth;
         data.selectedGun = playerScript.GunListIndex;
         data.currentScene = SceneManager.GetActiveScene().name;
 
-        if (!string.IsNullOrEmpty(checkpointName))
-        {
-            data.lastCheckpointName = checkpointName;
-        }
 
         foreach (GunStats gun in playerScript.GunList)
         {
@@ -303,7 +354,9 @@ public class GameManager : MonoBehaviour
             {
                 gunName = gun.name,
                 ammoCurrent = gun.ammoCurrent,
-                ammoReserves = gun.ammoReserves
+                ammoReserves = gun.ammoReserves,
+                Maxammo = gun.ammoMax,
+                MaxammoReserves =gun.maxAmmoReserves
             };
             data.guns.Add(g);
         }
@@ -314,7 +367,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetString(SaveKey, encoded);
         PlayerPrefs.Save();
 
-        Debug.Log($"Game saved (Checkpoint: {data.lastCheckpointName})");
+        Debug.Log($"Game saved");
     }
 
     /// <summary>
@@ -333,26 +386,9 @@ public class GameManager : MonoBehaviour
             string encoded = PlayerPrefs.GetString(SaveKey);
             string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
             PlayerSaveData data = JsonUtility.FromJson<PlayerSaveData>(json);
-            if(data.lastCheckpointName != null && data.lastCheckpointName != "")
-            {
-                GameObject spawn = GameObject.Find(data.lastCheckpointName);
-                if (spawn != null)
-                {
-                    Checkpoint checkpoint = spawn.GetComponent<Checkpoint>();
-                    if (checkpoint != null)
-                    {
-                        Transform spawnPos = checkpoint.SpawnPos;
-                        if (spawnPos != null)
-                        {
-                            playerSpawn.transform.position = spawnPos.position;
-                            playerSpawn.transform.rotation = spawnPos.rotation;
-                        }
-                    }
-                }
-            }
             // Restore player
-            
-            if(player != null)
+
+            if (player != null)
             {
                 playerScript.CurrentHealth = data.HP;
                 player.transform.position = playerSpawn.transform.position;
@@ -360,26 +396,32 @@ public class GameManager : MonoBehaviour
 
                 // Restore gun list
                 playerScript.GunList.Clear();
-                foreach (GunStatsData g in data.guns)
+                if (data.guns != null)
                 {
-                    GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
-                    if (gun == null)
+                    foreach (GunStatsData g in data.guns)
                     {
-                        Debug.LogWarning($"Gun '{g.gunName}' not found in database!");
-                        continue;
+                        if (g.gunName != "Pistol" && g.gunName != "Sniper" && g.gunName != "SMG" && g.gunName != "Rocket Lancher")
+                        {
+                            break;
+                        }
+                        GunStats gun;
+                        gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+                        if (gun == null)
+                        {
+                            Debug.LogWarning($"Gun '{g.gunName}' not found in database!");
+                            continue;
+                        }
+                        gun.ammoCurrent = g.Maxammo;
+                        gun.ammoReserves = g.MaxammoReserves;
+                        playerScript.GunList.Add(gun);
+                        playerScript.GunListIndex = data.selectedGun;
+                        playerScript.changeGun();
                     }
-
-                    gun.ammoCurrent = g.ammoCurrent;
-                    gun.ammoReserves = g.ammoReserves;
-                    playerScript.GunList.Add(gun);
                 }
-
-                playerScript.GunListIndex = data.selectedGun;
-                playerScript.changeGun();
             }
-            
+            playerScript.updatePlayerUI();
 
-            Debug.Log($"Loaded checkpoint '{data.lastCheckpointName}'");
+            Debug.Log($"Loaded in!");
             return true;
         }
         catch (Exception e)
@@ -451,6 +493,36 @@ public class GameManager : MonoBehaviour
             string name = data.levelNames[i];
             levelScores[name] = data.levelScores[i];
             levelGrades[name] = data.levelGrades[i];
+            if (i == 0)
+            {
+                ScoreLVL1.text = data.levelScores[i].ToString();
+                GradeLVL1.sprite = GradeImageGetter((char)data.levelGrades[i]);
+            }
+            else if (i == 1)
+            {
+                ScoreLVL2.text = data.levelScores[i].ToString();
+                GradeLVL2.sprite = GradeImageGetter((char)data.levelGrades[i]);
+            }
+            else if (i == 2)
+            {
+                ScoreLVL3.text = data.levelScores[i].ToString();
+                GradeLVL3.sprite = GradeImageGetter((char)data.levelGrades[i]);
+            }
+            else if (i == 3)
+            {
+                ScoreLVL4.text = data.levelScores[i].ToString();
+                GradeLVL4.sprite = GradeImageGetter((char)data.levelGrades[i]);
+            }
+            else if (i == 4)
+            {
+                ScoreLVL5.text = data.levelScores[i].ToString();
+                GradeLVL5.sprite = GradeImageGetter((char)data.levelGrades[i]);
+            }
+            else if (i == 5)
+            {
+                ScoreLVL6.text = data.levelScores[i].ToString();
+                GradeLVL6.sprite = GradeImageGetter((char)data.levelGrades[i]);
+            }
         }
 
         Debug.Log("Progress loaded.");
@@ -481,7 +553,7 @@ public class GameManager : MonoBehaviour
     {
         if (playerScript == null) return;
 
-        persistentPlayerState.HP = playerScript.CurrentHealth;
+        persistentPlayerState.HP = playerScript.OriginalHealth;
         persistentPlayerState.guns.Clear();
 
         foreach (GunStats gun in playerScript.GunList)
@@ -508,25 +580,29 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        playerScript.CurrentHealth = persistentPlayerState.HP;
+        playerScript.CurrentHealth = playerScript.OriginalHealth;
         if (playerScript.CurrentHealth <= 0)
             playerScript.CurrentHealth = playerScript.OriginalHealth;
         playerScript.GunList.Clear();
         
-        foreach (GunStatsData g in persistentPlayerState.guns)
+        if(persistentPlayerState.guns.Count() != 0)
         {
-            if (g != null && gunDatabase.GetGunByName(g.gunName) != null)
+            foreach (GunStatsData g in persistentPlayerState.guns)
             {
-                GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
-                gun.ammoCurrent = g.ammoCurrent;
-                gun.ammoReserves = g.ammoReserves;
-                playerScript.GunList.Add(gun);
+                if (g != null && gunDatabase.GetGunByName(g.gunName) != null)
+                {
+                    GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+                    gun.ammoCurrent = g.ammoCurrent;
+                    gun.ammoReserves = g.ammoReserves;
+                    playerScript.GunList.Add(gun);
+                }
             }
+            playerScript.GunListIndex = 0;
+            if (playerScript.GunList.Count > 0)
+                playerScript.changeGun();
         }
-
-        playerScript.GunListIndex = 0;
-        if (playerScript.GunList.Count > 0)
-            playerScript.changeGun();
+        lvlManagerObj = FindInactive("LevelManager");
+        currentlevelManager = lvlManagerObj.GetComponent<LevelManager>(); 
         playerScript.updatePlayerUI();
 
         Debug.Log("Player state restored from memory after scene load.");
@@ -645,7 +721,6 @@ public class GameManager : MonoBehaviour
             playerHPLabel = null;
             playerClimbStamina = null;
             ammoCurrent = null;
-            ammoMax = null;
             checkpointLabel = null;
             playerDamageScreen = null;
             playerHealScreen = null;
@@ -666,11 +741,9 @@ public class GameManager : MonoBehaviour
         }
         uiRoot.name = "UIA";
         DontDestroyOnLoad(uiRoot);
-
         menuLevelComplete = FindInactive("Level Complete Menu");
         playerBrightnessOverlay = FindInactive("Brightness Overlay")?.GetComponent<Image>();
         playerClimbStamina = FindInactive("Player Climb Stamina Fill")?.GetComponent<Image>();
-
         menuWin = FindInactive("Win Menu");
         menuDead = FindInactive("Restart Menu");
         mainMenu = FindInactive("Main Menu");
@@ -684,6 +757,7 @@ public class GameManager : MonoBehaviour
         submenuLockedlevel3 = FindInactive("Locked 3");
         submenuLockedlevel4 = FindInactive("Locked 4");
         submenuLockedlevel5 = FindInactive("Locked 5");
+        submenuLockedlevel6 = FindInactive("Locked 6");
         submenuUnlockedlevel2button = FindInactive("Level 2 Button");
         submenuUnlockedlevel2stats = FindInactive("Level 2 Button Back Ground");
         submenuUnlockedlevel3button = FindInactive("Level 3 Button");
@@ -692,23 +766,28 @@ public class GameManager : MonoBehaviour
         submenuUnlockedlevel4stats = FindInactive("Level 4 Button Back Ground");
         submenuUnlockedlevel5button = FindInactive("Level 5 Button");
         submenuUnlockedlevel5stats = FindInactive("Level 5 Button Back Ground");
+        submenuUnlockedlevel6button = FindInactive("Level 6 Button");
+        submenuUnlockedlevel6stats = FindInactive("Level 6 Button Back Ground");
+        inLVLScorenGrade = FindInactive("In Level Score and Grade");
         currScene = SceneManager.GetActiveScene();
         playerHPBar = FindInactive("Player HP Fill").GetComponent<Image>();
         playerHPLabel = FindInactive("Player HP Label").GetComponent<TMP_Text>();
+        LevelnameLC = FindInactive("Level Name LC").GetComponent<TMP_Text>();
         ScoreLC = FindInactive("ScoreNumber").GetComponent<TMP_Text>();
-        GradeLC = FindInactive("Grade Letter").GetComponent<TMP_Text>();
+        GradeLC = FindInactive("Grade Image LC").GetComponent<Image>();
         ScoreLVL1 = FindInactive("Score Text 1").GetComponent<TMP_Text>();
         ScoreLVL2 = FindInactive("Score Text 2").GetComponent<TMP_Text>();
         ScoreLVL3 = FindInactive("Score Text 3").GetComponent<TMP_Text>();
         ScoreLVL4 = FindInactive("Score Text 4").GetComponent<TMP_Text>();
         ScoreLVL5 = FindInactive("Score Text 5").GetComponent<TMP_Text>();
+        ScoreLVL6 = FindInactive("Score Text 6").GetComponent<TMP_Text>();
         GradeLVL1 = FindInactive("Grade Image 1").GetComponent<Image>(); 
         GradeLVL2 = FindInactive("Grade Image 2").GetComponent<Image>();
         GradeLVL3 = FindInactive("Grade Image 3").GetComponent<Image>();
         GradeLVL4 = FindInactive("Grade Image 4").GetComponent<Image>();
         GradeLVL5 = FindInactive("Grade Image 5").GetComponent<Image>();
+        GradeLVL6 = FindInactive("Grade Image 6").GetComponent<Image>();
         ammoCurrent = FindInactive("Ammo Current").GetComponent<TMP_Text>();
-        ammoMax = FindInactive("Ammo Max").GetComponent<TMP_Text>();
         ammoReserves = FindInactive("Ammo Reserves").GetComponent<TMP_Text>();
         checkpointLabel = FindInactive("Checkpoint Label");
         playerDamageScreen = FindInactive("Player Damage Screen")?.GetComponent<Image>();
@@ -719,7 +798,11 @@ public class GameManager : MonoBehaviour
         PlayerClimbStaminaDisplay = FindInactive("Player Climb Stamina");
         LoadingScreen = FindInactive("Loading Screen");
         LoadingScreendotdotdot = FindInactive("Loading Text ...").GetComponent<TMP_Text>();
-
+        inLvLgrade = FindInactive("inlvlGradeImg").GetComponent<Image>(); 
+        inLvlScoreNumber = FindInactive("InlevelScoreNumber").GetComponent<TMP_Text>();
+        inLvlgradetext = FindInactive("inlvlGrade:").GetComponent<TMP_Text>();
+        WinGradetxt = FindInactive("RealFinalGrade:").GetComponent<TMP_Text>();
+        WinGradeImg = FindInactive("FinalGradingImage").GetComponent<Image>();
         if (OpenLevelSelect == true && mainMenu.name != null && menuLevelSelect != null && currScene.name == "Main Menu Scene")
         {
             menuActive = mainMenu;
@@ -753,7 +836,6 @@ public class GameManager : MonoBehaviour
         {
             playerScript = player.GetComponent<PlayerController>();
         }
-
         playerSpawn = GameObject.FindWithTag("PlayerSpawn");
         playerSpawnOrig = playerSpawn;
         goalObject = GameObject.FindWithTag("Goal");
@@ -874,18 +956,18 @@ public class GameManager : MonoBehaviour
     public void enablePlayerUI()
     {
         PlayerHPDisplay.SetActive(true);
-        PlayerAmmoDisplay.SetActive(true);
         PlayerReticleDisplay.SetActive(true);
         PlayerClimbStaminaDisplay.SetActive(true);
         playerClimbStamina.gameObject.SetActive(true);
+        inLVLScorenGrade.SetActive(true);
     }
     public void disablePlayerUI()
     {
         PlayerHPDisplay.SetActive(false);
-        PlayerAmmoDisplay.SetActive(false);
         PlayerReticleDisplay.SetActive(false);
         PlayerClimbStaminaDisplay.SetActive(false);
         playerClimbStamina.gameObject.SetActive(false);
+        inLVLScorenGrade.SetActive(false);
     }
 
     /// <summary>
@@ -893,12 +975,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void RecordLevelScore(int score, char grade)
     {
-        string levelName = SceneManager.GetActiveScene().name;
+        string levelName = SceneManager.GetActiveScene().name; 
 
         levelScores[levelName] = score;
         levelGrades[levelName] = grade;
         ScoreLC.text = score.ToString();
-        GradeLC.text = grade.ToString();
+        GradeLC.sprite = GradeImageGetter(grade);
+        LevelnameLC.text = levelName;
+        UpdateLevelSelect(levelName, score, grade);
 
         Debug.Log((char)levelGrades[levelName] + " rank recorded for " + levelName);
     }
@@ -964,7 +1048,8 @@ public class GameManager : MonoBehaviour
     {
         // TODO - Play cutscene
         finalGrade = GetFinalGrade();
-        GradeLC.text = finalGrade.ToString();
+        WinGradetxt.colorGradientPreset = GradientGetter(finalGrade);
+        WinGradeImg.sprite = GradeImageGetter(finalGrade);
         Debug.Log("Final Grade is " + finalGrade);
         stateWin();
     }
@@ -990,6 +1075,7 @@ public class GameManager : MonoBehaviour
 
         musicSource.clip = levelMusic;
         musicSource.loop = true;
+        musicSource.volume = LevelManager.instance.levelMusicVol;
         musicSource.Play();
     }
     public void levelLocks() //used to keep track of locked and unlocked levels 
@@ -1069,18 +1155,31 @@ public class GameManager : MonoBehaviour
             submenuUnlockedlevel5button.SetActive(true);
             submenuUnlockedlevel5stats.SetActive(true);
         }
-    }
-        IEnumerator LoadingScreenEnable(string level)
+        if (!IsLevelUnlocked(levelOrder[index]))
         {
-            menuChange(LoadingScreen);
+            submenuLockedlevel6.SetActive(true);
+            submenuUnlockedlevel6button.SetActive(false);
+            submenuUnlockedlevel6stats.SetActive(false);
+        }
+        else
+        {
+            submenuLockedlevel6.SetActive(false);
+            submenuUnlockedlevel6button.SetActive(true);
+            submenuUnlockedlevel6stats.SetActive(true);
+        }
+    }
+    IEnumerator LoadingScreenEnable(string level)
+    {
+        menuChange(LoadingScreen);
         AsyncOperation Loading = SceneManager.LoadSceneAsync(level);
         loadingdottick = 0;
         while (!Loading.isDone)
-        { 
+        {
             if (loadingdottick == 0)
             {
                 LoadingScreendotdotdot.text = "";
-            }else if (loadingdottick == 1)
+            }
+            else if (loadingdottick == 1)
             {
                 LoadingScreendotdotdot.text = ".";
             }
@@ -1093,19 +1192,116 @@ public class GameManager : MonoBehaviour
                 LoadingScreendotdotdot.text = "...";
             }
             loadingdottick++;
-            if(loadingdottick == 4)
+            if (loadingdottick == 4)
             {
                 loadingdottick = 0;
             }
             yield return null;
         }
-        if(level != "Main Menu Scene")
+        if (level != "Main Menu Scene")
         {
             clearActive();
         }
 
     }
-    IEnumerator Loadingdots()
+    private Sprite GradeImageGetter(char letter)
+    {
+        Sprite gradetoReturn;
+        if (letter == 'S')
+        {
+            gradetoReturn = gradeiconS;
+        }
+        else if (letter == 'A')
+        {
+            gradetoReturn = gradeiconA;
+        }
+        else if (letter == 'B')
+        {
+            gradetoReturn = gradeiconB;
+        }
+        else if (letter == 'C')
+        {
+            gradetoReturn = gradeiconC;
+        }
+        else if (letter == 'D')
+        {
+            gradetoReturn = gradeiconD;
+        }
+        else
+        {
+            gradetoReturn = gradeiconUn;
+        }
+        return gradetoReturn;
+    }
+    private TMP_ColorGradient GradientGetter(char letter)
+    {
+        TMP_ColorGradient gradienttoReturn;
+        if (letter == 'S')
+        {
+            gradienttoReturn = SrankGradient;
+        }
+        else if (letter == 'A')
+        {
+            gradienttoReturn = ArankGradient;
+        }
+        else if (letter == 'B')
+        {
+            gradienttoReturn = BrankGradient;
+        }
+        else if (letter == 'C')
+        {
+            gradienttoReturn = CrankGradient;
+        }
+        else if (letter == 'D')
+        {
+            gradienttoReturn = DrankGradient;
+        }
+        else
+        {
+            gradienttoReturn = UnrankedGradient;
+        }
+        return gradienttoReturn;
+    }
+    private void UpdateLevelSelect(string levelname, int score, char grade)
+    {
+        for (int index = 0; index < levelOrder.Count; index++)
+        {
+            if (levelname == levelOrder[index])
+            {
+                if (index == 0)
+                {
+                    ScoreLVL1.text = score.ToString();
+                    GradeLVL1.sprite = GradeImageGetter(grade);
+                }
+                else if (index == 1)
+                {
+                    ScoreLVL2.text = score.ToString();
+                    GradeLVL2.sprite = GradeImageGetter(grade);
+                }
+                else if (index == 2)
+                {
+                    ScoreLVL3.text = score.ToString();
+                    GradeLVL3.sprite = GradeImageGetter(grade);
+                }
+                else if (index == 3)
+                {
+                    ScoreLVL4.text = score.ToString();
+                    GradeLVL4.sprite = GradeImageGetter(grade);
+                }
+                else if (index == 4)
+                {
+                    ScoreLVL5.text = score.ToString();
+                    GradeLVL5.sprite = GradeImageGetter(grade);
+                }
+                else if (index == 5)
+                {
+                    ScoreLVL6.text = score.ToString();
+                    GradeLVL6.sprite = GradeImageGetter(grade);
+                }
+            }
+        }
+    }
+        IEnumerator Loadingdots()
     { 
         yield return new WaitForSecondsRealtime(1f);
     }

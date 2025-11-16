@@ -9,20 +9,45 @@ public class ButtonFunctions : MonoBehaviour
     public Image FOVSliderParent;
     public Image mouSensSliderParent;
     public Image brightnessSliderParent;
-    
+
     void Start()
     {
-        if(SettingsData.instance != null)
+        if (SettingsData.instance != null)
         {
-            if(GameManager.instance.cam != null)
+            if (GameManager.instance.cam != null)
             {
                 GameManager.instance.cam.fieldOfView = SettingsData.instance.FOV;
             }
-            if(FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
+            if (FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
             {
                 FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOV, SettingsData.instance.FOVMin, SettingsData.instance.FOVMax);
                 mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSens, SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax);
                 brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightness, SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax);
+            }
+        }
+    }
+    private void Update()
+    {
+        if (GameManager.instance.playerScript != null)
+        {
+            float FOVOrig = SettingsData.instance.FOV;
+            if (GameManager.instance.playerScript.IsDashing == true)
+            {
+                GameManager.instance.cam.fieldOfView += 20f * Time.deltaTime;
+            }
+            else
+            {
+                if (GameManager.instance.cam.fieldOfView > FOVOrig)
+                {
+                    if (GameManager.instance.cam.fieldOfView <= FOVOrig)
+                    {
+                        GameManager.instance.cam.fieldOfView = FOVOrig;
+                    }
+                    else
+                    {
+                        GameManager.instance.cam.fieldOfView -= 80f * Time.deltaTime;
+                    }
+                }
             }
         }
     }
@@ -192,11 +217,34 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
     }
-    //to credits section not added yet
-    //public void toCredits()
-    //{
-
-    //}
+      public void Nextlevel()
+    {
+        if(SceneManager.GetActiveScene().name == "Level 1 - Jorg Plains")
+        {
+            gotoLevel2();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "Level 2- Gold's Springway")
+        {
+            gotoLevel3();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "Level 3- The Wall")//ADD NAMES!
+        {
+            gotoLevel4();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "")
+        {
+            gotoLevel5();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "")
+        {
+            gotoLevel6();
+            return;
+        }
+    }
     public void gotoMainmenu()
     {
         
@@ -236,6 +284,13 @@ public class ButtonFunctions : MonoBehaviour
         //GameManager.instance.enablePlayerUI();
         //GameManager.instance.LoadNextLevel(levelName);
     }
+    public void gotoLevel6()//head to level 6
+    {
+        //GameManager.instance.stateUnpause();
+        //GameManager.instance.enablePlayerUI();
+        //GameManager.instance.LoadNextLevel(levelName);
+    }
+
     public void gotoShowcase()//head to Showcase
     {
         GameManager.instance.stateUnpause();
