@@ -255,8 +255,8 @@ public class GameManager : MonoBehaviour
                 PlayerAmmoDisplay.SetActive(false);
             }
         }
-        else
-        {
+        else if(GameManager.instance.isPaused) {
+        
             PlayerAmmoDisplay.SetActive(false);
         }
         if (currentlevelManager != null)
