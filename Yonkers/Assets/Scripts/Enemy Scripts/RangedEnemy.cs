@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class RangedEnemy : EnemyAI
@@ -9,7 +10,6 @@ public class RangedEnemy : EnemyAI
     [SerializeField] float delayBetweenShots;
     [SerializeField] AudioSource shootSoundSource;
     [SerializeField] AudioClip[] audShoot;
-    [Range(0, 1)][SerializeField] float audShootVol;
     float shotTimer;
     float projModelTimer;
 
@@ -25,7 +25,7 @@ public class RangedEnemy : EnemyAI
         enemyRoutine(); // roamRoutine();
         if (playerDetected && (firstTimeMet && initialAttackDelay <= 0.0f ||
             !firstTimeMet && attackDelayTimer <= 0.0f))
-        { 
+        {
             if (shotTimer > delayBetweenShots)
                 shoot();
         }
@@ -36,9 +36,14 @@ public class RangedEnemy : EnemyAI
         animator.SetTrigger("Shoot");
         projModelTimer = 0;
         shotTimer = 0;
-        Instantiate(projectile, shootPos.position, transform.rotation);
-        shootSoundSource.PlayOneShot(audShoot[Random.Range(0, audShoot.Length)], audShootVol);
-        if(projectileModel != null)
+        if (projectileModel != null)
             projectileModel.enabled = false;
+    }
+
+    void CreateProjectile()
+    {
+        if (audShoot.Count() > 0)
+            shootSoundSource.PlayOneShot(audShoot[Random.Range(0, audShoot.Length)]);
+        Instantiate(projectile, shootPos.position, transform.rotation);
     }
 }

@@ -3254,11 +3254,14 @@ MonoBehaviour:
   animator: {fileID: 1349258897288131808}
   voiceSoundSource: {fileID: 6923288363062709507}
   ambientVoicelines: []
-  playerDetectedVoicelines: []
+  playerDetectedVoicelines:
+  - {fileID: 8300000, guid: d80bfb5fa6d00cf4ba537f3ef8b3dae2, type: 3}
   combatVoicelines: []
   timeBetweenCombatLines: 10
-  hurtSounds: []
-  deathSounds: []
+  hurtSounds:
+  - {fileID: 8300000, guid: d80bfb5fa6d00cf4ba537f3ef8b3dae2, type: 3}
+  deathSounds:
+  - {fileID: 8300000, guid: 68f213a6c2a775449b5f12c4e1b521eb, type: 3}
   deathVFX: {fileID: 0}
   agent: {fileID: 6456011656992140077}
   headPos: {fileID: 3974673184807614363}
