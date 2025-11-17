@@ -101,6 +101,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     bool doRocketFX = true;
     bool doDashFX = true;
     bool doDashWindupFX = true;
+    bool doLaserFX = true;
+    bool doSniperFX = true;
     //DICE BOOLEANS:
     bool strafediceRolled = false;
 
@@ -379,8 +381,12 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             //LASER STATE:
             if (laserState)
             {
-                if (laserVoicelines.Count() > 0)
+                if (laserVoicelines.Count() > 0 && doLaserFX)
+                {
                     voiceAudioSource.PlayOneShot(laserVoicelines[Random.Range(0, laserVoicelines.Length)]);
+                    doLaserFX = false;
+                }
+                    
 
                 faceTarget();
                 model.material.color = Color.black;
@@ -401,6 +407,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                         stanceTimer = 0;
                         shootTimer = 0;
                         model.material.color = kingColor;
+                        doLaserFX = true;
                         laserState = false;
                         defaultState = true;
                         SetNeutral();
