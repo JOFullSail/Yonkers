@@ -1025,13 +1025,17 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public char GetFinalGrade()
     {
-        int avg = (int)levelGrades.Values.Average();
+        if (levelGrades.Count > 0)
+        {
+            int avg = (int)levelGrades.Values.Average();
 
-        if (avg >= 'S') return 'S';
-        else if (avg >= 'A') return 'A';
-        else if (avg >= 'B') return 'B';
-        else if (avg >= 'C') return 'C';
-        else return 'D';
+            if (avg >= 'S') return 'S';
+            else if (avg >= 'A') return 'A';
+            else if (avg >= 'B') return 'B';
+            else if (avg >= 'C') return 'C';
+            else return 'D';
+        }
+        return 'F';
     }
 
     /// <summary>
