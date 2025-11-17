@@ -9,6 +9,15 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     public Animator animator;
 
+    [SerializeField] AudioSource voiceSoundSource;
+    [SerializeField] AudioClip[] ambientVoicelines;
+    [SerializeField] AudioClip[] playerDetectedVoicelines;
+    [SerializeField] AudioClip[] combatVoicelines;
+    [SerializeField] float timeBetweenCombatLines = 10;
+    [SerializeField] AudioClip[] hurtSounds;
+    [SerializeField] AudioClip[] deathSounds;
+    [SerializeField] ParticleSystem deathVFX;
+
     [SerializeField] NavMeshAgent agent;
 
     [SerializeField] Transform headPos;
@@ -118,12 +127,16 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     protected float stoppingDistanceOrig;
     protected float originalMoveSpeed;
 
+    bool saidDetectionVO = false;
+    float combatLineCooldown;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         if (LevelManager.instance != null)
             LevelManager.instance.EnemyCount++;
 
+        combatLineCooldown = timeBetweenCombatLines;
         if (room != null)
         {
             room.UpdateEnemyCount(1);
@@ -218,11 +231,28 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     {
         if (playerDetected && initialAttackDelay <= 0.0f)
         {
+            if (playerDetectedVoicelines.Count() > 0 && !saidDetectionVO)
+            {
+                voiceSoundSource.Stop();
+                voiceSoundSource.PlayOneShot(playerDetectedVoicelines[Random.Range(0, playerDetectedVoicelines.Length)]);
+                saidDetectionVO = true;
+            }
+
+            if(saidDetectionVO)
+            {
+                combatLineCooldown -= Time.deltaTime;
+                if(combatLineCooldown <= 0 && combatVoicelines.Count() > 0)
+                {
+                    int lineToPlay = Random.Range(0, combatVoicelines.Length);
+                    voiceSoundSource.PlayOneShot(combatVoicelines[lineToPlay]);
+                    combatLineCooldown = timeBetweenCombatLines + combatVoicelines[lineToPlay].length;
+                }
+            }
             firstTimeMet = false;
             attackDelayTimer -= Time.deltaTime;
         }
         else if (playerDetected)
-        {
+        {     
             initialAttackDelay -= Time.deltaTime;
         }
 
@@ -241,6 +271,10 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     void roam()
     {
+        voiceSoundSource.Stop();
+        if(ambientVoicelines.Count() > 0)
+            voiceSoundSource.PlayOneShot(ambientVoicelines[Random.Range(0, ambientVoicelines.Length)]);
+
         roamTimer = 0.0f;
         agent.stoppingDistance = 0.0f;
 
@@ -268,39 +302,15 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
         if (HP <= 0)
         {
-            if (explodesOnDeath && explosionPrefab != null)
-            {
-                GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-                Explosion expl = explosion.GetComponent<Explosion>();
-                if (expl != null)
-                    expl.TriggerExplosion(transform.position, explosionDamage);
-            }
-
-            if (LevelManager.instance != null)
-            {
-                LevelManager.instance.EnemyCount--;
-                LevelManager.instance.CurrentScore += (float)scoreValue;
-            }
-                
-
-            if (room != null)
-            {
-                room.UpdateEnemyCount(-1);
-            }
-
-            if (canDropItems && Random.Range(0, 100) <= dropChance && possibleItemDrops.Count() > 0)
-            {
-                int itemPos = Random.Range(0, possibleItemDrops.Length);
-                Vector3 dropPos = transform.position;
-                dropPos.y += 0.5f;
-                Instantiate(possibleItemDrops[itemPos], dropPos, possibleItemDrops[itemPos].transform.rotation);
-            }
-
-            Destroy(gameObject);
-
+            StartCoroutine(Die());
         }
         else if (damageTaken)
         {
+            if(hurtSounds.Count() > 0)
+            {
+                voiceSoundSource.Stop();
+                voiceSoundSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
+            }
             StartCoroutine(flashRed());
         }
 
@@ -434,4 +444,48 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
         // TODO
     }
 
+    IEnumerator Die()
+    {
+        if(deathSounds.Count() > 0)
+        {
+            int lineToPlay = Random.Range(0, deathSounds.Length);
+            voiceSoundSource.PlayOneShot(deathSounds[lineToPlay]);
+            yield return new WaitForSeconds(deathSounds[lineToPlay].length);
+        }
+        else
+            yield return null;
+
+        if (explodesOnDeath && explosionPrefab != null)
+        {
+            GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            Explosion expl = explosion.GetComponent<Explosion>();
+            if (expl != null)
+                expl.TriggerExplosion(transform.position, explosionDamage);
+        }
+
+        if(deathVFX != null)
+            Instantiate(deathVFX, transform.position, Quaternion.identity);
+
+        if (LevelManager.instance != null)
+        {
+            LevelManager.instance.EnemyCount--;
+            LevelManager.instance.CurrentScore += (float)scoreValue;
+        }
+
+
+        if (room != null)
+        {
+            room.UpdateEnemyCount(-1);
+        }
+
+        if (canDropItems && Random.Range(0, 100) <= dropChance && possibleItemDrops.Count() > 0)
+        {
+            int itemPos = Random.Range(0, possibleItemDrops.Length);
+            Vector3 dropPos = transform.position;
+            dropPos.y += 0.5f;
+            Instantiate(possibleItemDrops[itemPos], dropPos, possibleItemDrops[itemPos].transform.rotation);
+        }
+
+        Destroy(gameObject);
+    }
 }
