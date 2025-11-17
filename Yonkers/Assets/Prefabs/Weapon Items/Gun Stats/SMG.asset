@@ -29,6 +29,8 @@ MonoBehaviour:
   shootSound:
   - {fileID: 8300000, guid: dd22e7d230c0d1143984c2daef557181, type: 3}
   shootSoundVol: 0
-  positionWhenHeld: {x: 0.2850304, y: -0.2229996, z: 0.4335518}
-  rotationWhenHeld: {x: -89.98, y: 0, z: 0}
-  scaleWhenHeld: {x: 100, y: 100, z: 100}
+  reloadSound: []
+  reloadSoundVol: 0
+  positionWhenHeld: {x: 0.2, y: -0.2229996, z: 0.4335518}
+  rotationWhenHeld: {x: 0, y: 0, z: 0}
+  scaleWhenHeld: {x: 1, y: 1, z: 1}

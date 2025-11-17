@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &595028110812225376
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9128274637418009888}
+  m_Layer: 3
+  m_Name: Feet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9128274637418009888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595028110812225376}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.024, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2701138106116441341}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1221674490803176608
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,6 +353,7 @@ Transform:
   - {fileID: 4181560455072038926}
   - {fileID: 4512299341433816176}
   - {fileID: 819445505154246009}
+  - {fileID: 9128274637418009888}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1936253241755798585
@@ -357,6 +389,8 @@ MonoBehaviour:
   jumpGraceFall: 0.175
   jumpGraceClimb: 0.175
   jumpGraceWall: 0.35
+  jumpEffect: {fileID: 8432170465285958012, guid: e5defb6bffead974497288e2ced02028, type: 3}
+  feet: {fileID: 9128274637418009888}
   gunList: []
   gunModel: {fileID: 7949522443913679913}
   shootDmg: 1
@@ -392,17 +426,17 @@ MonoBehaviour:
   knockbackOnly: 1
   ragdollPerSpeed: 0.06
   minRagdollTime: 1.25
-  debugSpawnAtCamera: 0
-  debugClimbAnything: 0
-  debugClimbInfinitely: 0
-  debugFastClimb: 0
-  debugClimbSpeed: 100
   aud: {fileID: 8840923805221367906}
   audJump:
-  - {fileID: 8300000, guid: d1569ab251136574096e3dd6c7b77f4e, type: 3}
-  - {fileID: 8300000, guid: d55e0deb0b0325a45abd341779a1d206, type: 3}
-  - {fileID: 8300000, guid: d0ad55c32b33cd645b0e0a4ba2b0b03a, type: 3}
-  audJumpVol: 0.5
+  - {fileID: 8300000, guid: f18b5cd3bbd1c4943a1779111f796c66, type: 3}
+  - {fileID: 8300000, guid: de76cd5e5fac7ea4b92f1dfad2fcb51a, type: 3}
+  - {fileID: 8300000, guid: 61891610f35d31344954331d3cf63698, type: 3}
+  - {fileID: 8300000, guid: df2c2fda9fd9b4e479a580580e7b0b3a, type: 3}
+  - {fileID: 8300000, guid: acc2fcb814e6103458edc70d16ccad69, type: 3}
+  - {fileID: 8300000, guid: d63c93f4fc123834b83b327936a0a056, type: 3}
+  - {fileID: 8300000, guid: 55aa3c010e4954b4ba944e110bf7a324, type: 3}
+  - {fileID: 8300000, guid: f567ea12bf9547441a8535f951782eb7, type: 3}
+  audJumpVol: 0.497
   audClimb:
   - {fileID: 8300000, guid: bcb72b3117897ba50aff8525d6c1596c, type: 3}
   audClimbVol: 0

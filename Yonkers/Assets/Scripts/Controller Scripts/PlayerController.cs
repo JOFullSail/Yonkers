@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float jumpGraceFall = 0.175f;
     [SerializeField] float jumpGraceClimb = 0.175f;
     [SerializeField] float jumpGraceWall = 0.35f;
+    [SerializeField] ParticleSystem jumpEffect;
+    [SerializeField] Transform feet;
 
 
     [Header("Shooting")]
@@ -396,7 +398,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void jumpCheck()
     {
         if (Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && gravityOn)
+        {
             isJumping = true;
+            Instantiate(jumpEffect, feet.transform.position, Quaternion.identity);
+        }
+            
         else isJumping = false;
     }
 
