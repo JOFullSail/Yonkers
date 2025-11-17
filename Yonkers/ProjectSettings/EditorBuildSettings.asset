@@ -12,9 +12,6 @@ EditorBuildSettings:
     path: Assets/Levels/Main Menu Scene.unity
     guid: f22d6ccfe2bce8541a955e5c57c7b876
   - enabled: 1
-    path: Assets/Levels/Showcase level.unity
-    guid: b9438cdbb788cb944b4db1249f35da3b
-  - enabled: 1
     path: Assets/Levels/Level 1 - Jorg Plains.unity
     guid: 720be1cc1edb2dd469aa47db28717b20
   - enabled: 1
@@ -23,8 +20,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Levels/Level 3- The Wall.unity
     guid: e6c12afa670a88945a32bcc8da12a1b1
-  - enabled: 1
-    path: Assets/Levels/Level 1 - Yonk Hill.unity
-    guid: 4651cee03933c484fb2007c2da90160c
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

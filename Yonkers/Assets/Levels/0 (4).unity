@@ -524,9 +524,11 @@ MonoBehaviour:
   POV: {fileID: 1347618779}
   smallProjectile: {fileID: 9133834467076832970, guid: 4d6f4ab05182e2345bb62c7d148e969f, type: 3}
   rocketProjectile: {fileID: 4092872357349286730, guid: 9435baced05241d458b9428792789c3d, type: 3}
-  Lazer: {fileID: 0}
+  sniperProjectile: {fileID: 0}
+  VLaser: {fileID: 0}
+  HLaser: {fileID: 0}
   Health: 200
-  basemMoveSpeed: 5
+  baseMoveSpeed: 1
   turningSpeed: 20
   strafeDist: 15
   pelletRate: 0.15
@@ -536,10 +538,13 @@ MonoBehaviour:
   meleeDamage: 0
   punchSpeed: 5
   punchForce: 50
+  punchMax: 0
   rocketRate: 0.5
   rocketMax: 1
-  height: 5
-  duration: 2
+  sniperRate: 0
+  sniperMax: 0
+  laserRate: 0
+  laserMax: 0
 --- !u!136 &1347618776
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -652,9 +657,11 @@ MonoBehaviour:
   POV: {fileID: 0}
   smallProjectile: {fileID: 0}
   rocketProjectile: {fileID: 0}
-  Lazer: {fileID: 0}
+  sniperProjectile: {fileID: 0}
+  VLaser: {fileID: 0}
+  HLaser: {fileID: 0}
   Health: 200
-  basemMoveSpeed: 1
+  baseMoveSpeed: 1
   turningSpeed: 4
   strafeDist: 35
   pelletRate: 0.15
@@ -664,10 +671,13 @@ MonoBehaviour:
   meleeDamage: 0
   punchSpeed: 5
   punchForce: 5
+  punchMax: 0
   rocketRate: 0
   rocketMax: 0
-  height: 0
-  duration: 0
+  sniperRate: 0
+  sniperMax: 0
+  laserRate: 0
+  laserMax: 0
 --- !u!195 &1347618781
 NavMeshAgent:
   m_ObjectHideFlags: 0
