@@ -557,7 +557,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             if(punchImpactSounds.Count() > 0)
                 sfxAudioSource.PlayOneShot(punchImpactSounds[Random.Range(0, punchImpactSounds.Length)]);
 
-            Debug.Log("Ouch!!!");
+            //Debug.Log("Ouch!!!");
             GameManager.instance.playerScript.Knockbacked = true;
             GameManager.instance.playerScript.applyPushback(totalPunch);
             GameManager.instance.playerScript.takeDamage(meleeDamage);
@@ -570,7 +570,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     void savePlayerposition()
     {
         punchPosition = new Vector3(GameManager.instance.player.transform.position.x, transform.position.y, GameManager.instance.player.transform.position.z);
-        Debug.Log("Player Dectected");
+        //Debug.Log("Player Dectected");
 
     }
 
