@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 4383011}
   m_Layer: 0
   m_Name: Cylinder (20)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -171,7 +171,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1033,7 +1033,7 @@ GameObject:
   - component: {fileID: 31044523}
   m_Layer: 0
   m_Name: Cylinder (6)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1071,7 +1071,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -3864,7 +3864,7 @@ GameObject:
   - component: {fileID: 165577422}
   m_Layer: 0
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5147,7 +5147,7 @@ GameObject:
   - component: {fileID: 226438420}
   m_Layer: 0
   m_Name: Cylinder (11)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5185,7 +5185,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -5707,7 +5707,7 @@ GameObject:
   - component: {fileID: 244172745}
   m_Layer: 0
   m_Name: Cylinder (4)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5745,7 +5745,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -6669,7 +6669,7 @@ GameObject:
   - component: {fileID: 303486876}
   m_Layer: 0
   m_Name: Cube (5)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8625,7 +8625,7 @@ GameObject:
   - component: {fileID: 399407908}
   m_Layer: 0
   m_Name: Cube (10)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10075,7 +10075,7 @@ GameObject:
   - component: {fileID: 473484137}
   m_Layer: 0
   m_Name: Cylinder (2)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10113,7 +10113,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -10302,7 +10302,7 @@ GameObject:
   - component: {fileID: 483752739}
   m_Layer: 0
   m_Name: Cylinder (9)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10340,7 +10340,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -11736,7 +11736,7 @@ GameObject:
   - component: {fileID: 570252909}
   m_Layer: 0
   m_Name: Cylinder (12)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11774,7 +11774,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -12114,7 +12114,7 @@ GameObject:
   - component: {fileID: 583163167}
   m_Layer: 0
   m_Name: Cylinder (19)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12152,7 +12152,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -13095,7 +13095,7 @@ GameObject:
   - component: {fileID: 639446896}
   m_Layer: 0
   m_Name: Cylinder (8)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13133,7 +13133,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -13772,7 +13772,7 @@ GameObject:
   - component: {fileID: 696961866}
   m_Layer: 0
   m_Name: Cube (6)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14703,7 +14703,7 @@ GameObject:
   - component: {fileID: 733780350}
   m_Layer: 0
   m_Name: Cube (8)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14814,7 +14814,7 @@ GameObject:
   - component: {fileID: 743484126}
   m_Layer: 0
   m_Name: Cube (8)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17052,7 +17052,7 @@ GameObject:
   - component: {fileID: 830932057}
   m_Layer: 0
   m_Name: Cylinder (18)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17090,7 +17090,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -18052,7 +18052,7 @@ GameObject:
   - component: {fileID: 876649342}
   m_Layer: 0
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18090,7 +18090,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -18529,7 +18529,7 @@ GameObject:
   - component: {fileID: 905778070}
   m_Layer: 0
   m_Name: Cylinder (17)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18567,7 +18567,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -19767,7 +19767,7 @@ GameObject:
   - component: {fileID: 1023267505}
   m_Layer: 0
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21135,7 +21135,7 @@ GameObject:
   - component: {fileID: 1076632988}
   m_Layer: 0
   m_Name: Cube (6)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21246,7 +21246,7 @@ GameObject:
   - component: {fileID: 1082246705}
   m_Layer: 0
   m_Name: Cube (10)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21502,7 +21502,7 @@ GameObject:
   - component: {fileID: 1096932073}
   m_Layer: 0
   m_Name: Cube (7)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23351,7 +23351,7 @@ GameObject:
   - component: {fileID: 1189194475}
   m_Layer: 0
   m_Name: Cylinder (16)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23389,7 +23389,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -24641,7 +24641,7 @@ GameObject:
   - component: {fileID: 1236599008}
   m_Layer: 0
   m_Name: Cube (9)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25394,7 +25394,7 @@ GameObject:
   - component: {fileID: 1272057542}
   m_Layer: 0
   m_Name: Cylinder (1)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25432,7 +25432,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -25621,7 +25621,7 @@ GameObject:
   - component: {fileID: 1282161766}
   m_Layer: 0
   m_Name: Cylinder (7)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25659,7 +25659,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -26145,7 +26145,7 @@ GameObject:
   - component: {fileID: 1300451022}
   m_Layer: 0
   m_Name: Pole
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28022,7 +28022,7 @@ GameObject:
   - component: {fileID: 1421866073}
   m_Layer: 0
   m_Name: Cube (5)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29044,7 +29044,7 @@ GameObject:
   - component: {fileID: 1522269203}
   m_Layer: 0
   m_Name: Cube (4)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29665,7 +29665,7 @@ GameObject:
   - component: {fileID: 1557411499}
   m_Layer: 0
   m_Name: Cube (9)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30109,7 +30109,7 @@ GameObject:
   - component: {fileID: 1572106631}
   m_Layer: 0
   m_Name: Cylinder (3)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30147,7 +30147,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -30225,7 +30225,7 @@ GameObject:
   - component: {fileID: 1575977439}
   m_Layer: 0
   m_Name: Cube (4)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30536,7 +30536,7 @@ GameObject:
   - component: {fileID: 1593976953}
   m_Layer: 0
   m_Name: Cylinder (15)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30574,7 +30574,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -32101,7 +32101,7 @@ GameObject:
   - component: {fileID: 1673612527}
   m_Layer: 0
   m_Name: Cylinder (13)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32115,7 +32115,7 @@ Transform:
   m_GameObject: {fileID: 1673612525}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.36650118, z: 0, w: 0.9304176}
-  m_LocalPosition: {x: 35.268677, y: 16.173336, z: 186.14972}
+  m_LocalPosition: {x: 44.56, y: 16.173336, z: 184.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -32139,7 +32139,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -33840,7 +33840,7 @@ GameObject:
   - component: {fileID: 1745666267}
   m_Layer: 0
   m_Name: Cube (7)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36056,7 +36056,7 @@ GameObject:
   - component: {fileID: 1840116530}
   m_Layer: 0
   m_Name: Cube (3)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38208,7 +38208,7 @@ GameObject:
   - component: {fileID: 1921241712}
   m_Layer: 0
   m_Name: Cube (3)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -40485,7 +40485,7 @@ GameObject:
   - component: {fileID: 2018878925}
   m_Layer: 0
   m_Name: Cylinder (10)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -40523,7 +40523,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -40683,7 +40683,7 @@ GameObject:
   - component: {fileID: 2029837572}
   m_Layer: 0
   m_Name: Cylinder (14)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -40721,7 +40721,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -41838,7 +41838,7 @@ GameObject:
   - component: {fileID: 2077025383}
   m_Layer: 0
   m_Name: Cylinder (5)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41876,7 +41876,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -43104,7 +43104,7 @@ GameObject:
   - component: {fileID: 2141856234}
   m_Layer: 0
   m_Name: Cylinder (21)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43142,7 +43142,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -43220,7 +43220,7 @@ GameObject:
   - component: {fileID: 2144927475}
   m_Layer: 0
   m_Name: Cylinder (22)
-  m_TagString: Untagged
+  m_TagString: NoClimb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43258,7 +43258,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
