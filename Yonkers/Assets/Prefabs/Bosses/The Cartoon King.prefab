@@ -88,8 +88,8 @@ MonoBehaviour:
   smallProjectile: {fileID: 9133834467076832970, guid: 4d6f4ab05182e2345bb62c7d148e969f, type: 3}
   rocketProjectile: {fileID: 4092872357349286730, guid: 9435baced05241d458b9428792789c3d, type: 3}
   sniperProjectile: {fileID: 9133834467076832970, guid: bd6e01dc63834074fb919531903df0e2, type: 3}
-  VLaser: {fileID: 0}
-  HLaser: {fileID: 0}
+  VLaser: {fileID: 1344606138491272966, guid: 29f069bb1e297a845b0748f7460ba7e7, type: 3}
+  HLaser: {fileID: 7642645796179592302, guid: af3262486c6d7e843a76fa5a12aab16c, type: 3}
   Health: 50
   baseMoveSpeed: 5
   turningSpeed: 20
