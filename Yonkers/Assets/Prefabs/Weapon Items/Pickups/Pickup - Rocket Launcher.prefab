@@ -279,6 +279,8 @@ MonoBehaviour:
   stopThreshold: 0.01
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!33 &8324665897948621742
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -351,6 +353,7 @@ MonoBehaviour:
   gun: {fileID: 11400000, guid: 815eb8f6ad637c64ea4b9e75e5b6a28d, type: 2}
   ammoAmount: 0
   healingAmount: 1
+  rotation: {x: 0, y: 0, z: 100}
 --- !u!65 &2647237751441738725
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -384,7 +387,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: d47e6ed162da1f740ad807d00f4679f3, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

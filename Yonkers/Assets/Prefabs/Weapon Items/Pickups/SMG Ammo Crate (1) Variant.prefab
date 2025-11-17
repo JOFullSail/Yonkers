@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Resource
       value: 
       objectReference: {fileID: 8300000, guid: 9930d5b4be15bb04c9d0a6fa0d7e6b2e, type: 3}
+    - target: {fileID: -4070368544397487681, guid: e1024daa375f0884b894eb9a92d609d8, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8530755518147922094, guid: e1024daa375f0884b894eb9a92d609d8, type: 3}
       propertyPath: m_Name
       value: SMG Ammo Crate (1) Variant

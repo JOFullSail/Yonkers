@@ -398,7 +398,6 @@ MonoBehaviour:
   debugFastClimb: 0
   debugClimbSpeed: 100
   aud: {fileID: 8840923805221367906}
-  audClimbSource: {fileID: 0}
   audJump:
   - {fileID: 8300000, guid: d1569ab251136574096e3dd6c7b77f4e, type: 3}
   - {fileID: 8300000, guid: d55e0deb0b0325a45abd341779a1d206, type: 3}
@@ -463,10 +462,10 @@ MonoBehaviour:
   audRockStepsVol: 1
   audDash:
   - {fileID: 8300000, guid: 993fb6dd45c546d4093807ed7ebd8556, type: 3}
-  audDashVol: 0.1
+  audDashVol: 1
   audSpawn:
-  - {fileID: 8300000, guid: e56905493899fe44e9e6122d7ba02a22, type: 3}
-  audSpawnVol: 0.1
+  - {fileID: 8300000, guid: 6b7dceaee6092bb4d8db21f821387f08, type: 3}
+  audSpawnVol: 0.078
   audGun:
   - {fileID: 8300000, guid: dd22e7d230c0d1143984c2daef557181, type: 3}
   audGunVol: 0.5
