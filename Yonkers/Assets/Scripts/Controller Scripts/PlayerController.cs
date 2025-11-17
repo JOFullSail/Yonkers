@@ -574,7 +574,7 @@ void jumpCheck()
                  isAboveMinSlope &&
                  isBelowMaxSlope &&
                  isAboveMinDiff &&
-                 notSameWall && climbTimeLeft && gravityOn) //||
+                 notSameWall && climbTimeLeft && gravityOn)) //||
                 //debugClimbAnything && canBeClimbed && isFallOrClimb) // For debugClimbAnything.
 
             {
@@ -1752,23 +1752,23 @@ void jumpCheck()
         isPlayingSteps = true;
         if (currentFootsteptag == "Grass")
         {
-            aud.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol); 
+            sfxAudioSource.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol); 
         }
         else if (currentFootsteptag == "Metal")
         {
-            aud.PlayOneShot(audMetalSteps[Random.Range(0, audMetalSteps.Length)], audMetalStepsVol);
+            sfxAudioSource.PlayOneShot(audMetalSteps[Random.Range(0, audMetalSteps.Length)], audMetalStepsVol);
         }
         else if (currentFootsteptag == "Royal")
         {
-            aud.PlayOneShot(audRoyalSteps[Random.Range(0, audRoyalSteps.Length)], audRoyalStepsVol);
+            sfxAudioSource.PlayOneShot(audRoyalSteps[Random.Range(0, audRoyalSteps.Length)], audRoyalStepsVol);
         }
         else if (currentFootsteptag == "Stone")
         {
-            aud.PlayOneShot(audStoneSteps[Random.Range(0, audStoneSteps.Length)], audStoneStepsVol);
+            sfxAudioSource.PlayOneShot(audStoneSteps[Random.Range(0, audStoneSteps.Length)], audStoneStepsVol);
         }
         else if (currentFootsteptag == "Rock")
         {
-            aud.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
+            sfxAudioSource.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
         }
 
             yield return new WaitForSeconds(0.3f);
@@ -1784,7 +1784,6 @@ void jumpCheck()
         if (gunList.Count > 0)
         {
             GameManager.instance.ammoCurrent.text = gunList[gunListIdx].ammoCurrent.ToString("F0");
-            GameManager.instance.ammoMax.text = gunList[gunListIdx].ammoMax.ToString("F0");
             GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
         }
     }
