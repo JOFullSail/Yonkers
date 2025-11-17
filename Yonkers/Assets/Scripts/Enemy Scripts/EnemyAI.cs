@@ -497,7 +497,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
         }
 
         if(deathVFX != null)
-            Instantiate(deathVFX, transform.position, Quaternion.identity);
+            Instantiate(deathVFX, headPos.transform.position, Quaternion.identity);
 
         if (LevelManager.instance != null)
         {

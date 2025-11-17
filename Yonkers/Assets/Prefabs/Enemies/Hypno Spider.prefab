@@ -223,7 +223,7 @@ MonoBehaviour:
   hurtSounds:
   - {fileID: 8300000, guid: 0fc5ab88661c7b744ab1e1a6b1b0b9b3, type: 3}
   deathSounds: []
-  deathVFX: {fileID: 0}
+  deathVFX: {fileID: 8254294199374504725, guid: da67c3745d168eb47a3c86221c2241f3, type: 3}
   agent: {fileID: 3981789303955867700}
   headPos: {fileID: 3992167685438754288}
   scoreValue: 10

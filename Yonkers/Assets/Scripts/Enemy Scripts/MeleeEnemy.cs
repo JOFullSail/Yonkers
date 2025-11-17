@@ -19,6 +19,7 @@ public class MeleeEnemy : EnemyAI
     [SerializeField] AudioSource audEn;
     [SerializeField] AudioClip[] audPunch;
     [Range(0, 1)][SerializeField] float audPunchVol;
+    [SerializeField] TrailRenderer[] dashTrails;
 
     //bool collide;
     //bool attackRange;
@@ -33,6 +34,11 @@ public class MeleeEnemy : EnemyAI
     Vector3 newPushPosition;
     Vector3 dir;
 
+    private void Awake()
+    {
+        foreach (TrailRenderer trail in dashTrails)
+            trail.emitting = false;
+    }
     void Update()
     {
         if(playerDetected)
@@ -69,6 +75,8 @@ public class MeleeEnemy : EnemyAI
 
             if (transform.position == Vector3.Lerp(transform.position, newPushPosition, Time.deltaTime * dashSpeed) || punched == true)
             {
+                foreach (TrailRenderer trail in dashTrails)
+                    trail.emitting = false;
                 punched = false;
                 findingLocal = false;
                 attackTimer = 0;
@@ -115,6 +123,8 @@ public class MeleeEnemy : EnemyAI
         {
             if (detected.collider.CompareTag("Player"))
             {
+                foreach (TrailRenderer trail in dashTrails)
+                    trail.emitting = true;
                 dir = transform.forward;
                 newPushPosition = new Vector3(GameManager.instance.player.transform.position.x, transform.position.y, GameManager.instance.player.transform.position.z);
                 Debug.Log("Player Dectected");
@@ -123,8 +133,6 @@ public class MeleeEnemy : EnemyAI
 
         }
     }
-    
-  
 
 }
     

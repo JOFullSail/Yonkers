@@ -3262,7 +3262,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d80bfb5fa6d00cf4ba537f3ef8b3dae2, type: 3}
   deathSounds:
   - {fileID: 8300000, guid: 68f213a6c2a775449b5f12c4e1b521eb, type: 3}
-  deathVFX: {fileID: 0}
+  deathVFX: {fileID: 8254294199374504725, guid: da67c3745d168eb47a3c86221c2241f3, type: 3}
   agent: {fileID: 6456011656992140077}
   headPos: {fileID: 3974673184807614363}
   scoreValue: 1
@@ -3304,7 +3304,7 @@ MonoBehaviour:
   - {fileID: 7918543732800023669, guid: 264417cb36901594093c7e399225055e, type: 3}
   - {fileID: 6540378563019534485, guid: 544a7c53fcc0e1d48be83c8a1a86dd90, type: 3}
   itemTransformChance: 0
-  transformVFX: {fileID: 0}
+  transformVFX: {fileID: 8254294199374504725, guid: da67c3745d168eb47a3c86221c2241f3, type: 3}
   transformAnimationLength: 0.708
 --- !u!82 &6923288363062709507
 AudioSource:
