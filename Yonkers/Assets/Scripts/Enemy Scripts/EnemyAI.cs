@@ -460,7 +460,6 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
             baseMoveSpeed = newSpeed;
             agent.speed = newSpeed;
         }
-        else
             //Debug.Log("Tried to set new move speed for " + gameObject + ", but it is set as not being allowed to move.");
     }
 
@@ -468,7 +467,6 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     {
         if (canMove)
             agent.speed += speedModifier;
-        else
             //Debug.Log("Tried to increment move speed for " + gameObject + ", but it is set as not being allowed to move.");
     }
 

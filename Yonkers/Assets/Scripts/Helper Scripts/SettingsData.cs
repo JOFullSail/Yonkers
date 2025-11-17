@@ -11,7 +11,7 @@ public class SettingsData : MonoBehaviour
     public float FOV = 70f;
     public float mouSens = 500f;
 	public float brightness = 50f;
-    
+
     [Header("Developer Settings")]
     public int FOVMin = 30;
     public int FOVMax = 100;

@@ -38,8 +38,8 @@ public class ActivationSwitch : MonoBehaviour, IActivate
         
         if (!parentScript)
         { 
-            Debug.LogWarning("Parent Script not found. Please attach the ActivationEvent parent script of this " +
-                           "activation switch object."); 
+            //Debug.LogWarning("Parent Script not found. Please attach the ActivationEvent parent script of this " +
+                           //"activation switch object."); 
             enabled = false; 
             return;
         }
@@ -50,7 +50,7 @@ public class ActivationSwitch : MonoBehaviour, IActivate
         //}
         //else if (coloredObjects.Count == 0)
         //{
-        //    Debug.LogWarning("No Objects attached to the \"Colored Objects\" list. Please attach at least one.");
+        //    //Debug.LogWarning("No Objects attached to the \"Colored Objects\" list. Please attach at least one.");
         //}
     }
 

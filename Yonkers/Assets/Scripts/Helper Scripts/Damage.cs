@@ -79,12 +79,11 @@ public class Damage : MonoBehaviour
                 
                 if (expl != null)
                     expl.TriggerExplosion(transform.position, splashDamageAmount);
-                else
-                    Debug.LogWarning("Explosion prefab does not contain an Explosion component.");
+                    //Debug.LogWarning("Explosion prefab does not contain an Explosion component.");
             }
             else if(isExplosive && explosionPrefab == null)
             {
-                Debug.LogWarning(gameObject.name + " is set as being explosive but it doesn't have an explosive prefab assigned.");
+                //Debug.LogWarning(gameObject.name + " is set as being explosive but it doesn't have an explosive prefab assigned.");
             }   
             
             if (dmg != null)

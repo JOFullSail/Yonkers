@@ -189,6 +189,8 @@ MonoBehaviour:
   stopThreshold: 0.01
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!114 &6925192763808612291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,6 +287,8 @@ MonoBehaviour:
   stopThreshold: 0.01
   rotateTowardsPath: 0
   rotationSpeed: 5
+  UseActivate: 0
+  conditions: []
 --- !u!65 &8177324590483581995
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -318,7 +322,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 6dd7024f00606b44eb5884197a66a893, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

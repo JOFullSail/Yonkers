@@ -1,5 +1,4 @@
-using Mono.Cecil.Cil;
-using NUnit.Framework;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -369,7 +368,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetString(SaveKey, encoded);
         PlayerPrefs.Save();
 
-        Debug.Log($"Game saved");
+        //Debug.Log($"Game saved");
     }
 
     /// <summary>
@@ -379,7 +378,7 @@ public class GameManager : MonoBehaviour
     {
         if (!PlayerPrefs.HasKey(SaveKey))
         {
-            Debug.Log("No save data found.");
+            //Debug.Log("No save data found.");
             return false;
         }
 
@@ -410,7 +409,7 @@ public class GameManager : MonoBehaviour
                         gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
                         if (gun == null)
                         {
-                            Debug.LogWarning($"Gun '{g.gunName}' not found in database!");
+                            //Debug.LogWarning($"Gun '{g.gunName}' not found in database!");
                             continue;
                         }
                         gun.ammoCurrent = g.Maxammo;
@@ -423,12 +422,12 @@ public class GameManager : MonoBehaviour
             }
             playerScript.updatePlayerUI();
 
-            Debug.Log($"Loaded in!");
+            //Debug.Log($"Loaded in!");
             return true;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Debug.LogWarning("Load failed: " + e.Message);
+            //Debug.LogWarning("Load failed: " + e.Message);
             return false;
         }
     }
@@ -440,7 +439,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.DeleteKey(SaveKey);
         PlayerPrefs.Save();
-        Debug.Log("Save data cleared.");
+        //Debug.Log("Save data cleared.");
     }
 
     /// <summary>
@@ -465,7 +464,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetString(ProgressKey, encodedP);
         PlayerPrefs.Save();
 
-        Debug.Log("Progress saved.");
+        //Debug.Log("Progress saved.");
     }
 
     /// <summary>
@@ -535,7 +534,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Progress loaded.");
+        //Debug.Log("Progress loaded.");
     }
 
     public void ResetLevelSelectUI()
@@ -576,7 +575,7 @@ public class GameManager : MonoBehaviour
 
         ResetLevelSelectUI();
 
-        Debug.Log("Progress reset.");
+        //Debug.Log("Progress reset.");
     }
 
     /// <summary>
@@ -599,7 +598,7 @@ public class GameManager : MonoBehaviour
             });
         }
 
-        Debug.Log("Player state saved to memory for scene transition.");
+        ////Debug.Log("Player state saved to memory for scene transition.");
     }
 
     /// <summary>
@@ -609,7 +608,7 @@ public class GameManager : MonoBehaviour
     {
         if (playerScript == null)
         {
-            Debug.Log("No memory data to load.");
+            //Debug.Log("No memory data to load.");
             return;
         }
 
@@ -638,7 +637,7 @@ public class GameManager : MonoBehaviour
         currentlevelManager = lvlManagerObj.GetComponent<LevelManager>(); 
         playerScript.updatePlayerUI();
 
-        Debug.Log("Player state restored from memory after scene load.");
+        //Debug.Log("Player state restored from memory after scene load.");
     }
 
     private void OnEnable()
@@ -665,7 +664,7 @@ public class GameManager : MonoBehaviour
 
         isReloadingScene = true;
 
-        Debug.Log($"OnSceneLoaded: {scene.name}");
+        //Debug.Log($"OnSceneLoaded: {scene.name}");
 
         if (scene.name.Contains("Menu"))
             PlayMenuMusic();
@@ -717,7 +716,7 @@ public class GameManager : MonoBehaviour
 
         playerScript.updatePlayerUI();
 
-        Debug.Log("Respawned at last checkpoint.");
+        //Debug.Log("Respawned at last checkpoint.");
     }
 
     /// <summary>
@@ -769,7 +768,7 @@ public class GameManager : MonoBehaviour
         GameObject uiRoot = GameObject.Find("UI");
         if (uiRoot == null)
         {
-            Debug.LogWarning("No UI object found in scene.");
+            //Debug.LogWarning("No UI object found in scene.");
             return;
         }
         uiRoot.name = "UIA";
@@ -852,7 +851,7 @@ public class GameManager : MonoBehaviour
             menuActive.SetActive(true);
             OpenMainMenu = false;
         }
-        Debug.Log("UI linked.");
+        //Debug.Log("UI linked.");
     }
 
     /// <summary>
@@ -892,7 +891,7 @@ public class GameManager : MonoBehaviour
         if (playerScript != null)
             playerScript.updatePlayerUI();
 
-        Debug.Log($"Scene '{scene.name}' initialized.");
+        //Debug.Log($"Scene '{scene.name}' initialized.");
         isReloadingScene = false;
 
         isPaused = false;
@@ -1017,7 +1016,7 @@ public class GameManager : MonoBehaviour
         LevelnameLC.text = levelName;
         UpdateLevelSelect(levelName, score, grade);
 
-        Debug.Log((char)levelGrades[levelName] + " rank recorded for " + levelName);
+        //Debug.Log((char)levelGrades[levelName] + " rank recorded for " + levelName);
     }
 
     /// <summary>
@@ -1066,7 +1065,7 @@ public class GameManager : MonoBehaviour
         {
             string nextLevel = levelOrder[currentIndex + 1];
             unlockedLevels.Add(nextLevel);
-            Debug.Log($"Unlocked {nextLevel}");
+            //Debug.Log($"Unlocked {nextLevel}");
         }
     }
 
@@ -1087,7 +1086,7 @@ public class GameManager : MonoBehaviour
         finalGrade = GetFinalGrade();
         WinGradetxt.colorGradientPreset = GradientGetter(finalGrade);
         WinGradeImg.sprite = GradeImageGetter(finalGrade);
-        Debug.Log("Final Grade is " + finalGrade);
+        //Debug.Log("Final Grade is " + finalGrade);
         stateWin();
     }
 
