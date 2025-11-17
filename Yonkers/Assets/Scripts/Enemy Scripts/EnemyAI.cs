@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
 using System.Linq;
+using UnityEngine.UI;
 
 public class EnemyAI : MonoBehaviour, IDamage, IPushback
 {
@@ -126,6 +127,13 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     protected float attackDelayTimer;
     protected float stoppingDistanceOrig;
     protected float originalMoveSpeed;
+    public GameObject damageNumberPopup;
+    [SerializeField] GameObject healthBar;
+    private int maxHP;
+    private GameObject healthBarInstance;
+    private Image healthFill;
+    [SerializeField] Vector3 healthBarOffset = new Vector3(0, 2f, 0);
+    [SerializeField] Vector3 damageNumberOffset = new Vector3(0, 2.5f, 0);
 
     bool saidDetectionVO = false;
     float combatLineCooldown;
@@ -133,6 +141,16 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        maxHP = HP;
+        if (healthBar != null)
+        {
+            healthBarInstance = Instantiate(healthBar, transform);
+            healthBarInstance.transform.localPosition = healthBarOffset;
+            healthFill = healthBarInstance.transform.Find("Background/Fill").GetComponent<Image>();
+
+            healthBarInstance.SetActive(false);
+        }
+
         if (LevelManager.instance != null)
             LevelManager.instance.EnemyCount++;
 
@@ -298,6 +316,9 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     {
         bool damageTaken = checkDamage(amount);
 
+        float pct = (float)HP / maxHP;
+        healthFill.fillAmount = pct;
+
         if (canMove && approachWhenShot) agent.SetDestination(GameManager.instance.player.transform.position);
 
         if (HP <= 0)
@@ -329,6 +350,13 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
         {
             if (firstTimeMet && initialAttackDelay <= 0.0f || !firstTimeMet && attackDelayTimer <= 0.0f)
             {
+                Vector3 spawn = transform.position + damageNumberOffset;
+                GameObject dam = Instantiate(damageNumberPopup, spawn, Quaternion.identity);
+                dam.GetComponent<DamageNumber>().Initialize(amount);
+
+                if (!healthBarInstance.activeSelf)
+                    healthBarInstance.SetActive(true);
+
                 HP -= amount;
                 return true;
             }
@@ -340,6 +368,12 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
             return false;
         }
 
+        Vector3 spawnPos = transform.position + damageNumberOffset;
+        GameObject dmg = Instantiate(damageNumberPopup, spawnPos, Quaternion.identity);
+        dmg.GetComponent<DamageNumber>().Initialize(amount);
+
+        if (!healthBarInstance.activeSelf)
+            healthBarInstance.SetActive(true);
         HP -= amount;
         return true;
     }
@@ -410,7 +444,6 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
         playerDetected = false;
         return playerDetected;
     }
-
     void faceTarget()
     {
         if (canRotate)
