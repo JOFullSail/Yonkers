@@ -174,6 +174,7 @@ GameObject:
   - component: {fileID: 8612389198301724628}
   - component: {fileID: 3981789303955867700}
   - component: {fileID: 5649571228086069252}
+  - component: {fileID: 215084842611481073}
   m_Layer: 6
   m_Name: Hypno Spider
   m_TagString: Untagged
@@ -212,14 +213,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   model: {fileID: 1294963182037875106}
   animator: {fileID: 7372419815083497210}
+  voiceSoundSource: {fileID: 5649571228086069252}
+  ambientVoicelines:
+  - {fileID: 8300000, guid: f9a800c567fd84d42bdf5d0bfa894744, type: 3}
+  playerDetectedVoicelines:
+  - {fileID: 8300000, guid: e91ba37ffffaed74baba32c623b7287d, type: 3}
+  combatVoicelines: []
+  timeBetweenCombatLines: 10
+  hurtSounds:
+  - {fileID: 8300000, guid: 0fc5ab88661c7b744ab1e1a6b1b0b9b3, type: 3}
+  deathSounds: []
+  deathVFX: {fileID: 8254294199374504725, guid: da67c3745d168eb47a3c86221c2241f3, type: 3}
   agent: {fileID: 3981789303955867700}
   headPos: {fileID: 3992167685438754288}
+  scoreValue: 10
   HP: 2
   FOV: 180
   baseMoveSpeed: 5
   canMove: 1
   canRotate: 1
-  canRoam: 0
+  canRoam: 1
   alwaysRoaming: 0
   randomizeRoamTime: 0
   facingWhileRoaming: 0
@@ -227,7 +240,6 @@ MonoBehaviour:
   damageWhenDelayed: 0
   damageWhenUndetected: 1
   enragesWhenDamaged: 0
-  explodesOnDeath: 0
   faceTargetSpeed: 5
   stoppingDistance: 10
   roamDist: 0
@@ -237,15 +249,20 @@ MonoBehaviour:
   initialAttackDelay: 1
   attackDelay: 1
   enrageSpeedIncrease: 0
+  explodesOnDeath: 0
   explosionPrefab: {fileID: 0}
   explosionDamage: 0
+  canDropItems: 0
+  possibleItemDrops: []
+  dropChance: 0
   room: {fileID: 0}
   projectile: {fileID: 514888559151170932, guid: bf99017845bcfcd4f9652a1651e9a87b, type: 3}
+  projectileModel: {fileID: 0}
   shootPos: {fileID: 3992167685438754288}
   delayBetweenShots: 2
-  audEn: {fileID: 5649571228086069252}
-  audShoot: []
-  audShootVol: 0
+  shootSoundSource: {fileID: 215084842611481073}
+  audShoot:
+  - {fileID: 8300000, guid: 78d8105f511cf2840830448feff11caf, type: 3}
 --- !u!95 &7372419815083497210
 Animator:
   serializedVersion: 7
@@ -341,7 +358,7 @@ AudioSource:
   m_GameObject: {fileID: 1531794340347013894}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8079503862453138035, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -389,7 +406,104 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
+      value: 0.607
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
       value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &215084842611481073
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1531794340347013894}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 4399841145372431200, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.607
       inSlope: 0
       outSlope: 0
       tangentMode: 0

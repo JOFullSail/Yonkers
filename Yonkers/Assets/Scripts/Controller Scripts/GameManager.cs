@@ -196,11 +196,13 @@ public class GameManager : MonoBehaviour
             instance.currScene = SceneManager.GetActiveScene();
             GetUI();
             levelOrder.Clear();
-            for (int i = 2; i < SceneManager.sceneCountInBuildSettings; i++)
+            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
             {
                 string path = SceneUtility.GetScenePathByBuildIndex(i);
                 string name = System.IO.Path.GetFileNameWithoutExtension(path);
-                levelOrder.Add(name);
+
+                if (name.StartsWith("Level"))
+                    levelOrder.Add(name);
             }
             LoadProgression();
             if (currScene.name != "Main Menu Scene First Open")
@@ -475,6 +477,8 @@ public class GameManager : MonoBehaviour
         if (!PlayerPrefs.HasKey(ProgressKey))
         {
             unlockedLevels.Clear();
+            levelScores.Clear();
+            levelGrades.Clear();
             if (levelOrder.Count > 0)
                 unlockedLevels.Add(levelOrder[0]); 
             return;
@@ -491,41 +495,68 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < data.levelNames.Count; i++)
         {
             string name = data.levelNames[i];
-            levelScores[name] = data.levelScores[i];
-            levelGrades[name] = data.levelGrades[i];
-            if (i == 0)
+            int score = data.levelScores[i];
+            char grade = (char)data.levelGrades[i];
+
+            levelScores[name] = score;
+            levelGrades[name] = grade;
+
+            int uiIndex = levelOrder.IndexOf(name);
+
+            if (uiIndex == 0)
             {
-                ScoreLVL1.text = data.levelScores[i].ToString();
-                GradeLVL1.sprite = GradeImageGetter((char)data.levelGrades[i]);
+                ScoreLVL1.text = score.ToString();
+                GradeLVL1.sprite = GradeImageGetter(grade);
             }
-            else if (i == 1)
+            else if (uiIndex == 1)
             {
-                ScoreLVL2.text = data.levelScores[i].ToString();
-                GradeLVL2.sprite = GradeImageGetter((char)data.levelGrades[i]);
+                ScoreLVL2.text = score.ToString();
+                GradeLVL2.sprite = GradeImageGetter(grade);
             }
-            else if (i == 2)
+            else if (uiIndex == 2)
             {
-                ScoreLVL3.text = data.levelScores[i].ToString();
-                GradeLVL3.sprite = GradeImageGetter((char)data.levelGrades[i]);
+                ScoreLVL3.text = score.ToString();
+                GradeLVL3.sprite = GradeImageGetter(grade);
             }
-            else if (i == 3)
+            else if (uiIndex == 3)
             {
-                ScoreLVL4.text = data.levelScores[i].ToString();
-                GradeLVL4.sprite = GradeImageGetter((char)data.levelGrades[i]);
+                ScoreLVL4.text = score.ToString();
+                GradeLVL4.sprite = GradeImageGetter(grade);
             }
-            else if (i == 4)
+            else if (uiIndex == 4)
             {
-                ScoreLVL5.text = data.levelScores[i].ToString();
-                GradeLVL5.sprite = GradeImageGetter((char)data.levelGrades[i]);
+                ScoreLVL5.text = score.ToString();
+                GradeLVL5.sprite = GradeImageGetter(grade);
             }
-            else if (i == 5)
+            else if (uiIndex == 5)
             {
-                ScoreLVL6.text = data.levelScores[i].ToString();
-                GradeLVL6.sprite = GradeImageGetter((char)data.levelGrades[i]);
+                ScoreLVL6.text = score.ToString();
+                GradeLVL6.sprite = GradeImageGetter(grade);
             }
         }
 
         Debug.Log("Progress loaded.");
+    }
+
+    public void ResetLevelSelectUI()
+    {
+        ScoreLVL1.text = "0000000";
+        GradeLVL1.sprite = gradeiconUn;
+
+        ScoreLVL2.text = "00000000";
+        GradeLVL2.sprite = gradeiconUn;
+
+        ScoreLVL3.text = "00000000";
+        GradeLVL3.sprite = gradeiconUn;
+
+        ScoreLVL4.text = "00000000";
+        GradeLVL4.sprite = gradeiconUn;
+
+        ScoreLVL5.text = "00000000";
+        GradeLVL5.sprite = gradeiconUn;
+
+        ScoreLVL6.text = "00000000";
+        GradeLVL6.sprite = gradeiconUn;
     }
 
     /// <summary>
@@ -542,6 +573,8 @@ public class GameManager : MonoBehaviour
 
         if (levelOrder.Count > 0)
             unlockedLevels.Add(levelOrder[0]);
+
+        ResetLevelSelectUI();
 
         Debug.Log("Progress reset.");
     }
@@ -992,13 +1025,17 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public char GetFinalGrade()
     {
-        int avg = (int)levelGrades.Values.Average();
+        if (levelGrades.Count > 0)
+        {
+            int avg = (int)levelGrades.Values.Average();
 
-        if (avg >= 'S') return 'S';
-        else if (avg >= 'A') return 'A';
-        else if (avg >= 'B') return 'B';
-        else if (avg >= 'C') return 'C';
-        else return 'D';
+            if (avg >= 'S') return 'S';
+            else if (avg >= 'A') return 'A';
+            else if (avg >= 'B') return 'B';
+            else if (avg >= 'C') return 'C';
+            else return 'D';
+        }
+        return 'F';
     }
 
     /// <summary>
@@ -1075,11 +1112,12 @@ public class GameManager : MonoBehaviour
 
         musicSource.clip = levelMusic;
         musicSource.loop = true;
+        musicSource.volume = LevelManager.instance.levelMusicVol;
         musicSource.Play();
     }
     public void levelLocks() //used to keep track of locked and unlocked levels 
     {
-        int index = 2;
+        int index = 1;
         int maxIndex = levelOrder.Count() - 1;
         if (!IsLevelUnlocked(levelOrder[index]))
         {
@@ -1153,6 +1191,14 @@ public class GameManager : MonoBehaviour
             submenuLockedlevel5.SetActive(false);
             submenuUnlockedlevel5button.SetActive(true);
             submenuUnlockedlevel5stats.SetActive(true);
+        }
+        if (index < maxIndex)
+        {
+            index++;
+        }
+        else
+        {
+            return;
         }
         if (!IsLevelUnlocked(levelOrder[index]))
         {

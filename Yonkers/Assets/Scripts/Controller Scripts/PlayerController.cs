@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreShooting;
     [SerializeField] LayerMask ignoreClimbing;
+    [SerializeField] LayerMask ignorefeetNorm;
+    [SerializeField] LayerMask ignorefeetInvinc; 
 
     [Header("General")]
     [SerializeField] int HP = 10;
@@ -75,6 +77,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float dashSpeed;
     [SerializeField] float dashLength; //How long dash lasts.
     [SerializeField] float dashCooldown;
+    [SerializeField] GameObject dashFX;
+    [SerializeField] TrailRenderer[] dashTrails;
 
     [Header("Forces")]
     [SerializeField] int gravity = 35;
@@ -106,8 +110,16 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [Range(0, 1)][SerializeField] float audClimbVol;
     [SerializeField] AudioClip[] audHurt;
     [Range(0, 1)][SerializeField] float audHurtVol;
-    [SerializeField] AudioClip[] audSteps;
-    [Range(0, 1)][SerializeField] float audStepsVol;
+    [SerializeField] AudioClip[] audMetalSteps;
+    [Range(0, 1)][SerializeField] float audMetalStepsVol;
+    [SerializeField] AudioClip[] audGrassSteps;
+    [Range(0, 1)][SerializeField] float audGrassStepsVol;
+    [SerializeField] AudioClip[] audRoyalSteps;
+    [Range(0, 1)][SerializeField] float audRoyalStepsVol;
+    [SerializeField] AudioClip[] audStoneSteps; //more solid sounding
+    [Range(0, 1)][SerializeField] float audStoneStepsVol;
+    [SerializeField] AudioClip[] audRockSteps; //Rock is more loose sounding
+    [Range(0, 1)][SerializeField] float audRockStepsVol;
     [SerializeField] AudioClip[] audDash;
     [Range(0, 1)][SerializeField] float audDashVol;
     [SerializeField] AudioClip[] audSpawn;
@@ -120,6 +132,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     int gunListIdx;
     int jumpCount;
     int hpOrig = 4;
+    public int footchecklength;
     //bools
     bool isDashing;
     bool isClimbing;
@@ -196,6 +209,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool climbTimeLeft;
     int noClimbLayers;
     string noClimbTag;
+    string currentFootsteptag;
+    
     float newWallHeight = 0f;
     
     Renderer highlightWall;
@@ -337,10 +352,13 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     // Update is called once per frame
     void Update()
     {
+        foreach (TrailRenderer trail in dashTrails)
+            trail.emitting = isDashing;
         // Debug Ray Displays
         //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbHighlightDetection, Color.green);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDistance, Color.blue);
+        Debug.DrawRay(gameObject.transform.position, (-gameObject.transform.up) * footchecklength, Color.yellow);
 
         if (!GameManager.instance.isPaused)
         {
@@ -353,6 +371,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void playerMovement()
     {
         _Invincibility_();
+        footcheck();
         knockbackMovement();
         Frozen(); //checking if you're frozen
         if (frozenOn == false) // long as you're not frozen you can do all your usual movement
@@ -416,7 +435,29 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             yield return null;
         }
     }
-
+    void footcheck()
+    {
+        if(gameObject.layer == 3)
+        {
+            if((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetNorm))){
+                if (hit.collider.gameObject.tag == "Grass" || hit.collider.gameObject.tag == "Metal" || hit.collider.gameObject.tag == "Stone" || hit.collider.gameObject.tag == "Royal" || hit.collider.gameObject.tag == "Rock")
+                { 
+                    currentFootsteptag = hit.collider.tag;
+                }
+            }
+        }
+        else if(gameObject.layer ==11)
+        {
+            if ((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetInvinc)))
+            {
+                if (hit.collider.tag == "Grass" || hit.collider.tag == "Metal" || hit.collider.tag == "Stone" || hit.collider.tag == "Royal" || hit.collider.tag == "Rock")
+                {
+                    currentFootsteptag = hit.collider.tag;
+                }
+            }
+        }
+        
+    }
     void climb()
     {
         bool canClimb = false;
@@ -1270,6 +1311,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     currentDashSpeedZ = dashSpeed;
                 }
+                Instantiate(dashFX, transform.position, transform.rotation);
                 aud.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
                 StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
             }
@@ -1585,9 +1627,28 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     IEnumerator playStep()
     {
         isPlayingSteps = true;
-        aud.PlayOneShot(audSteps[Random.Range(0, audSteps.Length)], audStepsVol);
+        if (currentFootsteptag == "Grass")
+        {
+            aud.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol); 
+        }
+        else if (currentFootsteptag == "Metal")
+        {
+            aud.PlayOneShot(audMetalSteps[Random.Range(0, audMetalSteps.Length)], audMetalStepsVol);
+        }
+        else if (currentFootsteptag == "Royal")
+        {
+            aud.PlayOneShot(audRoyalSteps[Random.Range(0, audRoyalSteps.Length)], audRoyalStepsVol);
+        }
+        else if (currentFootsteptag == "Stone")
+        {
+            aud.PlayOneShot(audStoneSteps[Random.Range(0, audStoneSteps.Length)], audStoneStepsVol);
+        }
+        else if (currentFootsteptag == "Rock")
+        {
+            aud.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
+        }
 
-        yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.3f);
 
         isPlayingSteps = false;
     }
@@ -1611,6 +1672,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
         }
     }
+ 
 }
 
 
