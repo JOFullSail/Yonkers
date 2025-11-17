@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using TMPro;
 using UnityEngine;
 
 enum PickupType
@@ -22,9 +23,10 @@ public class Pickup : MonoBehaviour
     [Header("For Health Pickups")]
     [SerializeField] int healingAmount = 1;
 
-    Vector3 rotation = new Vector3(0, 0, 100);
+    public Vector3 rotation = new Vector3(0, 0, 100);
 
     private bool wasConsumed = false;
+    private bool sameGunCheck = false;
     private void OnTriggerEnter(Collider other)
     {
         IPickup pickup = other.GetComponent<IPickup>();
@@ -36,8 +38,20 @@ public class Pickup : MonoBehaviour
                 case PickupType.Gun:
                     if (gun != null)
                     {
-                        gun.ammoCurrent = gun.ammoMax;
-                        pickup.GetGunStats(gun);
+                        for (int indx = 0; indx < GameManager.instance.playerScript.GunList.Count; indx++)
+                        {
+                            if (gun.name == GameManager.instance.playerScript.GunList[indx].name)
+                            {
+                                GameManager.instance.playerScript.GunList[indx].ammoReserves = GameManager.instance.playerScript.GunList[indx].maxAmmoReserves;
+                                GameManager.instance.playerScript.GunList[indx].ammoCurrent = GameManager.instance.playerScript.GunList[indx].maxAmmoReserves;
+                                sameGunCheck = true;
+                            }
+                        }
+                        if(sameGunCheck == false)
+                        {
+                            gun.ammoCurrent = gun.ammoMax;
+                            pickup.GetGunStats(gun);
+                        }
                         wasConsumed = true;
                     }
                     break;

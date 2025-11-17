@@ -9,20 +9,45 @@ public class ButtonFunctions : MonoBehaviour
     public Image FOVSliderParent;
     public Image mouSensSliderParent;
     public Image brightnessSliderParent;
-    
+
     void Start()
     {
-        if(SettingsData.instance != null)
+        if (SettingsData.instance != null)
         {
-            if(GameManager.instance.cam != null)
+            if (GameManager.instance.cam != null)
             {
                 GameManager.instance.cam.fieldOfView = SettingsData.instance.FOV;
             }
-            if(FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
+            if (FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
             {
                 FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOV, SettingsData.instance.FOVMin, SettingsData.instance.FOVMax);
                 mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSens, SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax);
                 brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightness, SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax);
+            }
+        }
+    }
+    private void Update()
+    {
+        if (GameManager.instance.playerScript != null)
+        {
+            float FOVOrig = SettingsData.instance.FOV;
+            if (GameManager.instance.playerScript.IsDashing == true)
+            {
+                GameManager.instance.cam.fieldOfView += 20f * Time.deltaTime;
+            }
+            else
+            {
+                if (GameManager.instance.cam.fieldOfView > FOVOrig)
+                {
+                    if (GameManager.instance.cam.fieldOfView <= FOVOrig)
+                    {
+                        GameManager.instance.cam.fieldOfView = FOVOrig;
+                    }
+                    else
+                    {
+                        GameManager.instance.cam.fieldOfView -= 80f * Time.deltaTime;
+                    }
+                }
             }
         }
     }
@@ -156,6 +181,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.LoadNextLevel("Main Menu Scene");
         GameManager.instance.clearActive();
+        GameManager.instance.LoadProgression();
         GameManager.instance.disablePlayerUI();
         GameManager.instance.backtoMainmenu();
     }
@@ -192,11 +218,29 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
     }
-    //to credits section not added yet
-    //public void toCredits()
-    //{
-
-    //}
+      public void Nextlevel()
+    {
+        if(SceneManager.GetActiveScene().name == "Level 1 - Jorg Plains")
+        {
+            gotoLevel2();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "Level 1 - Yonk Hill")
+        {
+            gotoLevel3();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "Level 2 - Yonk Factory")//ADD NAMES!
+        {
+            gotoLevel4();
+            return;
+        }
+        else if (SceneManager.GetActiveScene().name == "Level 3- The Wall")
+        {
+            gotoLevel5();
+            return;
+        }
+    }
     public void gotoMainmenu()
     {
         
@@ -210,36 +254,31 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
         GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
-        
+
+
     }
     public void gotoLevel2()//head to level 2
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 2- Gold's Springway");
+        GameManager.instance.LoadNextLevel("Level 1 - Yonk Hill");
     }
     public void gotoLevel3()//head to level 3
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 3- The Wall");
+        GameManager.instance.LoadNextLevel("Level 2 - Yonk Factory");
     } 
     public void gotoLevel4()//head to level 4
     {
-        //GameManager.instance.stateUnpause();
-        //GameManager.instance.enablePlayerUI();
-        //GameManager.instance.LoadNextLevel(levelName);
+        GameManager.instance.stateUnpause();
+        GameManager.instance.enablePlayerUI();
+        GameManager.instance.LoadNextLevel("Level 3- The Wall");
     }
     public void gotoLevel5()//head to level 5
     {
-        //GameManager.instance.stateUnpause();
-        //GameManager.instance.enablePlayerUI();
-        //GameManager.instance.LoadNextLevel(levelName);
-    }
-    public void gotoShowcase()//head to Showcase
-    {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Showcase level");
+        GameManager.instance.LoadNextLevel("Level 5- THE FINAL YONK");
     }
 }

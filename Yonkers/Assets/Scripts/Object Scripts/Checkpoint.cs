@@ -31,7 +31,7 @@ public class Checkpoint : MonoBehaviour
     private void Start()
     {
         if (objects.Length > 0) matOrig = objects[0].material;
-        else Debug.LogWarning("Please assign an object to the Objects array in the checkpoint.");
+        //else Debug.LogWarning("Please assign an object to the Objects array in the checkpoint.");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -40,7 +40,7 @@ public class Checkpoint : MonoBehaviour
         {
             hasTriggered = true;
 
-            GameManager.instance.SaveGame(gameObject.name);
+            GameManager.instance.SaveGame();
             if (GameManager.instance.playerSpawn != null)
             {
                 GameManager.instance.playerSpawn.transform.position = spawnPos.transform.position;
@@ -61,7 +61,7 @@ public class Checkpoint : MonoBehaviour
                     }
                 }
             }
-            else Debug.LogWarning("Please assign an object with the \"PlayerSpawn\" tag to use checkpoints.");
+            //else Debug.LogWarning("Please assign an object with the \"PlayerSpawn\" tag to use checkpoints.");
         }
     }
 

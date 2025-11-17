@@ -328,10 +328,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7697304566802767067, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -423,10 +419,6 @@ PrefabInstance:
       propertyPath: MainCamera
       value: 
       objectReference: {fileID: 1865024372}
-    - target: {fileID: 8494790786211921183, guid: 921e41958db311341afd99e127ff3e5c, type: 3}
-      propertyPath: levelMusic
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 8494790786211921183, guid: 921e41958db311341afd99e127ff3e5c, type: 3}
       propertyPath: menuSettings
       value: 

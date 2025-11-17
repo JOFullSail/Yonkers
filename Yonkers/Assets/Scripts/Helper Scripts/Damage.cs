@@ -27,6 +27,8 @@ public class Damage : MonoBehaviour
 
     [SerializeField] GameObject explosionPrefab;
 
+    [SerializeField] bool isBossProjectile;
+
     bool isDamaging;
 
 	// Activation Switches
@@ -39,10 +41,12 @@ public class Damage : MonoBehaviour
         {
             Destroy(gameObject, destroyTime);
 
-            if (type == damageType.moving)
+            if (type == damageType.moving && isBossProjectile)
             {
-                rb.linearVelocity = transform.forward * speed;
+                rb.linearVelocity = (GameManager.instance.player.transform.position - transform.position).normalized * speed;
             }
+            else if (type == damageType.moving)
+                rb.linearVelocity = transform.forward * speed;
         }
 
 		if (LayerMask.NameToLayer("Player Projectile") != -1) isPlayerProjectile = true;

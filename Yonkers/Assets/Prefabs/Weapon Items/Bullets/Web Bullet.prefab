@@ -50,9 +50,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
   Inhibitor: 0
   rb: {fileID: -9141659385074430493}
-  speed: 100
+  speed: 35
   destroytime: 3
-  delay: 1
+  delay: 0
   InhibitDuration: 2
 --- !u!33 &2794668076143764358
 MeshFilter:

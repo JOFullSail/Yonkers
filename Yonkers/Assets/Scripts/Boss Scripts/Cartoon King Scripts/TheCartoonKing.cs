@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using UnityEditor;
+using System.Linq;
+using UnityEngine.UI;
 
 public class TheCartoonKing : MonoBehaviour, IDamage
 {
@@ -15,6 +17,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     //The POV of the enemy:
     [Header("POV of King")]
     [SerializeField] Transform POV;
+    [SerializeField] Animator animator;
     //All the projectiles and game objects used for damaging or knocking back the player:
     [Header("Projectiles and Weapons")]
     [SerializeField] GameObject smallProjectile;
@@ -55,10 +58,50 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     [SerializeField] float laserRate;
     [SerializeField] float laserMax;
 
+    [Header("Audio")]
+    [SerializeField] AudioSource sfxAudioSource;
+    [SerializeField] AudioSource voiceAudioSource;
+    [SerializeField] AudioClip[] bulletVoicelines;
+    [SerializeField] AudioClip[] rocketVoicelines;
+    [SerializeField] AudioClip[] sniperVoicelines;
+    [SerializeField] AudioClip[] laserVoicelines;
+    [SerializeField] AudioClip[] dashWindupSounds;
+    [SerializeField] AudioClip[] dashAttackSounds;
+    [SerializeField] AudioClip[] punchImpactSounds;
+    [SerializeField] AudioClip[] hurtSounds;
+    [SerializeField] AudioClip deathSound;
+    [SerializeField] AudioClip entryMonologue;
+    [SerializeField] AudioClip battleStartSound;
+
+    [Header("Misc")]
+    [Tooltip("How long the game will wait in seconds after the boss dies before triggering the Win State")]
+    [SerializeField] int afterDeathTimer = 10;
+    [SerializeField] Collider collisionBox;
+    [SerializeField] Texture2D neutralFace;
+    [SerializeField] Texture2D angryFace;
+    [SerializeField] Texture2D hurtFace;
+    [SerializeField] Texture2D deadFace;
+    [SerializeField] Transform shootPos;
+    public GameObject damageNumberPopup;
+    [SerializeField] GameObject healthBar;
+    private int maxHP;
+    private GameObject healthBarInstance;
+    private Image healthFill;
+    [SerializeField] Vector3 healthBarOffset = new Vector3(0, 2f, 0);
+    [SerializeField] Vector3 damageNumberOffset = new Vector3(0, 2.5f, 0);
 
 
     int HP;
     int HPP2;
+    bool isDead = false;
+    bool isEntryMono;
+    float entryMonoTimer;
+    float entryMonoLength;
+    bool canBeDamaged = true;
+    bool doRocketFX = true;
+    bool doDashFX = true;
+    bool doDashWindupFX = true;
+    bool doLaserFX = true;
     //DICE BOOLEANS:
     bool strafediceRolled = false;
 
@@ -109,194 +152,268 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     //THE STATS THE ENEMY STARTS WITH:
     void Start()
     {
+        maxHP = HP;
+        if (healthBar != null)
+        {
+            healthBarInstance = Instantiate(healthBar, transform);
+            healthBarInstance.transform.localPosition = healthBarOffset;
+            healthFill = healthBarInstance.transform.Find("Background/Fill").GetComponent<Image>();
+
+            healthBarInstance.SetActive(false);
+        }
         //I will figure this out later, but I assume I will make the boss wait for the player to get ready
         defaultState = true;
+        SetNeutral();
         HLaserB = true;
         originalSpeed = baseMoveSpeed;
         kingColor = model.material.color;
         HP = Health;
         HPP2 = HP / 2;
         agent.speed = originalSpeed;
+
+        if (entryMonologue != null)
+        {
+            voiceAudioSource.PlayOneShot(entryMonologue);
+            entryMonoLength = entryMonologue.length;
+            isEntryMono = true;
+            entryMonoTimer = 0;
+            canBeDamaged = false;
+        }
     }
 
     //UPDATE:
     //Where all the styles and 
     void Update()
     {
-        playerDir = GameManager.instance.player.transform.position - transform.position;
-        playerTarget = GameManager.instance.player.transform.position;
-        
-
-        
-
-        //STYLE SWITCH TIMER:
-        //Once the timer is more or equal to the switch time you set.
-        if (switchTimer >= styleSwitchTime)
+        if (isEntryMono)
         {
-            
-            defaultState = false;
-            diceRollCheck();
-            switchTimer = 0;
-        }
-
-        //DEFAULT STYLE:
-        //The Cartoon King will begin to walk toward the player. He will always shoot rapidly toward the player. If he gets too close, he will begin strafing around you.
-        if (defaultState == true)
-        {
-            faceTarget();
-            movementCheck();
-            switchTimer += Time.deltaTime;
-            shootTimer += Time.deltaTime;
-
-            if(shootTimer >= pelletRate)
-            shootPellets();
-
-            if (canMove == true)
+            entryMonoTimer += Time.deltaTime;
+            if(entryMonoTimer > entryMonoLength)
             {
-                agent.SetDestination(playerTarget);
-            }
-
-            if (strafeMode == true)
-            {
-                if (strafediceRolled == false)
-                {
-                    strafediceRoll = Random.Range(1, 3);
-                    strafediceRolled = true;
-                }
-
-                if (strafediceRoll == 1)
-                {
-                    strafeRight();
-                }
-                else if (strafediceRoll == 2)
-                {
-                    strafeLeft();
-                }
-
+                isEntryMono = false;
+                canBeDamaged = true;
+                if(battleStartSound != null)
+                    sfxAudioSource.PlayOneShot(battleStartSound);
             }
         }
 
-        //DASH STYLE NOTES:
-        if (dashState == true)
+
+        if(!isDead && !isEntryMono)
         {
-            
-            model.material.color = Color.blue;
-            agent.SetDestination(transform.position);
-            chargeTimer += Time.deltaTime;
+            playerDir = GameManager.instance.player.transform.position - transform.position;
+            playerTarget = GameManager.instance.player.transform.position;
 
-            if (chargeTimer >= punchMax && dashLocalfound == false)
+            //STYLE SWITCH TIMER:
+            //Once the timer is more or equal to the switch time you set.
+            if (switchTimer >= styleSwitchTime)
             {
-                
-                savePlayerposition();
-                dashLocalfound = true;
-
-            }
-            if (dashLocalfound == true)
-            {
-                
-                transform.position = Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
-                punch(punchForce, (GameManager.instance.player.transform.position - transform.position));
-                dashTimer += Time.deltaTime;
+                defaultState = false;
+                diceRollCheck();
+                switchTimer = 0;
             }
 
-            if (transform.position == Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed) || punched == true || dashTimer >= punchSpeed)
+            //DEFAULT STYLE:
+            //The Cartoon King will begin to walk toward the player. He will always shoot rapidly toward the player. If he gets too close, he will begin strafing around you.
+            if (defaultState == true)
             {
-                chargeTimer = 0;
-                model.material.color = kingColor;
-                punched = false;
-                defaultState = true;
-                dashLocalfound = false;
-                dashState = false;
-
-            }
-
-        }
-
-        //ROCKET STANCE NOTES:
-        //The King will stand still and shoot rockets at you
-        if (rocketState)
-        {
-            faceTarget();
-            model.material.color = Color.orangeRed;
-            agent.SetDestination(transform.position);
-            chargeTimer += Time.deltaTime;
-
-
-            if (chargeTimer >= attackRate)
-            {
+                faceTarget();
+                movementCheck();
+                switchTimer += Time.deltaTime;
                 shootTimer += Time.deltaTime;
-                stanceTimer += Time.deltaTime;
-                if(shootTimer >= rocketRate)
-                shootRockets();
 
-                if (stanceTimer >= rocketMax)
+                if (shootTimer >= pelletRate)
+                    shootPellets();
+
+                if (canMove == true)
                 {
-                    chargeTimer = 0;
-                    stanceTimer = 0;
-                    shootTimer = 0;
-                    model.material.color = kingColor;
-                    rocketState = false;
-                    defaultState = true;
+                    agent.SetDestination(playerTarget);
+                }
+
+                if (strafeMode == true)
+                {
+                    if (strafediceRolled == false)
+                    {
+                        strafediceRoll = Random.Range(1, 3);
+                        strafediceRolled = true;
+                    }
+
+                    if (strafediceRoll == 1)
+                    {
+                        strafeRight();
+                    }
+                    else if (strafediceRoll == 2)
+                    {
+                        strafeLeft();
+                    }
+
                 }
             }
-        }
 
-        //SNIPER STYLE NOTE:
-        //The King will stand still and take a shot. Be quick or you'll die immediatly.
-        if(sniperState)
-        {
-            faceTarget();
-            model.material.color = Color.purple;
-            agent.SetDestination(transform.position);
-            chargeTimer += Time.deltaTime;
-
-
-            if (chargeTimer >= sniperMax)
+            //DASH STYLE NOTES:
+            if (dashState == true)
             {
-
-                if (shotSniper == false)
-                    shootSniper();
-
-                if (shotSniper == true)
+                agent.updateRotation = false;
+                agent.isStopped = true;
+                animator.SetTrigger("Dash");
+                model.material.color = Color.blue;
+                agent.SetDestination(transform.position);
+                chargeTimer += Time.deltaTime;
+                if(doDashWindupFX)
                 {
-                    chargeTimer = 0;
-                    shootTimer = 0;
-                    model.material.color = kingColor;
-                    sniperState = false;
-                    shotSniper = false;
-                    defaultState = true;
+                    if (dashWindupSounds.Count() > 0)
+                        voiceAudioSource.PlayOneShot(dashWindupSounds[Random.Range(0, dashWindupSounds.Length)]);
+
+                    doDashWindupFX = false;
                 }
+                
+
+                if (chargeTimer >= punchMax && dashLocalfound == false)
+                {
+
+                    savePlayerposition();
+                    dashLocalfound = true;
+
+                }
+                if (dashLocalfound == true)
+                {
+                    if(dashAttackSounds.Count() > 0 && doDashFX)
+                    {
+                        animator.SetTrigger("ExecuteDash");
+                        sfxAudioSource.PlayOneShot(dashAttackSounds[Random.Range(0, dashAttackSounds.Length)]);
+                        doDashFX = false;
+                    }
+                        
+                    transform.position = Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
+                    punch(punchForce, (GameManager.instance.player.transform.position - transform.position));
+                    dashTimer += Time.deltaTime;
+                }
+
+                if (Vector3.Distance(transform.position, punchPosition) < 0.01f || punched == true || dashTimer >= punchSpeed)
+                {
+                    dashTimer = 0;
+                    chargeTimer = 0;
+                    model.material.color = kingColor;
+                    punched = false;
+                    defaultState = true;
+                    SetNeutral();
+                    doDashFX = true;
+                    doDashWindupFX = true;
+                    dashLocalfound = false;
+                    dashState = false;
+                    agent.updateRotation = true;
+                    agent.isStopped = false;
+                }
+
             }
-        }
 
-        //LASER STATE:
-        if (laserState)
-        {
-            faceTarget();
-            model.material.color = Color.black;
-            agent.SetDestination(transform.position);
-            chargeTimer += Time.deltaTime;
-
-
-            if (chargeTimer >= attackRate)
+            //ROCKET STANCE NOTES:
+            //The King will stand still and shoot rockets at you
+            if (rocketState)
             {
-                shootTimer += Time.deltaTime;
-                stanceTimer += Time.deltaTime;
-                if (shootTimer >= laserRate)
-                    shootLaser();
-
-                if (stanceTimer >= laserMax)
+                if (rocketVoicelines.Count() > 0 && doRocketFX)
                 {
-                    chargeTimer = 0;
-                    stanceTimer = 0;
-                    shootTimer = 0;
-                    model.material.color = kingColor;
-                    laserState = false;
-                    defaultState = true;
+                    animator.SetTrigger("Fire Rockets");
+                    voiceAudioSource.PlayOneShot(rocketVoicelines[Random.Range(0, rocketVoicelines.Length)]);
+                    doRocketFX = false;
+                }
+                    
+
+                faceTarget();
+                model.material.color = Color.orangeRed;
+                agent.SetDestination(transform.position);
+                chargeTimer += Time.deltaTime;
+
+
+                if (chargeTimer >= attackRate)
+                {
+                    shootTimer += Time.deltaTime;
+                    stanceTimer += Time.deltaTime;
+                    if (shootTimer >= rocketRate)
+                    {
+                        shootRockets();
+                    }
+
+
+                        if (stanceTimer >= rocketMax)
+                    {
+                        chargeTimer = 0;
+                        stanceTimer = 0;
+                        shootTimer = 0;
+                        model.material.color = kingColor;
+                        rocketState = false;
+                        doRocketFX = true;
+                        defaultState = true;
+                        SetNeutral();
+                    }
+                }
+            }
+
+            //SNIPER STYLE NOTE:
+            //The King will stand still and take a shot. Be quick or you'll die immediatly.
+            if (sniperState)
+            {
+                faceTarget();
+                model.material.color = Color.purple;
+                agent.SetDestination(transform.position);
+                chargeTimer += Time.deltaTime;
+
+
+                if (chargeTimer >= sniperMax)
+                {
+
+                    if (shotSniper == false)
+                        shootSniper();
+
+                    if (shotSniper == true)
+                    {
+                        chargeTimer = 0;
+                        shootTimer = 0;
+                        model.material.color = kingColor;
+                        sniperState = false;
+                        shotSniper = false;
+                        defaultState = true;
+                        SetNeutral();
+                    }
+                }
+            }
+
+            //LASER STATE:
+            if (laserState)
+            {
+                if (laserVoicelines.Count() > 0 && doLaserFX)
+                {
+                    voiceAudioSource.PlayOneShot(laserVoicelines[Random.Range(0, laserVoicelines.Length)]);
+                    doLaserFX = false;
+                }
+                    
+
+                faceTarget();
+                model.material.color = Color.black;
+                agent.SetDestination(transform.position);
+                chargeTimer += Time.deltaTime;
+
+
+                if (chargeTimer >= attackRate)
+                {
+                    shootTimer += Time.deltaTime;
+                    stanceTimer += Time.deltaTime;
+                    if (shootTimer >= laserRate)
+                        shootLaser();
+
+                    if (stanceTimer >= laserMax)
+                    {
+                        chargeTimer = 0;
+                        stanceTimer = 0;
+                        shootTimer = 0;
+                        model.material.color = kingColor;
+                        doLaserFX = true;
+                        laserState = false;
+                        defaultState = true;
+                        SetNeutral();
+                    }
                 }
             }
         }
-
     }
 
     
@@ -318,11 +435,13 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         if (diceRoll == 1)
         {
             dashState = true;
+            SetAngry();
         }
 
         if(diceRoll == 2)
         {
             rocketState = true;
+            SetAngry();
         }
 
         if(diceRoll == 3)
@@ -387,40 +506,38 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     void shootPellets()
     {
         shootTimer = 0;
-        Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
-        Instantiate(smallProjectile, shootposition, transform.rotation);
+        Instantiate(smallProjectile, shootPos.position, transform.rotation);
     }
 
     void shootRockets()
     {
         shootTimer = 0;
-        Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
-        Instantiate(rocketProjectile, shootposition, transform.rotation);
+        Instantiate(rocketProjectile, shootPos.position, transform.rotation);
     }
 
     void shootSniper()
     {
         shootTimer = 0;
-        Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
-        Instantiate(sniperProjectile, shootposition, transform.rotation);
+        if (sniperVoicelines.Count() > 0)
+            voiceAudioSource.PlayOneShot(sniperVoicelines[Random.Range(0, sniperVoicelines.Length)]);
+        Instantiate(sniperProjectile, shootPos.position, transform.rotation);
         shotSniper = true;
     }
 
     void shootLaser()
     {
         shootTimer = 0;
-        Vector3 shootposition = new Vector3(POV.position.x, GameManager.instance.player.transform.position.y, POV.position.z);
 
         if (HLaserB == true)
         {
-            Instantiate(HLaser, shootposition, transform.rotation);
+            Instantiate(HLaser, shootPos.position, transform.rotation);
             VLaserB = true;
             HLaserB = false;
             return;
         }
         if(VLaserB == true)
         {
-            Instantiate(VLaser, shootposition, transform.rotation);
+            Instantiate(VLaser, shootPos.position, transform.rotation);
             HLaserB = true;
             VLaserB = false;
             return;
@@ -437,6 +554,9 @@ public class TheCartoonKing : MonoBehaviour, IDamage
 
         if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= meleeReach)
         {
+            if(punchImpactSounds.Count() > 0)
+                sfxAudioSource.PlayOneShot(punchImpactSounds[Random.Range(0, punchImpactSounds.Length)]);
+
             Debug.Log("Ouch!!!");
             GameManager.instance.playerScript.Knockbacked = true;
             GameManager.instance.playerScript.applyPushback(totalPunch);
@@ -456,16 +576,52 @@ public class TheCartoonKing : MonoBehaviour, IDamage
 
     public void takeDamage(int amount)
     {
+        if (!canBeDamaged) return;
+
+        Vector3 spawnPos = transform.position + damageNumberOffset;
+        GameObject dmg = Instantiate(damageNumberPopup, spawnPos, Quaternion.identity);
+        dmg.GetComponent<DamageNumber>().Initialize(amount);
+
+        if (!healthBarInstance.activeSelf)
+            healthBarInstance.SetActive(true);
         HP -= amount;
+        float pct = (float)HP / maxHP;
+        healthFill.fillAmount = pct;
+        animator.SetTrigger("Hurt");
         StartCoroutine(flashRed());
+        StartCoroutine(GetHurt());
+
+        if(HP > 0 && hurtSounds.Count() > 0)
+            voiceAudioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
 
         if(HP <= 0)
         {
-            EventController.RaiseGameComplete();
-            Destroy(gameObject);
+            isDead = true;
+            defaultState = false;
+            if(deathSound != null)
+            {
+                voiceAudioSource.Stop();
+                sfxAudioSource.Stop();
+                voiceAudioSource.PlayOneShot(deathSound);
+            }
+                
+            if(collisionBox != null)
+            {
+                collisionBox.enabled = false;
+            }
+            agent.isStopped = true;
+            SetDead();
+            animator.SetBool("isDead", true);
+            StartCoroutine(GameEndCountdownTimer(afterDeathTimer));
         }
             
         
+    }
+
+    IEnumerator GameEndCountdownTimer(int seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        EventController.RaiseGameComplete();
     }
 
     IEnumerator flashRed()
@@ -473,6 +629,22 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         model.material.color = Color.red;
         yield return new WaitForSeconds(0.1f);
         model.material.color = kingColor;
+    }
+
+    public void SetNeutral() => model.material.SetTexture("_BaseMap", neutralFace);
+    public void SetAngry() => model.material.SetTexture("_BaseMap", angryFace);
+    public void SetDead() => model.material.SetTexture("_BaseMap", deadFace);
+
+    IEnumerator GetHurt()
+    {
+        model.material.SetTexture("_BaseMap", hurtFace);
+        yield return new WaitForSeconds(0.458f);
+        if (defaultState)
+            SetNeutral();
+        else if (isDead)
+            SetDead();
+        else
+            SetAngry();
     }
 }
 

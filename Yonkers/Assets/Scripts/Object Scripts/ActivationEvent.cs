@@ -1,14 +1,16 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class ActivationEvent : MonoBehaviour
 {
-    [Tooltip("Object or object containing script that will be activated when all activation switches are ON.")]
-    [SerializeField] GameObject eventObject;
+    [Tooltip("Object or object containing script that will be activated when all activation switches are ON.")] 
+    [SerializeField] GameObject[] eventObjects;
     
     [Tooltip("Allows the activation switches to activate the Event Object's script instead." +
              "\n\n- The script that will be activated should inherit from the IActivate interface.")]
-    [SerializeField] bool activateScript;
+    [SerializeField] bool[] activateScript;
     
     [Tooltip("List containing all activation switches the ActivationEvent will use." +
              "\n\n- If the list is empty, the script will search for its children and add " +
@@ -37,11 +39,11 @@ public class ActivationEvent : MonoBehaviour
              "\n\n- You can override the materials in the ActivationSwitch script.")]
     [SerializeField] Color groupCompleteColor = Color.green;
     
-    IActivate eventScript;
-    
+    IActivate[] eventScript;
+
     int activeCount = 0;
-    
-    bool eventTriggered = false;
+
+    bool[] eventTriggered;
 
     public Material ActivationMaterial
     {
@@ -53,9 +55,10 @@ public class ActivationEvent : MonoBehaviour
         get { return activationColor; }
     }
     
-    public bool EventTriggered
+    public bool EventTriggered (int index)
     {
-        get { return eventTriggered; }
+
+        return eventTriggered[index];
     }
 
     public int ActiveCount
@@ -66,6 +69,8 @@ public class ActivationEvent : MonoBehaviour
 
     void Start()
     {
+        eventScript = new IActivate[eventObjects.Count()];
+        eventTriggered = new bool[eventObjects.Count()];
         // Searches for the switches automatically.
         if (activationSwitches.Count == 0)
         {
@@ -76,67 +81,74 @@ public class ActivationEvent : MonoBehaviour
                     activationSwitches.Add(act);
                 }
             }
-            
             if (activationSwitches.Count == 0)
             {
-                Debug.LogWarning("No activation switches found. Please turn the switches into children of the " +
-                              "activation event object or manually attach their scripts to the \"Activation Switches\" list.");
+                //Debug.LogWarning("No activation switches found. Please turn the switches into children of the " + "activation event object or manually attach their scripts to the \"Activation Switches\" list.");
                 enabled = false;
                 return;
             }
         }
-        
-        // Prerequisite Checks
-        if (activateScript)
+        for (int index = 0; index < eventObjects.Count(); index++)
         {
-            if (!eventObject || !eventObject.TryGetComponent<IActivate>(out eventScript))
+            // Prerequisite Checks
+            if (activateScript[index])
             {
-                Debug.LogWarning("No IActivate object attached. Please attach an Object with an \"IActivate\" interface " +
-                                 "or turn OFF \"Activate Script\" and attach an event object to \"Event Object.\"");
+                if (!eventObjects[index] || !eventObjects[index].TryGetComponent<IActivate>(out eventScript[index]))
+                {
+                    //Debug.LogWarning("No IActivate object attached. Please attach an Object with an \"IActivate\" interface " + "or turn OFF \"Activate Script\" and attach an event object to \"Event Object.\"");
+                    enabled = false;
+                    return;
+                }
+            }
+            else if (!activateScript[index] && !eventObjects[index])
+            {
+                //Debug.LogWarning("No event object attached. Please attach an event object to \"Event Object\" or turn ON " + "\"Activate Script\" and attach a object with an \"IActivate\" interface.");
                 enabled = false;
                 return;
             }
-        }
-        else if (!activateScript && !eventObject)
-        {
-            Debug.LogWarning("No event object attached. Please attach an event object to \"Event Object\" or turn ON " +
-                             "\"Activate Script\" and attach a object with an \"IActivate\" interface.");
-            enabled = false;
-            return;
-        }
         
-        if (!activateScript)
-        {
-            eventObject.SetActive(!eventObject.activeSelf);
+            if (!activateScript[index])
+            {
+                eventObjects[index].SetActive(!eventObjects[index].activeSelf);
+            }
         }
+
     }
 
     void Update()
-    {
+    {                
+        for (int index = 0; index < eventObjects.Count(); index++)
+             {
         // Changes the color of activation switches and triggers the event.
-        if (!eventTriggered && activeCount >= activationSwitches.Count)
-        {
-            foreach (ActivationSwitch swt in activationSwitches)
+            if (!eventTriggered[index] && activeCount >= activationSwitches.Count)
             {
-                if (swt.ChangeColorOnly || !groupCompleteMaterial)
+                foreach (ActivationSwitch swt in activationSwitches)
                 {
-                    foreach (Renderer obj in swt.coloredObjects)
+                    if (swt.ChangeColorOnly || !groupCompleteMaterial)
                     {
-                        obj.material.color = groupCompleteColor;
+                        foreach (Renderer obj in swt.coloredObjects)
+                        {
+                            obj.material.color = groupCompleteColor;
+                        }
                     }
+                    else
+                    {
+                        foreach (Renderer obj in swt.coloredObjects)
+                        {
+                            obj.material = groupCompleteMaterial;
+                        }
+                    }
+                }
+                if (activateScript[index])
+                {
+                    eventScript[index].activate();
                 }
                 else
                 {
-                    foreach (Renderer obj in swt.coloredObjects)
-                    {
-                        obj.material = groupCompleteMaterial;
-                    }
+                    eventObjects[index].SetActive(!eventObjects[index].activeSelf);
                 }
-            }
-            
-            if (activateScript) eventScript.activate();
-            else eventObject.SetActive(!eventObject.activeSelf);
-            eventTriggered = true;
+                eventTriggered[index] = true;
+                }
         }
     }
 }
