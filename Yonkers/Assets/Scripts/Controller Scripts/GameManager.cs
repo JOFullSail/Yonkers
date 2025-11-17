@@ -266,7 +266,6 @@ public class GameManager : MonoBehaviour
             }
         }
 #endif
-
         if (playerScript != null)
         {
             if (playerScript.GunList.Count > 0 && SceneManager.GetActiveScene().name != "Main Menu Scene" && GameManager.instance.isPaused == false)
@@ -806,8 +805,8 @@ public class GameManager : MonoBehaviour
         menuLevelSelect = FindInactive("Level Select Menu");
         CreditsScreen = FindInactive("Credits (1)");
         submenuGameplaySettings = FindInactive("Gameplay Menu");
-        ExitButton = FindInactive("Exit Game Button");
         submenuAudioSettings = FindInactive("Audio Menu");
+        ExitButton = FindInactive("Exit Game Button");
         submenuLockedlevel2 = FindInactive("Locked 2");
         submenuLockedlevel3 = FindInactive("Locked 3");
         submenuLockedlevel4 = FindInactive("Locked 4");

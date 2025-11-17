@@ -32,6 +32,6 @@ MonoBehaviour:
   reloadSound:
   - {fileID: 8300000, guid: d85099fefd84d429788e09001413207b, type: 3}
   reloadSoundVol: 0.03
-  positionWhenHeld: {x: 0.2850304, y: -0.2229996, z: 0.4335518}
-  rotationWhenHeld: {x: -89.98, y: 0, z: 0}
+  positionWhenHeld: {x: 0.2, y: -0.2229996, z: 0.4335518}
+  rotationWhenHeld: {x: 0, y: 0, z: 0}
   scaleWhenHeld: {x: 1, y: 1, z: 1}

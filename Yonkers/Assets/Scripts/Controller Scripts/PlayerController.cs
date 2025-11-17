@@ -22,10 +22,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] int jumpMaxCount = 2;
     [Tooltip("Amount of time (in seconds) the player has to trigger the first jump after falling off a platform. \n" +
         "If the player jumps after the grace period, the player will only trigger the second jump.")]
-    [SerializeField] float jumpGraceFall = 0.25f;
+    [SerializeField] float jumpGraceFall = 0.175f;
+    [SerializeField] float jumpGraceClimb = 0.175f;
     [SerializeField] float jumpGraceWall = 0.35f;
-    [SerializeField] ParticleSystem jumpDoubleParticles;
-    [Range(0, 100)][SerializeField] int jumpVoiceChance = 50;
+    [SerializeField] ParticleSystem jumpEffect;
+    [SerializeField] Transform feet;
+
 
     [Header("Shooting")]
     [SerializeField] List<GunStats> gunList = new List<GunStats>();
@@ -102,14 +104,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //[SerializeField] float debugClimbSpeed = 50f;
 
     [Header("Audio")]
-    [SerializeField] AudioSource sfxAudioSource;
-    [SerializeField] AudioSource vocAudioSource;
-    [SerializeField] AudioClip[] audJumpVoice;
-    [Range(0, 1)][SerializeField] float audJumpVoiceVol;
-    [SerializeField] AudioClip[] audJumpInit;
-    [Range(0, 1)][SerializeField] float audJumpInitVol;
-    [SerializeField] AudioClip[] audJumpDouble;
-    [Range(0, 1)][SerializeField] float audJumpDoubleVol;
+    [SerializeField] AudioSource aud;
+    //[SerializeField] AudioSource audClimbSource;
+    [SerializeField] AudioClip[] audJump;
+    [Range(0, 1)][SerializeField] float audJumpVol;
     [SerializeField] AudioClip[] audClimb;
     [Range(0, 1)][SerializeField] float audClimbVol;
     [SerializeField] AudioClip[] audHurt;
@@ -195,7 +193,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     // If the player's raycast detected a wall
     bool wallDetected;
     // If the player wall jumped.
-    bool wallJumped;
+    bool wallJumping;
     // If it doesn't have the "NoClimb" tag
     bool canBeClimbed;
     // Greater than or equal to the max angle a surface can have 
@@ -210,11 +208,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool isAboveMinDiff;
     // If the player is taller than the wall
     bool isTaller;
-    bool isSliding;
-    bool hasStamina;
-    bool hasPlayed;
     bool climbTimeLeft;
-    bool wallJumpDelayed;
     int noClimbLayers;
     string noClimbTag;
     string currentFootsteptag;
@@ -228,7 +222,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     Vector3 newWallNorm;
     
     // For Jump()
-    int jumpCountEffect;
     Vector3 ceilingRayUp;
     List<Vector3> ceilingRays;
 
@@ -355,7 +348,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             //noClimbLayers = 0;
             //noClimbTag = "Player";
         //}
-        //else noClimbLayers = ignoreClimbing.value;
+        //else 
+            noClimbLayers = ignoreClimbing.value;
 
     }
 
@@ -401,6 +395,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
     }
 
+    void jumpCheck()
+    {
+        if (Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && gravityOn)
+        {
+            isJumping = true;
+            Instantiate(jumpEffect, feet.transform.position, Quaternion.identity);
+        }
+            
+        else isJumping = false;
+    }
+
     bool angularDifference(float norm1, float norm2, float minDegrees)
     {
         float difference = (Mathf.Acos(norm1) * Mathf.Rad2Deg) - (Mathf.Acos(norm2) * Mathf.Rad2Deg);
@@ -438,8 +443,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             yield return null;
         }
     }
-
-void footcheck()
+    void footcheck()
     {
         if(gameObject.layer == 3)
         {
@@ -462,76 +466,6 @@ void footcheck()
         }
         
     }
-
-void jumpCheck()
-    {
-        if (Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && gravityOn)
-            isJumping = true;
-        else 
-            isJumping = false;
-    }
-    
-    void jumpSounds(bool doubleJumpVocals)
-    {
-        if (!(hasPlayed && jumpTimer < jumpGraceWall))
-        {
-            if (jumpCount >= 2 || wallJumpDelayed && jumpCount == 1)
-            {
-                sfxAudioSource.PlayOneShot(audJumpDouble[Random.Range(0, audJumpDouble.Length)], audJumpDoubleVol);
-                
-                if (doubleJumpVocals && Random.Range(0, 100) <= jumpVoiceChance)
-                    vocAudioSource.PlayOneShot(audJumpVoice[Random.Range(0, audJumpVoice.Length)], audJumpVoiceVol);
-            }
-            else 
-            {
-                sfxAudioSource.PlayOneShot(audJumpInit[Random.Range(0, audJumpInit.Length)], audJumpInitVol);
-                
-                if (Random.Range(0, 100) <= jumpVoiceChance)
-                    vocAudioSource.PlayOneShot(audJumpVoice[Random.Range(0, audJumpVoice.Length)], audJumpVoiceVol);
-            }
-        }
-    }
-    
-    
-    IEnumerator wallJumpIncrement()
-    {
-        hasStamina = false;
-        wallJumpDelayed = true;
-        bool isLooping = true;
-        bool jumped = false;
-        jumpTimer = 0;
-        while (isLooping)
-        {
-            if (jumpTimer >= jumpGraceWall) 
-            {
-                isLooping = false;
-                wallJumpDelayed = false;
-            }
-            
-            if (isJumping || isTaller)
-            {
-                jumped = true;
-                isLooping = false;
-                wallJumpDelayed = false;
-            }
-            
-            if (hasStamina)
-            {
-            ++jumpCount;
-                isLooping = false;
-                wallJumpDelayed = false;
-            }
-
-            yield return null;
-        }
-
-        if (!jumped && !hasStamina)
-        {
-            ++jumpCount;
-            jumpCheck();
-        }
-    }
-
     void climb()
     {
         bool canClimb = false;
@@ -540,21 +474,19 @@ void jumpCheck()
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbHighlightDetection,
                 ~noClimbLayers))
         {
+            // Wall Vaulting
+            if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
+            
+            isTaller = transform.position.y >= newWallHeight;
+            // Resetting norm for vaulting over walls.
+            if (isTaller) 
+                prevWallNorm.y = 7f;
+            
             // Storing data of the wall the player is currently facing.
             newWallPos = hit.transform.position;
             newWallPos.y = 0;
             newWallNorm = hit.normal;
 
-            // Wall Vaulting
-            if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.collider.bounds.size.y;
-            
-            isTaller = GameManager.instance.MainCamera.transform.position.y >= newWallHeight;
-            // Resetting norm for vaulting over walls.
-            if (isTaller) 
-            {
-            prevWallNorm.y = 7f;
-            }
-                
             // Angle Calculation
             int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
             int wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
@@ -574,8 +506,9 @@ void jumpCheck()
                  isAboveMinSlope &&
                  isBelowMaxSlope &&
                  isAboveMinDiff &&
-                 notSameWall && climbTimeLeft && gravityOn)) //||
-                //debugClimbAnything && canBeClimbed && isFallOrClimb) // For debugClimbAnything.
+                 notSameWall && climbTimeLeft && gravityOn) //||
+                //debugClimbAnything && canBeClimbed && isFallOrClimb
+                    ) // For debugClimbAnything.
 
             {
                 canClimb = true;
@@ -609,15 +542,13 @@ void jumpCheck()
             //Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
             
             // Player Climb Authorization
-            if (canClimb && !controller.isGrounded && isFallOrClimb && !(isJumping && isClimbing))
+            if (canClimb && !controller.isGrounded && isFallOrClimb && (jumpTimer < jumpGraceClimb || !(isJumping && isClimbing)))
             {
                 if (!isClimbing)
                 {
-                    wallJumped = false;
-                    hasStamina = true;
-                    hasPlayed = false;
-                    if (jumpCount > 0 && !wallJumpDelayed) --jumpCount;
-                    sfxAudioSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
+                    wallJumping = false;
+                    if (jumpCount > 0) --jumpCount;
+                    //audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
                 }
                 
                 playerVel.y = climbSpeed;
@@ -627,39 +558,23 @@ void jumpCheck()
             }
             else // Not climbing
             {
-                isSliding = true;
                 if (isJumping)
                 {
                     jumpTimer = 0;
-                    wallJumped = true;
-                    sfxAudioSource.Stop(); // here to prevent climbing sound after nostamina and jump
-                    GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     if (isClimbing)
                     {
-                        //wallJumped = true
-                        //sfxAudioSource.Stop();
-                        wallJumpDelayed = true;
-                        prevWallPos = newWallPos;
-                        prevWallNorm = newWallNorm;
-                        jumpSounds(true); // allows player actual jump while climbing to sound
-                        hasPlayed = true;
-                        wallJumpDelayed = false;
+                        wallJumping = true;
+                        climbTimeLeft = false;
+                        //audClimbSource.Stop();
+                        GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     }
                 }
                 
                 if (!climbTimeLeft)
                 {
-                    hasStamina = false;
                     prevWallPos = newWallPos;
                     prevWallNorm = newWallNorm;
                     GameManager.instance.playerClimbStamina.fillAmount = 0f;
-                }
-                
-                if (!isAboveMinSlope && playerVel.y > 0) 
-                {
-                    sfxAudioSource.Stop();
-                    jumpSounds(true);
-                    hasPlayed = true;
                 }
                 
                 isClimbing = false;
@@ -670,36 +585,26 @@ void jumpCheck()
             // Triggers only on the first frame
             if (wallDetected)
             {
-                //jumpTimer = 0;
-                if (!wallJumped || isTaller) StartCoroutine(wallJumpIncrement());
+                jumpTimer = 0;
                 prevWallPos = newWallPos;
                 prevWallNorm = newWallNorm;
-                if (!controller.isGrounded && playerVel.y > 0 && (!wallJumped && isClimbing || isSliding) && !hasPlayed/* || isTaller*/) // one goin backwards
-                {
-                    sfxAudioSource.Stop();
-                    jumpSounds(true);
-                    hasPlayed = true;
-                }
+                //audClimbSource.Stop();
                 GameManager.instance.playerClimbStamina.fillAmount = 0f;
             }
-            
-            isSliding = false;
+
             isClimbing = false;
             wallDetected = false;
         }
 
-        //if (!wallJumped && isJumping && prevWallNorm.z != 7f && jumpTimer >= jumpGraceWall)
-        //{ 
-            //++jumpCount; 
-            //jumpCheck();
-        //}
+        if (!wallJumping && isJumping && prevWallNorm.z != 7f && jumpTimer >= jumpGraceWall)
+        { 
+            ++jumpCount; 
+            jumpCheck();
+        }
 
         if (controller.isGrounded)
         {
-            isTaller = false;
-            isSliding = false;
-            hasPlayed = false;
-            wallJumped = false;
+            wallJumping = false;
             GameManager.instance.playerClimbStamina.fillAmount = 1f;
         }
     }
@@ -724,9 +629,9 @@ void jumpCheck()
     void jump()
     {
         // Ceiling Hit (would have been better with a sphere collider)
-        Debug.DrawRay(Camera.main.transform.position, ceilingRayUp * 0.4f);
-        foreach (Vector3 ray in ceilingRays) 
-            Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
+        //Debug.DrawRay(Camera.main.transform.position, ceilingRayUp * 0.4f);
+        //foreach (Vector3 ray in ceilingRays) 
+            //Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
         if (playerVel.y <= 0) ceilingHit = false;
         else if (Physics.Raycast(Camera.main.transform.position, ceilingRayUp, out hit, 0.4f))
         {
@@ -756,24 +661,8 @@ void jumpCheck()
             {
                 ++jumpCount;
             }
-        }
-        
-        if (jumpCount == 0) jumpCountEffect = 0;
-    }
-    
-    void jumpEffects()
-    {
-        if (isJumping)
-        {
-            if (jumpCountEffect < jumpCount) ++jumpCountEffect;
             
-            if (jumpCount >= 2)
-            {
-                ParticleSystem vfx = Instantiate(jumpDoubleParticles, transform.position, Quaternion.Euler(90f, 0f, 0f));
-                ParticleSystem.MainModule mainModule = vfx.main;
-                mainModule.stopAction = ParticleSystemStopAction.Destroy;
-            }
-            jumpSounds(false);
+            aud.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
         }
     }
 
@@ -817,7 +706,7 @@ void jumpCheck()
                 {
                     StartCoroutine(flashDmgScreen());
                 }
-                sfxAudioSource.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
+                aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
             }
             else
             {
@@ -894,7 +783,7 @@ void jumpCheck()
         if (Input.GetButton("Fire1") && gunList.Count > 0 && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate)
         {
             shootApply();
-            sfxAudioSource.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
+            aud.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
             // For special guns
             if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
             {
@@ -924,7 +813,7 @@ void jumpCheck()
     {
         if (Input.GetButtonDown("Reload") && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0)
         {
-            sfxAudioSource.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
+            aud.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
             int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
             gunList[gunListIdx].ammoReserves -= ammoToLoad;
             gunList[gunListIdx].ammoCurrent = ammoToLoad;
@@ -1432,9 +1321,8 @@ void jumpCheck()
                 {
                     currentDashSpeedZ = dashSpeed;
                 }
-
                 Instantiate(dashFX, transform.position, transform.rotation);
-                sfxAudioSource.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
+                aud.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
                 StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
             }
         }
@@ -1562,8 +1450,7 @@ void jumpCheck()
         {
             ++jumpCount;
             playerVel.y = jumpSpeed;
-            jumpEffects();
-            if (!wallJumpDelayed) isJumping = false;
+            isJumping = false;
         }
         else if (controller.isGrounded)
         {
@@ -1752,23 +1639,23 @@ void jumpCheck()
         isPlayingSteps = true;
         if (currentFootsteptag == "Grass")
         {
-            sfxAudioSource.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol); 
+            aud.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol); 
         }
         else if (currentFootsteptag == "Metal")
         {
-            sfxAudioSource.PlayOneShot(audMetalSteps[Random.Range(0, audMetalSteps.Length)], audMetalStepsVol);
+            aud.PlayOneShot(audMetalSteps[Random.Range(0, audMetalSteps.Length)], audMetalStepsVol);
         }
         else if (currentFootsteptag == "Royal")
         {
-            sfxAudioSource.PlayOneShot(audRoyalSteps[Random.Range(0, audRoyalSteps.Length)], audRoyalStepsVol);
+            aud.PlayOneShot(audRoyalSteps[Random.Range(0, audRoyalSteps.Length)], audRoyalStepsVol);
         }
         else if (currentFootsteptag == "Stone")
         {
-            sfxAudioSource.PlayOneShot(audStoneSteps[Random.Range(0, audStoneSteps.Length)], audStoneStepsVol);
+            aud.PlayOneShot(audStoneSteps[Random.Range(0, audStoneSteps.Length)], audStoneStepsVol);
         }
         else if (currentFootsteptag == "Rock")
         {
-            sfxAudioSource.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
+            aud.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
         }
 
             yield return new WaitForSeconds(0.3f);
@@ -1784,7 +1671,15 @@ void jumpCheck()
         if (gunList.Count > 0)
         {
             GameManager.instance.ammoCurrent.text = gunList[gunListIdx].ammoCurrent.ToString("F0");
-            GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
+            if (gunList[gunListIdx].ammoReserves > 0)
+            {
+                GameManager.instance.ammoReserves.colorGradientPreset = GameManager.instance.hasAmmoGradient;
+            }
+            else
+            {
+                GameManager.instance.ammoReserves.colorGradientPreset = GameManager.instance.NoAmmoGradient;
+            }
+                GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
         }
     }
  

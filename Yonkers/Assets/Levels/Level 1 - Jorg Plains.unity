@@ -1299,6 +1299,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &50999828
 GameObject:
   m_ObjectHideFlags: 0
@@ -2399,6 +2400,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &100467566
 GameObject:
   m_ObjectHideFlags: 0
@@ -2785,6 +2787,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &118168697
 GameObject:
   m_ObjectHideFlags: 0
@@ -8596,6 +8599,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!4 &395552690
 Transform:
   m_ObjectHideFlags: 0
@@ -20620,6 +20624,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1043571228
 GameObject:
   m_ObjectHideFlags: 0
@@ -43401,19 +43406,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6304679695831072387, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6304679695831072387, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6304679695831072387, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6304679695831072387, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6304679695831072387, guid: cc452d060d011b5499c3f8d74a448e32, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
