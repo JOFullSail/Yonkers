@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GunStats
   gunModel: {fileID: 4873880299464486465, guid: 195c32f0d92a8b6448eaeef2bdff01a7, type: 3}
   shootRate: 0.5
-  ammoCurrent: 1
+  ammoCurrent: 7
   ammoMax: 10
-  ammoReserves: 999
+  ammoReserves: 979
   maxAmmoReserves: 999
   recoilToCamera: 0
   recoilToUser: 0
@@ -34,4 +34,4 @@ MonoBehaviour:
   reloadSoundVol: 0.03
   positionWhenHeld: {x: 0.2850304, y: -0.2229996, z: 0.4335518}
   rotationWhenHeld: {x: -89.98, y: 0, z: 0}
-  scaleWhenHeld: {x: 100, y: 100, z: 100}
+  scaleWhenHeld: {x: 1, y: 1, z: 1}
