@@ -143,6 +143,10 @@ MonoBehaviour:
   hurtFace: {fileID: 2800000, guid: 952c9140616ef804fab3c235db38b481, type: 3}
   deadFace: {fileID: 2800000, guid: a46acde90448ac14b98b40d6373849fe, type: 3}
   shootPos: {fileID: 6583538477373797261}
+  damageNumberPopup: {fileID: 2761844188908255003, guid: 38e13cfecc4f5fb488ef946d3a8eecc9, type: 3}
+  healthBar: {fileID: 9184330331513077027, guid: b0643c5d870e1dd42a0a024318c43aeb, type: 3}
+  healthBarOffset: {x: 0, y: 10, z: 15}
+  damageNumberOffset: {x: 5, y: 10, z: 15}
 --- !u!195 &6274425197739705237
 NavMeshAgent:
   m_ObjectHideFlags: 0

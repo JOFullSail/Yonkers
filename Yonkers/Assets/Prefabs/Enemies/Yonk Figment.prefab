@@ -3300,9 +3300,9 @@ MonoBehaviour:
   - {fileID: 8530755518147922094, guid: e1024daa375f0884b894eb9a92d609d8, type: 3}
   dropChance: 100
   room: {fileID: 0}
-  damageNumberPopup: {fileID: 0}
-  healthBar: {fileID: 0}
-  healthBarOffset: {x: 0, y: 2, z: 0}
+  damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
+  healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
+  healthBarOffset: {x: 0, y: 5, z: 0}
   damageNumberOffset: {x: 0, y: 2.5, z: 0}
   enemyForms:
   - {fileID: 5900499558154895673, guid: 5a75873f0086b644599774df90f21c80, type: 3}

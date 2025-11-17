@@ -1470,7 +1470,7 @@ MonoBehaviour:
   randomizeRoamTime: 0
   facingWhileRoaming: 0
   approachWhenShot: 1
-  damageWhenDelayed: 0
+  damageWhenDelayed: 1
   damageWhenUndetected: 1
   enragesWhenDamaged: 0
   faceTargetSpeed: 5
@@ -1489,9 +1489,9 @@ MonoBehaviour:
   possibleItemDrops: []
   dropChance: 0
   room: {fileID: 0}
-  damageNumberPopup: {fileID: 0}
-  healthBar: {fileID: 0}
-  healthBarOffset: {x: 0, y: 2, z: 0}
+  damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
+  healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
+  healthBarOffset: {x: 0, y: 3.5, z: 0}
   damageNumberOffset: {x: 0, y: 2.5, z: 0}
   enemyPOS: {fileID: 3742555028645975712}
   pushForce: 60

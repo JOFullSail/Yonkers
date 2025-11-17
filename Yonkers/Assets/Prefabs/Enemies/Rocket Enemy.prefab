@@ -742,14 +742,14 @@ MonoBehaviour:
   explosionDamage: 0
   canDropItems: 1
   possibleItemDrops:
-  - {fileID: 7918543732800023669, guid: 264417cb36901594093c7e399225055e, type: 3}
+  - {fileID: 8237988520367189814, guid: f9b6435f3523f81abbacda11b1c734be, type: 3}
   - {fileID: 6540378563019534485, guid: 544a7c53fcc0e1d48be83c8a1a86dd90, type: 3}
   dropChance: 25
   room: {fileID: 0}
-  damageNumberPopup: {fileID: 0}
-  healthBar: {fileID: 0}
+  damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
+  healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
   healthBarOffset: {x: 0, y: 2, z: 0}
-  damageNumberOffset: {x: 0, y: 2.5, z: 0}
+  damageNumberOffset: {x: 0, y: 3.5, z: 0}
   projectile: {fileID: 4092872357349286730, guid: 94706be9cfa2f2d4b8593c6576516cee, type: 3}
   projectileModel: {fileID: 6032664455426554129}
   shootPos: {fileID: 8321994169993396581}
