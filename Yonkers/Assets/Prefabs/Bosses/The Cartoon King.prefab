@@ -108,8 +108,8 @@ MonoBehaviour:
   sniperMax: 1
   laserRate: 0
   laserMax: 0
-  sfxAudioSource: {fileID: 7831392251252414526}
-  voiceAudioSource: {fileID: 7143155139748168995}
+  sfxAudioSource: {fileID: 7143155139748168995}
+  voiceAudioSource: {fileID: 7831392251252414526}
   bulletVoicelines: []
   rocketVoicelines:
   - {fileID: 8300000, guid: 5d163787c52001444aeb67b54160fa7d, type: 3}
@@ -224,7 +224,7 @@ AudioSource:
   m_GameObject: {fileID: 1864454541448609342}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4399841145372431200, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -272,7 +272,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.503
+      value: 0.6
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -321,7 +321,7 @@ AudioSource:
   m_GameObject: {fileID: 1864454541448609342}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8079503862453138035, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -369,7 +369,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.503
+      value: 0.6
       inSlope: 0
       outSlope: 0
       tangentMode: 0
