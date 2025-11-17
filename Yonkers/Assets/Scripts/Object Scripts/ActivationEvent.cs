@@ -83,8 +83,7 @@ public class ActivationEvent : MonoBehaviour
             }
             if (activationSwitches.Count == 0)
             {
-                Debug.LogWarning("No activation switches found. Please turn the switches into children of the " +
-                              "activation event object or manually attach their scripts to the \"Activation Switches\" list.");
+                //Debug.LogWarning("No activation switches found. Please turn the switches into children of the " + "activation event object or manually attach their scripts to the \"Activation Switches\" list.");
                 enabled = false;
                 return;
             }
@@ -96,16 +95,14 @@ public class ActivationEvent : MonoBehaviour
             {
                 if (!eventObjects[index] || !eventObjects[index].TryGetComponent<IActivate>(out eventScript[index]))
                 {
-                    Debug.LogWarning("No IActivate object attached. Please attach an Object with an \"IActivate\" interface " +
-                                     "or turn OFF \"Activate Script\" and attach an event object to \"Event Object.\"");
+                    //Debug.LogWarning("No IActivate object attached. Please attach an Object with an \"IActivate\" interface " + "or turn OFF \"Activate Script\" and attach an event object to \"Event Object.\"");
                     enabled = false;
                     return;
                 }
             }
             else if (!activateScript[index] && !eventObjects[index])
             {
-                Debug.LogWarning("No event object attached. Please attach an event object to \"Event Object\" or turn ON " +
-                                 "\"Activate Script\" and attach a object with an \"IActivate\" interface.");
+                //Debug.LogWarning("No event object attached. Please attach an event object to \"Event Object\" or turn ON " + "\"Activate Script\" and attach a object with an \"IActivate\" interface.");
                 enabled = false;
                 return;
             }
