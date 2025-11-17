@@ -255,6 +255,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &9532674
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,6 +832,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &47381362
 GameObject:
   m_ObjectHideFlags: 0
@@ -4288,6 +4290,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1001 &316023454
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5119,6 +5122,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &386502203
 GameObject:
   m_ObjectHideFlags: 0
@@ -5884,6 +5888,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &436316436
 GameObject:
   m_ObjectHideFlags: 0
@@ -6131,6 +6136,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &440760495
 GameObject:
   m_ObjectHideFlags: 0
@@ -7260,6 +7266,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &501672089
 GameObject:
   m_ObjectHideFlags: 0
@@ -9498,6 +9505,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &667631575
 GameObject:
   m_ObjectHideFlags: 0
@@ -9967,6 +9975,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &690104277
 GameObject:
   m_ObjectHideFlags: 0
@@ -10103,6 +10112,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &693638023
 GameObject:
   m_ObjectHideFlags: 0
@@ -11782,6 +11792,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &764352329
 GameObject:
   m_ObjectHideFlags: 0
@@ -13227,6 +13238,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &850245809
 GameObject:
   m_ObjectHideFlags: 0
@@ -15080,6 +15092,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &936047048
 GameObject:
   m_ObjectHideFlags: 0
@@ -15216,6 +15229,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &943404591
 GameObject:
   m_ObjectHideFlags: 0
@@ -15543,6 +15557,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &967833152
 GameObject:
   m_ObjectHideFlags: 0
@@ -17072,63 +17087,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1064905439
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 7918543732800023669, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_Name
-      value: Health Orb
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -207.88588
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 32.59
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 647.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 264417cb36901594093c7e399225055e, type: 3}
 --- !u!1 &1068395755
 GameObject:
   m_ObjectHideFlags: 0
@@ -18303,6 +18261,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1148095848
 GameObject:
   m_ObjectHideFlags: 0
@@ -18722,6 +18681,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1185279086
 GameObject:
   m_ObjectHideFlags: 0
@@ -19302,6 +19262,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1206697824
 GameObject:
   m_ObjectHideFlags: 0
@@ -21950,6 +21911,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1375576584
 GameObject:
   m_ObjectHideFlags: 0
@@ -22389,6 +22351,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1408483040
 GameObject:
   m_ObjectHideFlags: 0
@@ -22525,6 +22488,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1410067340
 GameObject:
   m_ObjectHideFlags: 0
@@ -23149,63 +23113,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1445452082
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 7918543732800023669, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_Name
-      value: Health Orb (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -202.08064
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 21.46
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 441.6514
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 264417cb36901594093c7e399225055e, type: 3}
 --- !u!1 &1446263281
 GameObject:
   m_ObjectHideFlags: 0
@@ -25176,6 +25083,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
+  isBossProjectile: 0
 --- !u!114 &1567671631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27110,6 +27018,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1648707816
 GameObject:
   m_ObjectHideFlags: 0
@@ -27747,6 +27656,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1671540187
 GameObject:
   m_ObjectHideFlags: 0
@@ -28140,6 +28050,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1001 &1690158360
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29277,6 +29188,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &1756355924
 GameObject:
   m_ObjectHideFlags: 0
@@ -32752,63 +32664,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 467285822}
   m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
---- !u!1001 &2019224248
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 7918543732800023669, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_Name
-      value: Health Orb (2)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -33.430935
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 30.74
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 350.69608
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8608922956347001187, guid: 264417cb36901594093c7e399225055e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 264417cb36901594093c7e399225055e, type: 3}
 --- !u!1 &2025824372
 GameObject:
   m_ObjectHideFlags: 0
@@ -32945,6 +32800,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1 &2027061108
 GameObject:
   m_ObjectHideFlags: 0
@@ -34062,6 +33918,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1001 &2089825227
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35739,8 +35596,5 @@ SceneRoots:
   - {fileID: 1781559929}
   - {fileID: 830282550}
   - {fileID: 301356755}
-  - {fileID: 1064905439}
-  - {fileID: 1445452082}
-  - {fileID: 2019224248}
   - {fileID: 1623522036}
   - {fileID: 919451360}
