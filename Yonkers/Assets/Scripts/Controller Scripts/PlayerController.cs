@@ -77,6 +77,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float dashSpeed;
     [SerializeField] float dashLength; //How long dash lasts.
     [SerializeField] float dashCooldown;
+    [SerializeField] GameObject dashFX;
+    [SerializeField] TrailRenderer[] dashTrails;
 
     [Header("Forces")]
     [SerializeField] int gravity = 35;
@@ -350,6 +352,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     // Update is called once per frame
     void Update()
     {
+        foreach (TrailRenderer trail in dashTrails)
+            trail.emitting = isDashing;
         // Debug Ray Displays
         //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbHighlightDetection, Color.green);
@@ -1307,6 +1311,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     currentDashSpeedZ = dashSpeed;
                 }
+                Instantiate(dashFX, transform.position, transform.rotation);
                 aud.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
                 StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
             }
