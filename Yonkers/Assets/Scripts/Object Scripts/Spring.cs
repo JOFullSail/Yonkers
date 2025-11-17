@@ -30,7 +30,7 @@ public class Spring : MonoBehaviour
                 springDirection = transform.up.normalized;
                 if (!checkforTeleportobject)
                 {
-                    Debug.DrawRay(emptySpringObject.transform.position, springDirection * (((SpringForce * SpringForce) / 70) * 2), Color.red);
+                    //Debug.DrawRay(emptySpringObject.transform.position, springDirection * (((SpringForce * SpringForce) / 70) * 2), Color.red);
                 }
                 else if (emptySpringObject.transform.Find("TpLocation") != null)
                 {
@@ -103,7 +103,7 @@ public class Spring : MonoBehaviour
 
                     other.enabled = false;
                     other.transform.position = minorTeleport;
-                    Debug.Log("Teleport");
+                    //Debug.Log("Teleport");
                     other.enabled = true;
                     if (other.GetComponent<IPushback>() != null)
                     {

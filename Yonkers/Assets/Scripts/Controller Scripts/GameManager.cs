@@ -783,7 +783,7 @@ public class GameManager : MonoBehaviour
         menuPause = FindInactive("Pause Menu");
         menuSettings = FindInactive("Settings Menu");
         menuLevelSelect = FindInactive("Level Select Menu");
-        CreditsScreen = FindInactive("Credits");
+        CreditsScreen = FindInactive("Credits (1)");
         submenuGameplaySettings = FindInactive("Gameplay Menu");
         submenuAudioSettings = FindInactive("Audio Menu");
         submenuLockedlevel2 = FindInactive("Locked 2");
