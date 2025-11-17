@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour
     public GameObject blindScreen;
     public GameObject hypnoScreen;
     public GameObject webScreen;
+    public GameObject ExitButton;
 
     public Image playerBrightnessOverlay;
     public Image playerHPBar;
@@ -229,6 +230,25 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+#if UNITY_WEBGL
+        if (Input.GetButtonDown("Pause") && currScene.name != "Main Menu Scene" && currScene.name != "Main Menu Scene First Open")
+        {
+            if (menuActive == null)
+            {
+                disablePlayerUI();
+                statePause();
+                menuActive = menuPause;
+                menuActive.SetActive(true);
+
+            }
+            else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen)
+            {
+                stateUnpause();
+                enablePlayerUI();
+            }
+        }
+        ExitButton.SetActive(false);
+#else
         if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene" && currScene.name != "Main Menu Scene First Open")
         {
             if (menuActive == null)
@@ -245,6 +265,8 @@ public class GameManager : MonoBehaviour
                 enablePlayerUI();
             }
         }
+#endif
+
         if (playerScript != null)
         {
             if (playerScript.GunList.Count > 0 && SceneManager.GetActiveScene().name != "Main Menu Scene" && GameManager.instance.isPaused == false)
@@ -784,6 +806,7 @@ public class GameManager : MonoBehaviour
         menuLevelSelect = FindInactive("Level Select Menu");
         CreditsScreen = FindInactive("Credits (1)");
         submenuGameplaySettings = FindInactive("Gameplay Menu");
+        ExitButton = FindInactive("Exit Game Button");
         submenuAudioSettings = FindInactive("Audio Menu");
         submenuLockedlevel2 = FindInactive("Locked 2");
         submenuLockedlevel3 = FindInactive("Locked 3");
