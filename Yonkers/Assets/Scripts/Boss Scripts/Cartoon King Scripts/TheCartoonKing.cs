@@ -102,7 +102,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     bool doDashFX = true;
     bool doDashWindupFX = true;
     bool doLaserFX = true;
-    bool doSniperFX = true;
     //DICE BOOLEANS:
     bool strafediceRolled = false;
 
