@@ -181,6 +181,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.LoadNextLevel("Main Menu Scene");
         GameManager.instance.clearActive();
+        GameManager.instance.LoadProgression();
         GameManager.instance.disablePlayerUI();
         GameManager.instance.backtoMainmenu();
     }
