@@ -4,6 +4,7 @@ using UnityEngine.AI;
 using System.Collections;
 using UnityEditor;
 using System.Linq;
+using UnityEngine.UI;
 
 public class TheCartoonKing : MonoBehaviour, IDamage
 {
@@ -81,6 +82,13 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     [SerializeField] Texture2D hurtFace;
     [SerializeField] Texture2D deadFace;
     [SerializeField] Transform shootPos;
+    public GameObject damageNumberPopup;
+    [SerializeField] GameObject healthBar;
+    private int maxHP;
+    private GameObject healthBarInstance;
+    private Image healthFill;
+    [SerializeField] Vector3 healthBarOffset = new Vector3(0, 2f, 0);
+    [SerializeField] Vector3 damageNumberOffset = new Vector3(0, 2.5f, 0);
 
 
     int HP;
@@ -93,6 +101,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     bool doRocketFX = true;
     bool doDashFX = true;
     bool doDashWindupFX = true;
+    bool doLaserFX = true;
     //DICE BOOLEANS:
     bool strafediceRolled = false;
 
@@ -143,6 +152,15 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     //THE STATS THE ENEMY STARTS WITH:
     void Start()
     {
+        maxHP = HP;
+        if (healthBar != null)
+        {
+            healthBarInstance = Instantiate(healthBar, transform);
+            healthBarInstance.transform.localPosition = healthBarOffset;
+            healthFill = healthBarInstance.transform.Find("Background/Fill").GetComponent<Image>();
+
+            healthBarInstance.SetActive(false);
+        }
         //I will figure this out later, but I assume I will make the boss wait for the player to get ready
         defaultState = true;
         SetNeutral();
@@ -362,8 +380,12 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             //LASER STATE:
             if (laserState)
             {
-                if (laserVoicelines.Count() > 0)
+                if (laserVoicelines.Count() > 0 && doLaserFX)
+                {
                     voiceAudioSource.PlayOneShot(laserVoicelines[Random.Range(0, laserVoicelines.Length)]);
+                    doLaserFX = false;
+                }
+                    
 
                 faceTarget();
                 model.material.color = Color.black;
@@ -384,6 +406,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                         stanceTimer = 0;
                         shootTimer = 0;
                         model.material.color = kingColor;
+                        doLaserFX = true;
                         laserState = false;
                         defaultState = true;
                         SetNeutral();
@@ -534,7 +557,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             if(punchImpactSounds.Count() > 0)
                 sfxAudioSource.PlayOneShot(punchImpactSounds[Random.Range(0, punchImpactSounds.Length)]);
 
-            Debug.Log("Ouch!!!");
+            //Debug.Log("Ouch!!!");
             GameManager.instance.playerScript.Knockbacked = true;
             GameManager.instance.playerScript.applyPushback(totalPunch);
             GameManager.instance.playerScript.takeDamage(meleeDamage);
@@ -547,7 +570,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     void savePlayerposition()
     {
         punchPosition = new Vector3(GameManager.instance.player.transform.position.x, transform.position.y, GameManager.instance.player.transform.position.z);
-        Debug.Log("Player Dectected");
+        //Debug.Log("Player Dectected");
 
     }
 
@@ -555,7 +578,15 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     {
         if (!canBeDamaged) return;
 
+        Vector3 spawnPos = transform.position + damageNumberOffset;
+        GameObject dmg = Instantiate(damageNumberPopup, spawnPos, Quaternion.identity);
+        dmg.GetComponent<DamageNumber>().Initialize(amount);
+
+        if (!healthBarInstance.activeSelf)
+            healthBarInstance.SetActive(true);
         HP -= amount;
+        float pct = (float)HP / maxHP;
+        healthFill.fillAmount = pct;
         animator.SetTrigger("Hurt");
         StartCoroutine(flashRed());
         StartCoroutine(GetHurt());

@@ -416,7 +416,7 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     {
         playerDir = GameManager.instance.player.transform.position - headPos.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
-        Debug.DrawRay(headPos.position, playerDir);
+        //Debug.DrawRay(headPos.position, playerDir);
 
         RaycastHit hit;
         if (Physics.Raycast(headPos.position, playerDir, out hit))
@@ -460,16 +460,14 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
             baseMoveSpeed = newSpeed;
             agent.speed = newSpeed;
         }
-        else
-            Debug.Log("Tried to set new move speed for " + gameObject + ", but it is set as not being allowed to move.");
+            //Debug.Log("Tried to set new move speed for " + gameObject + ", but it is set as not being allowed to move.");
     }
 
     protected void incrementMoveSpeed(int speedModifier)
     {
         if (canMove)
             agent.speed += speedModifier;
-        else
-            Debug.Log("Tried to increment move speed for " + gameObject + ", but it is set as not being allowed to move.");
+            //Debug.Log("Tried to increment move speed for " + gameObject + ", but it is set as not being allowed to move.");
     }
 
     public void applyPushback(Vector3 direction)

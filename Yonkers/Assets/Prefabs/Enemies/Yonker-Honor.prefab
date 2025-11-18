@@ -1388,6 +1388,7 @@ GameObject:
   - component: {fileID: 3536783983150774085}
   - component: {fileID: 5089994146430952583}
   - component: {fileID: 6208982158495579647}
+  - component: {fileID: -5528428546198522347}
   m_Layer: 6
   m_Name: Yonker-Honor
   m_TagString: Enemy
@@ -1448,7 +1449,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeEnemy
   model: {fileID: 5441943427986960049}
   animator: {fileID: 7307838392047298509}
-  voiceSoundSource: {fileID: 0}
+  voiceSoundSource: {fileID: -5528428546198522347}
   ambientVoicelines: []
   playerDetectedVoicelines: []
   combatVoicelines: []
@@ -1469,7 +1470,7 @@ MonoBehaviour:
   randomizeRoamTime: 0
   facingWhileRoaming: 0
   approachWhenShot: 1
-  damageWhenDelayed: 0
+  damageWhenDelayed: 1
   damageWhenUndetected: 1
   enragesWhenDamaged: 0
   faceTargetSpeed: 5
@@ -1488,6 +1489,10 @@ MonoBehaviour:
   possibleItemDrops: []
   dropChance: 0
   room: {fileID: 0}
+  damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
+  healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
+  healthBarOffset: {x: 0, y: 3.5, z: 0}
+  damageNumberOffset: {x: 0, y: 2.5, z: 0}
   enemyPOS: {fileID: 3742555028645975712}
   pushForce: 60
   meleeDamage: 1
@@ -1501,6 +1506,7 @@ MonoBehaviour:
   audPunch:
   - {fileID: 8300000, guid: b8cc333d7b8157346bf7df9953079973, type: 3}
   audPunchVol: 0.6
+  dashTrails: []
 --- !u!135 &7925548660299753598
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1624,7 +1630,104 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
+      value: 0.6
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
       value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &-5528428546198522347
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5891227225106869641}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 4399841145372431200, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.8
       inSlope: 0
       outSlope: 0
       tangentMode: 0

@@ -2034,7 +2034,7 @@ GameObject:
   - component: {fileID: -4290569457230243760}
   m_Layer: 6
   m_Name: Web Spider
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2094,7 +2094,7 @@ MonoBehaviour:
   randomizeRoamTime: 0
   facingWhileRoaming: 0
   approachWhenShot: 1
-  damageWhenDelayed: 0
+  damageWhenDelayed: 1
   damageWhenUndetected: 1
   enragesWhenDamaged: 0
   faceTargetSpeed: 5
@@ -2113,6 +2113,10 @@ MonoBehaviour:
   possibleItemDrops: []
   dropChance: 0
   room: {fileID: 0}
+  damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
+  healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
+  healthBarOffset: {x: 0, y: 2, z: 0}
+  damageNumberOffset: {x: 0, y: 2.5, z: 0}
   projectile: {fileID: 514888559151170932, guid: d70f492e8f20ccb4c886e5e564d803f6, type: 3}
   projectileModel: {fileID: 0}
   shootPos: {fileID: 1948306431327597823}
@@ -2215,10 +2219,10 @@ AudioSource:
   m_GameObject: {fileID: 8667042114683595751}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 8079503862453138035, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
+  OutputAudioMixerGroup: {fileID: 4399841145372431200, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -2263,7 +2267,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.8
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2312,10 +2316,10 @@ AudioSource:
   m_GameObject: {fileID: 8667042114683595751}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8079503862453138035, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -2360,7 +2364,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.8
       inSlope: 0
       outSlope: 0
       tangentMode: 0

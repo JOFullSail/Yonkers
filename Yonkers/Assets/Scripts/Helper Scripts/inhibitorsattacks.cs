@@ -31,7 +31,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         if (other.CompareTag("Player"))
         {
 
-            Debug.Log("Player Hit");
+            //Debug.Log("Player Hit");
 
             if(Inhibitor == InhibitType.freeze)
             {
@@ -50,7 +50,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
             if(Inhibitor == InhibitType.blind)
             {
                  GameManager.instance.playerScript.Blind();
-                Debug.Log("Blinded");
+                //Debug.Log("Blinded");
                 //Activate a panel for a few seconds to blind the player
             }
          

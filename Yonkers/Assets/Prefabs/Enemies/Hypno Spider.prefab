@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 215084842611481073}
   m_Layer: 6
   m_Name: Hypno Spider
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   model: {fileID: 1294963182037875106}
   animator: {fileID: 7372419815083497210}
-  voiceSoundSource: {fileID: 5649571228086069252}
+  voiceSoundSource: {fileID: 215084842611481073}
   ambientVoicelines:
   - {fileID: 8300000, guid: f9a800c567fd84d42bdf5d0bfa894744, type: 3}
   playerDetectedVoicelines:
@@ -237,7 +237,7 @@ MonoBehaviour:
   randomizeRoamTime: 0
   facingWhileRoaming: 0
   approachWhenShot: 1
-  damageWhenDelayed: 0
+  damageWhenDelayed: 1
   damageWhenUndetected: 1
   enragesWhenDamaged: 0
   faceTargetSpeed: 5
@@ -256,11 +256,15 @@ MonoBehaviour:
   possibleItemDrops: []
   dropChance: 0
   room: {fileID: 0}
+  damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
+  healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
+  healthBarOffset: {x: 0, y: 2, z: 0}
+  damageNumberOffset: {x: 0, y: 2.5, z: 0}
   projectile: {fileID: 514888559151170932, guid: bf99017845bcfcd4f9652a1651e9a87b, type: 3}
   projectileModel: {fileID: 0}
   shootPos: {fileID: 3992167685438754288}
   delayBetweenShots: 2
-  shootSoundSource: {fileID: 215084842611481073}
+  shootSoundSource: {fileID: 5649571228086069252}
   audShoot:
   - {fileID: 8300000, guid: 78d8105f511cf2840830448feff11caf, type: 3}
 --- !u!95 &7372419815083497210
@@ -406,7 +410,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.607
+      value: 0.8
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -503,7 +507,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.607
+      value: 0.8
       inSlope: 0
       outSlope: 0
       tangentMode: 0

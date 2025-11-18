@@ -225,24 +225,19 @@ public class ButtonFunctions : MonoBehaviour
             gotoLevel2();
             return;
         }
-        else if (SceneManager.GetActiveScene().name == "Level 2- Gold's Springway")
+        else if (SceneManager.GetActiveScene().name == "Level 1 - Yonk Hill")
         {
             gotoLevel3();
             return;
         }
-        else if (SceneManager.GetActiveScene().name == "Level 3- The Wall")//ADD NAMES!
+        else if (SceneManager.GetActiveScene().name == "Level 2 - Yonk Factory")//ADD NAMES!
         {
             gotoLevel4();
             return;
         }
-        else if (SceneManager.GetActiveScene().name == "")
+        else if (SceneManager.GetActiveScene().name == "Level 3- The Wall")
         {
             gotoLevel5();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "")
-        {
-            gotoLevel6();
             return;
         }
     }
@@ -258,44 +253,32 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 1 - Yonk Hill");
-        
+        GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
+
+
     }
     public void gotoLevel2()//head to level 2
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 2- Gold's Springway");
+        GameManager.instance.LoadNextLevel("Level 1 - Yonk Hill");
     }
     public void gotoLevel3()//head to level 3
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 3- The Wall");
+        GameManager.instance.LoadNextLevel("Level 2 - Yonk Factory");
     } 
     public void gotoLevel4()//head to level 4
     {
-        //GameManager.instance.stateUnpause();
-        //GameManager.instance.enablePlayerUI();
-        //GameManager.instance.LoadNextLevel(levelName);
+        GameManager.instance.stateUnpause();
+        GameManager.instance.enablePlayerUI();
+        GameManager.instance.LoadNextLevel("Level 3- The Wall");
     }
     public void gotoLevel5()//head to level 5
     {
-        //GameManager.instance.stateUnpause();
-        //GameManager.instance.enablePlayerUI();
-        //GameManager.instance.LoadNextLevel(levelName);
-    }
-    public void gotoLevel6()//head to level 6
-    {
-        //GameManager.instance.stateUnpause();
-        //GameManager.instance.enablePlayerUI();
-        //GameManager.instance.LoadNextLevel(levelName);
-    }
-
-    public void gotoShowcase()//head to Showcase
-    {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Showcase level");
+        GameManager.instance.LoadNextLevel("Level 5- THE FINAL YONK");
     }
 }

@@ -65,10 +65,8 @@ MonoBehaviour:
     m_RuntimeSettings:
       m_List:
       - rid: 4734336609716273154
-      - rid: 4734336609716273156
       - rid: 4734336609716273160
       - rid: 4734336609716273161
-      - rid: 4734336609716273162
       - rid: 4734336609716273163
       - rid: 4734336609716273164
       - rid: 4734336609716273165
@@ -311,7 +309,7 @@ MonoBehaviour:
       type: {class: RenderGraphGlobalSettings, ns: UnityEngine.Rendering, asm: Unity.RenderPipelines.Core.Runtime}
       data:
         m_version: 0
-        m_EnableCompilationCaching: 1
+        m_EnableCompilationCaching: 0
         m_EnableValidityChecks: 1
     - rid: 4734336609716273172
       type: {class: ShaderStrippingSetting, ns: UnityEngine.Rendering, asm: Unity.RenderPipelines.Core.Runtime}

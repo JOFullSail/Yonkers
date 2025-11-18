@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float jumpGraceFall = 0.175f;
     [SerializeField] float jumpGraceClimb = 0.175f;
     [SerializeField] float jumpGraceWall = 0.35f;
+    [SerializeField] ParticleSystem jumpEffect;
+    [SerializeField] Transform feet;
 
 
     [Header("Shooting")]
@@ -88,18 +90,18 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] float ragdollPerSpeed = 0.06f;  // Seconds of control lockout per 1 m/s moved during ragdoll.
     [SerializeField] float minRagdollTime = 0.15f;
 
-    [Header("Debug")]
-    [Tooltip("Spawns the player in the Scene Editor's camera location.")]
-    [SerializeField] bool debugSpawnAtCamera;
-    [Tooltip("Gives the player the ability to climb literally anything.")]
-    [SerializeField] bool debugClimbAnything;
-    [Tooltip("Gives the player infinite climbing stamina.")]
-    [SerializeField] bool debugClimbInfinitely;
-    [Tooltip("Gives the player the ability to climb at any given speed set to Debug Climb Speed.\n\n" +
-        "- Gravity will not pull you down as fast with high values.")]
-    [SerializeField] bool debugFastClimb;
-    [Tooltip("Sets the player's climb speed.\n\n- Gravity will not pull you down as fast with high values.")]
-    [SerializeField] float debugClimbSpeed = 50f;
+    //[Header("Debug")]
+    //[Tooltip("Spawns the player in the Scene Editor's camera location.")]
+    //[SerializeField] bool debugSpawnAtCamera;
+    //[Tooltip("Gives the player the ability to climb literally anything.")]
+    //[SerializeField] bool debugClimbAnything;
+    //[Tooltip("Gives the player infinite climbing stamina.")]
+    //[SerializeField] bool debugClimbInfinitely;
+    //[Tooltip("Gives the player the ability to climb at any given speed set to Debug Climb Speed.\n\n" +
+    //    "- Gravity will not pull you down as fast with high values.")]
+    //[SerializeField] bool debugFastClimb;
+    //[Tooltip("Sets the player's climb speed.\n\n- Gravity will not pull you down as fast with high values.")]
+    //[SerializeField] float debugClimbSpeed = 50f;
 
     [Header("Audio")]
     [SerializeField] AudioSource aud;
@@ -260,10 +262,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         get { return gunListIdx; }
         set { gunListIdx = value; }
     }
-    public bool DebugSpawnAtCamera
-    {
-        get { return debugSpawnAtCamera; }
-    }
+    //public bool DebugSpawnAtCamera
+    //{
+    //    get { return debugSpawnAtCamera; }
+    //}
     public float RagdollTimeLeft
     {
         get { return ragdollTimeLeft; }
@@ -338,15 +340,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         
         if (useCanClimbTag) noClimbTag = "CanClimb";
         else noClimbTag = "NoClimb";
-        
-        if (debugFastClimb) climbSpeed = debugClimbSpeed;
-        
-        if (debugClimbAnything)
-        {
-            noClimbLayers = 0;
-            noClimbTag = "Player";
-        }
-        else noClimbLayers = ignoreClimbing.value;
+
+        //if (debugFastClimb) climbSpeed = debugClimbSpeed;
+
+        //if (debugClimbAnything)
+        //{
+            //noClimbLayers = 0;
+            //noClimbTag = "Player";
+        //}
+        //else 
+            noClimbLayers = ignoreClimbing.value;
+
     }
 
     // Update is called once per frame
@@ -356,9 +360,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             trail.emitting = isDashing;
         // Debug Ray Displays
         //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbHighlightDetection, Color.green);
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDistance, Color.blue);
-        Debug.DrawRay(gameObject.transform.position, (-gameObject.transform.up) * footchecklength, Color.yellow);
+        //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbHighlightDetection, Color.green);
+        //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * climbWallDistance, Color.blue);
+        //Debug.DrawRay(gameObject.transform.position, (-gameObject.transform.up) * footchecklength, Color.yellow);
 
         if (!GameManager.instance.isPaused)
         {
@@ -394,7 +398,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void jumpCheck()
     {
         if (Input.GetButtonDown("Jump") && jumpCount < jumpMaxCount && gravityOn)
+        {
             isJumping = true;
+            Instantiate(jumpEffect, feet.transform.position, Quaternion.identity);
+        }
+            
         else isJumping = false;
     }
 
@@ -491,15 +499,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isFallOrClimb = playerVel.y < -1 || isClimbing;
             notSameWall = prevWallPos == null || newWallPos != prevWallPos;
             isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= climbMinAngleDiff;
-            climbTimeLeft = climbTimer <= climbDuration || debugClimbInfinitely;
+            climbTimeLeft = climbTimer <= climbDuration; //|| debugClimbInfinitely;
 
             // Wall Check
             if ((canBeClimbed &&
                  isAboveMinSlope &&
                  isBelowMaxSlope &&
                  isAboveMinDiff &&
-                 notSameWall && climbTimeLeft && gravityOn) ||
-                debugClimbAnything && canBeClimbed && isFallOrClimb) // For debugClimbAnything.
+                 notSameWall && climbTimeLeft && gravityOn) //||
+                //debugClimbAnything && canBeClimbed && isFallOrClimb
+                    ) // For debugClimbAnything.
+
             {
                 canClimb = true;
                 
@@ -529,7 +539,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             wallDetected = true;
             
             // Displays the normal of the wall the player is facing.
-            Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
+            //Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
             
             // Player Climb Authorization
             if (canClimb && !controller.isGrounded && isFallOrClimb && (jumpTimer < jumpGraceClimb || !(isJumping && isClimbing)))
@@ -619,9 +629,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     void jump()
     {
         // Ceiling Hit (would have been better with a sphere collider)
-        Debug.DrawRay(Camera.main.transform.position, ceilingRayUp * 0.4f);
-        foreach (Vector3 ray in ceilingRays) 
-            Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
+        //Debug.DrawRay(Camera.main.transform.position, ceilingRayUp * 0.4f);
+        //foreach (Vector3 ray in ceilingRays) 
+            //Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
         if (playerVel.y <= 0) ceilingHit = false;
         else if (Physics.Raycast(Camera.main.transform.position, ceilingRayUp, out hit, 0.4f))
         {

@@ -644,7 +644,7 @@ GameObject:
   - component: {fileID: 7195796763494848826}
   - component: {fileID: -7247077482703874002}
   - component: {fileID: 7095628561024344454}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Rocket Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -704,7 +704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   model: {fileID: 7905404924123636809}
   animator: {fileID: 5437273660793681416}
-  voiceSoundSource: {fileID: -7247077482703874002}
+  voiceSoundSource: {fileID: 7095628561024344454}
   ambientVoicelines: []
   playerDetectedVoicelines: []
   combatVoicelines: []
@@ -742,15 +742,19 @@ MonoBehaviour:
   explosionDamage: 0
   canDropItems: 1
   possibleItemDrops:
-  - {fileID: 7918543732800023669, guid: 264417cb36901594093c7e399225055e, type: 3}
+  - {fileID: 8237988520367189814, guid: f9b6435f3523f81abbacda11b1c734be, type: 3}
   - {fileID: 6540378563019534485, guid: 544a7c53fcc0e1d48be83c8a1a86dd90, type: 3}
   dropChance: 25
   room: {fileID: 0}
+  damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
+  healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
+  healthBarOffset: {x: 0, y: 2, z: 0}
+  damageNumberOffset: {x: 0, y: 3.5, z: 0}
   projectile: {fileID: 4092872357349286730, guid: 94706be9cfa2f2d4b8593c6576516cee, type: 3}
   projectileModel: {fileID: 6032664455426554129}
   shootPos: {fileID: 8321994169993396581}
   delayBetweenShots: 1
-  shootSoundSource: {fileID: 7095628561024344454}
+  shootSoundSource: {fileID: -7247077482703874002}
   audShoot:
   - {fileID: 8300000, guid: 40e71b0f7bd610849b40f150553f4702, type: 3}
 --- !u!135 &3411629711086631280
@@ -828,7 +832,7 @@ AudioSource:
   m_GameObject: {fileID: 5900499558154895673}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8079503862453138035, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -876,7 +880,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.552
+      value: 0.8
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -925,7 +929,7 @@ AudioSource:
   m_GameObject: {fileID: 5900499558154895673}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4399841145372431200, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -973,7 +977,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.552
+      value: 0.8
       inSlope: 0
       outSlope: 0
       tangentMode: 0
