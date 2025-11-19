@@ -90,7 +90,7 @@ public class Damage : MonoBehaviour
             {
                 dmg.takeDamage(damageAmount);
 
-                if (respawnUponTouch && !delayRespawnUponTouch)
+                if (respawnUponTouch && !delayRespawnUponTouch && GameManager.instance.playerScript.CurrentHealth > 0)
                 {
                     GameManager.instance.RespawnFromCheckpoint(false);
                 }
