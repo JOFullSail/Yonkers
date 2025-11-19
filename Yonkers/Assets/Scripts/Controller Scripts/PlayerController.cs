@@ -1550,7 +1550,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
     }
 
-    void movementResetFull() // Used to reset player Movement values
+    public void movementResetFull() // Used to reset player Movement values
     {
         currentSpeedX = speedZero;
         currentSpeedZ = speedZero;
