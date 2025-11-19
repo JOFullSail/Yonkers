@@ -11,6 +11,10 @@ public class SettingsData : MonoBehaviour
     public float FOV = 70f;
     public float mouSens = 500f;
 	public float brightness = 50f;
+    public float MasterVol = 50f;
+    public float MusicVol = 50f;
+    public float SFXVol = 50f;
+    public float CharacterVoicesVol = 50f;
 
     [Header("Developer Settings")]
     public int FOVMin = 30;
@@ -25,7 +29,23 @@ public class SettingsData : MonoBehaviour
 	public int brightnessMax = 90;
 	public int brightnessHalf = 50;
     public bool brightnessWholeNumbers = true;
-    
+
+    public int MasterVolMin = 0;
+    public int MasterVolMax = 100;
+    public bool MasterVolWholeNumbers = true;
+
+    public int MusicVolMin = 0;
+    public int MusicVolMax = 100;
+    public bool MusicVolWholeNumbers = true;
+
+    public int SFXVolMin = 0;
+    public int SFXVolMax = 100;
+    public bool SFXVolWholeNumbers = true;
+
+    public int CharacterVoicesVolMin = 0;
+    public int CharacterVoicesVolMax = 100;
+    public bool CharacterVoicesVolWholeNumbers = true;
+
 
     // Initializes instance and sets all sliders to their correct position.
     void Awake()
@@ -96,6 +116,91 @@ public class SettingsData : MonoBehaviour
                 }
 
                 brightness = brightnessOrig;
+            }
+
+
+            slider = btnFunctions.MasterVolSliderParent.GetComponentInChildren<Slider>();
+
+            if (slider)
+            {
+                float MasVolOrig = MasterVol;
+                if (MasterVolWholeNumbers)
+                {
+                    slider.minValue = (int)MasterVolMin;
+                    slider.maxValue = (int)MasterVolMax;
+                    slider.value = (int)MasVolOrig;
+                }
+                else
+                {
+                    slider.minValue = MasterVolMin;
+                    slider.maxValue = MasterVolMax;
+                    slider.value = MasVolOrig;
+                }
+
+                MasterVol = MasVolOrig;
+            }
+
+            slider = btnFunctions.MusicVolSliderParent.GetComponentInChildren<Slider>();
+
+            if (slider)
+            {
+                float MusicVolOrig = MusicVol;
+                if (MusicVolWholeNumbers)
+                {
+                    slider.minValue = (int)MusicVolMin;
+                    slider.maxValue = (int)MusicVolMax;
+                    slider.value = (int)MusicVolOrig;
+                }
+                else
+                {
+                    slider.minValue = MusicVolMin;
+                    slider.maxValue = MusicVolMax;
+                    slider.value = MusicVolOrig;
+                }
+
+                MusicVol = MusicVolOrig;
+            }
+
+            slider = btnFunctions.SFXVolSliderParent.GetComponentInChildren<Slider>();
+
+            if (slider)
+            {
+                float SFXVolOrig = SFXVol;
+                if (SFXVolWholeNumbers)
+                {
+                    slider.minValue = (int)SFXVolMin;
+                    slider.maxValue = (int)SFXVolMax;
+                    slider.value = (int)SFXVolOrig;
+                }
+                else
+                {
+                    slider.minValue = SFXVolMin;
+                    slider.maxValue = SFXVolMax;
+                    slider.value = SFXVolOrig;
+                }
+
+                SFXVol = SFXVolOrig;
+            }
+
+            slider = btnFunctions.CharacterVoicesSliderParent.GetComponentInChildren<Slider>();
+
+            if (slider)
+            {
+                float CharacterVoicesVolOrig = CharacterVoicesVol;
+                if (CharacterVoicesVolWholeNumbers)
+                {
+                    slider.minValue = (int)CharacterVoicesVolMin;
+                    slider.maxValue = (int)CharacterVoicesVolMax;
+                    slider.value = (int)CharacterVoicesVolOrig;
+                }
+                else
+                {
+                    slider.minValue = CharacterVoicesVolMin;
+                    slider.maxValue = CharacterVoicesVolMax;
+                    slider.value = CharacterVoicesVolOrig;
+                }
+
+                CharacterVoicesVol = CharacterVoicesVolOrig;
             }
         }
 

@@ -95,6 +95,14 @@ MonoBehaviour:
   musicSource: {fileID: 779934335232736755}
   menuMusic: {fileID: 8300000, guid: 79abb3c956b145b4db7db505b0bb22a2, type: 3}
   levelMusic: {fileID: 0}
+  audMix: {fileID: 24100000, guid: 2c24b1f5a15f0ae4e879358f1577988e, type: 2}
+  FOVcurrentNumber: {fileID: 0}
+  MouseSenscurrentNumber: {fileID: 0}
+  BrightnesscurrentNumber: {fileID: 0}
+  MastervolcurrentNumber: {fileID: 0}
+  MusicvolcurrentNumber: {fileID: 0}
+  SFXvolcurrentNumber: {fileID: 0}
+  CVoicescurrentNumber: {fileID: 0}
   lvlManagerObj: {fileID: 0}
   playerSpawn: {fileID: 0}
   player: {fileID: 0}
@@ -106,6 +114,7 @@ MonoBehaviour:
   blindScreen: {fileID: 8776983562900730942, guid: 65253a87d55477d4b95f3c38e3b9e852, type: 3}
   hypnoScreen: {fileID: 5658346767865897733, guid: eef845be00cd7f242b1f4986a0f031d9, type: 3}
   webScreen: {fileID: 7526445377226203194, guid: c1c5751dbdf0e2a41bba900676451d1c, type: 3}
+  ExitButton: {fileID: 0}
   playerBrightnessOverlay: {fileID: 0}
   playerHPBar: {fileID: 0}
   playerHPLabel: {fileID: 0}
@@ -135,6 +144,8 @@ MonoBehaviour:
   inLvlgradetext: {fileID: 0}
   inLvlScoreNumber: {fileID: 0}
   currentlevelManager: {fileID: 0}
+  WinGradetxt: {fileID: 0}
+  WinGradeImg: {fileID: 0}
   isPaused: 0
   playerSpawnOrig: {fileID: 0}
   currScene:

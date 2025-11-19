@@ -3,12 +3,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
+using UnityEngine.Audio;
 
 public class ButtonFunctions : MonoBehaviour
 {
     public Image FOVSliderParent;
     public Image mouSensSliderParent;
     public Image brightnessSliderParent;
+    public Image MasterVolSliderParent;
+    public Image MusicVolSliderParent;
+    public Image SFXVolSliderParent;
+    public Image CharacterVoicesSliderParent;
 
     void Start()
     {
@@ -20,9 +25,13 @@ public class ButtonFunctions : MonoBehaviour
             }
             if (FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
             {
-                FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOV, SettingsData.instance.FOVMin, SettingsData.instance.FOVMax);
-                mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSens, SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax);
-                brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightness, SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax);
+                FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOVMin, SettingsData.instance.FOVMax,SettingsData.instance.FOV);
+                mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax,SettingsData.instance.mouSens);
+                brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax,SettingsData.instance.brightness);
+                MasterVolSliderParent.fillAmount = normalize(SettingsData.instance.MasterVolMin, SettingsData.instance.MasterVolMax, SettingsData.instance.MasterVol);
+                MusicVolSliderParent.fillAmount = normalize(SettingsData.instance.MusicVolMin, SettingsData.instance.MusicVolMax, SettingsData.instance.MusicVol);
+                SFXVolSliderParent.fillAmount = normalize(SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVol);
+                CharacterVoicesSliderParent.fillAmount = normalize(SettingsData.instance.CharacterVoicesVolMin, SettingsData.instance.CharacterVoicesVolMax, SettingsData.instance.CharacterVoicesVol);
             }
         }
     }
@@ -101,10 +110,63 @@ public class ButtonFunctions : MonoBehaviour
 
         // Applying Values
         SettingsData.instance.FOV = sliderValue;
+        GameManager.instance.FOVcurrentNumber.text = sliderValue.ToString();
         if (GameManager.instance.cam.fieldOfView > 0) GameManager.instance.cam.fieldOfView = sliderValue;
 
         // Updating UI Bars
         FOVSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+    }
+    public void masterVol(Slider slider)
+    {
+        // Whole Number Settings
+        float sliderValue;
+        if (SettingsData.instance.MasterVolWholeNumbers) sliderValue = (int)slider.value;
+        else sliderValue = slider.value;
+        // Applying Values
+        SettingsData.instance.MasterVol = sliderValue;
+        GameManager.instance.audMix.SetFloat("MasterVolume", sliderValue);
+        GameManager.instance.MastervolcurrentNumber.text = sliderValue.ToString();
+        // Updating UI Bars
+        MasterVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+    }
+    public void musicVol(Slider slider)
+    {
+        // Whole Number Settings
+        float sliderValue;
+        if (SettingsData.instance.MusicVolWholeNumbers) sliderValue = (int)slider.value;
+        else sliderValue = slider.value;
+        // Applying Values
+        GameManager.instance.audMix.SetFloat("MusicVolume", sliderValue);
+        SettingsData.instance.MusicVol = sliderValue;
+        GameManager.instance.MusicvolcurrentNumber.text = sliderValue.ToString();
+        // Updating UI Bars
+        MusicVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+    }
+    public void SFXVol(Slider slider)
+    {
+        // Whole Number Settings
+        float sliderValue;
+        if (SettingsData.instance.SFXVolWholeNumbers) sliderValue = (int)slider.value;
+        else sliderValue = slider.value;
+        // Applying Values
+        SettingsData.instance.SFXVol = sliderValue;
+        GameManager.instance.audMix.SetFloat("SFXVolume", sliderValue);
+        GameManager.instance.SFXvolcurrentNumber.text = sliderValue.ToString();
+        // Updating UI Bars
+        SFXVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+    }
+    public void charactervoicesVol(Slider slider)
+    {
+        // Whole Number Settings
+        float sliderValue;
+        if (SettingsData.instance.CharacterVoicesVolWholeNumbers) sliderValue = (int)slider.value;
+        else sliderValue = slider.value;
+        // Applying Values
+        SettingsData.instance.CharacterVoicesVol = sliderValue;
+        GameManager.instance.audMix.SetFloat("VoiceVolume", sliderValue);
+        GameManager.instance.CVoicescurrentNumber.text = sliderValue.ToString();
+        // Updating UI Bars
+        CharacterVoicesSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
 
     public void mouSens(Slider slider)
@@ -115,6 +177,7 @@ public class ButtonFunctions : MonoBehaviour
 
         // Applying Values
         SettingsData.instance.mouSens = sliderValue;
+        GameManager.instance.MouseSenscurrentNumber.text = sliderValue.ToString();
         if (GameManager.instance.CameraScript) GameManager.instance.CameraScript.mouSens = sliderValue;
 
         // Updating UI Bars
@@ -146,6 +209,7 @@ public class ButtonFunctions : MonoBehaviour
             clr.a = alphaValue;
             GameManager.instance.playerBrightnessOverlay.color = clr;
         }
+        GameManager.instance.BrightnesscurrentNumber.text = sliderValue.ToString();
         brightnessSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
     
