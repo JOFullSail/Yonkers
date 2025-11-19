@@ -1434,7 +1434,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         while (dashTimer < dashLength)
         {
             dashTimer += Time.deltaTime;
-            controller.Move(move);
+            if (!GameManager.instance.isPaused) controller.Move(move);
             yield return null;
         }
     }
