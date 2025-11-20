@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
+using UnityEngine.Audio;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Rendering;
-using UnityEngine.Audio;
 
 public class ButtonFunctions : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class ButtonFunctions : MonoBehaviour
     public Image SFXVolSliderParent;
     public Image CharacterVoicesSliderParent;
 
+    public float MasterVolorig;
+    public float MusicVolorig;
+    public float SFXVolorig;
+    public float CVVolorig;
     void Start()
     {
         if (SettingsData.instance != null)
@@ -30,7 +35,7 @@ public class ButtonFunctions : MonoBehaviour
                 brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax,SettingsData.instance.brightness);
                 MasterVolSliderParent.fillAmount = normalize(SettingsData.instance.MasterVolMin, SettingsData.instance.MasterVolMax, SettingsData.instance.MasterVol);
                 MusicVolSliderParent.fillAmount = normalize(SettingsData.instance.MusicVolMin, SettingsData.instance.MusicVolMax, SettingsData.instance.MusicVol);
-                SFXVolSliderParent.fillAmount = normalize(SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVol);
+                SFXVolSliderParent.fillAmount = normalize(SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVolMax, SettingsData.instance.SFXVol);
                 CharacterVoicesSliderParent.fillAmount = normalize(SettingsData.instance.CharacterVoicesVolMin, SettingsData.instance.CharacterVoicesVolMax, SettingsData.instance.CharacterVoicesVol);
             }
         }
@@ -120,12 +125,11 @@ public class ButtonFunctions : MonoBehaviour
     {
         // Whole Number Settings
         float sliderValue;
-        if (SettingsData.instance.MasterVolWholeNumbers) sliderValue = (int)slider.value;
-        else sliderValue = slider.value;
+        sliderValue = slider.value;
         // Applying Values
-        SettingsData.instance.MasterVol = sliderValue;
-        GameManager.instance.audMix.SetFloat("MasterVolume", sliderValue);
-        GameManager.instance.MastervolcurrentNumber.text = sliderValue.ToString();
+        GameManager.instance.audMix.SetFloat("MasterVolume", Mathf.Log10(sliderValue)*20);
+        SettingsData.instance.MasterVol = sliderValue; 
+        GameManager.instance.MastervolcurrentNumber.text = (sliderValue*100).ToString("F0");
         // Updating UI Bars
         MasterVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
@@ -133,12 +137,11 @@ public class ButtonFunctions : MonoBehaviour
     {
         // Whole Number Settings
         float sliderValue;
-        if (SettingsData.instance.MusicVolWholeNumbers) sliderValue = (int)slider.value;
-        else sliderValue = slider.value;
+        sliderValue = slider.value;
         // Applying Values
-        GameManager.instance.audMix.SetFloat("MusicVolume", sliderValue);
-        SettingsData.instance.MusicVol = sliderValue;
-        GameManager.instance.MusicvolcurrentNumber.text = sliderValue.ToString();
+        GameManager.instance.audMix.SetFloat("MusicVolume", Mathf.Log10(sliderValue) * 20);
+        SettingsData.instance.MusicVol =  sliderValue;
+        GameManager.instance.MusicvolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         MusicVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
@@ -146,12 +149,11 @@ public class ButtonFunctions : MonoBehaviour
     {
         // Whole Number Settings
         float sliderValue;
-        if (SettingsData.instance.SFXVolWholeNumbers) sliderValue = (int)slider.value;
-        else sliderValue = slider.value;
+        sliderValue = slider.value;
         // Applying Values
         SettingsData.instance.SFXVol = sliderValue;
-        GameManager.instance.audMix.SetFloat("SFXVolume", sliderValue);
-        GameManager.instance.SFXvolcurrentNumber.text = sliderValue.ToString();
+        GameManager.instance.audMix.SetFloat("SFXVolume", Mathf.Log10(sliderValue) * 20);
+        GameManager.instance.SFXvolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         SFXVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
@@ -163,8 +165,8 @@ public class ButtonFunctions : MonoBehaviour
         else sliderValue = slider.value;
         // Applying Values
         SettingsData.instance.CharacterVoicesVol = sliderValue;
-        GameManager.instance.audMix.SetFloat("VoiceVolume", sliderValue);
-        GameManager.instance.CVoicescurrentNumber.text = sliderValue.ToString();
+        GameManager.instance.audMix.SetFloat("VoiceVolume", Mathf.Log10(sliderValue) * 20);
+        GameManager.instance.CVoicescurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         CharacterVoicesSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
