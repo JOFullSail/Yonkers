@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.PlayerLoop;
 
 public class MovingPlatform : MonoBehaviour, IActivate
 {
@@ -12,8 +11,8 @@ public class MovingPlatform : MonoBehaviour, IActivate
     public float delay, stopThreshold = 0.01f;
     public bool rotateTowardsPath = true;
     public float rotationSpeed = 5f;
-    public bool UseActivate; //true to wait for the switch call to start moving or false to always move.
-    bool onetimeactivate; //to prevent more than one call for the coroutine;
+    public bool UseActivate;
+    bool onetimeactivate;
 
     [System.Serializable]
     public class TriggerInfo
@@ -26,23 +25,25 @@ public class MovingPlatform : MonoBehaviour, IActivate
     public class Condition
     {
         [Header("Condition Settings")]
-        public int waypointIndex;              // Which waypoint to check
-        public int targetIndex;                // Where to move if condition met
-        public bool requireAll = true;         // All or any triggers required
-        public bool whenTriggered = true;      // Activate when triggered or not
+        public int waypointIndex;
+        public int targetIndex;
+        public bool requireAll = true;
+        public bool whenTriggered = true;
+
         [Header("Triggers")]
         public List<TriggerInfo> triggers = new();
         [HideInInspector] public List<bool> states = new();
     }
 
     public List<Condition> conditions = new();
-
-    int index; const float DefSpeed = 50f;
+    int index;
+    const float DefSpeed = 50f;
 
     void Start()
     {
         onetimeactivate = true;
         if (waypoints.Count < 2) return;
+
         while (segSpeeds.Count < waypoints.Count) segSpeeds.Add(DefSpeed);
         while (segSpeeds.Count > waypoints.Count) segSpeeds.RemoveAt(segSpeeds.Count - 1);
 
@@ -59,19 +60,17 @@ public class MovingPlatform : MonoBehaviour, IActivate
 
         platform.position = waypoints[0].position;
         index = 1;
-        
     }
+
     void Update()
     {
-        if (UseActivate == false)
+        if (!UseActivate && onetimeactivate)
         {
-            if (onetimeactivate == true)
-            {
-                onetimeactivate = false;
-                StartCoroutine(Move());
-            }
-        }  
+            onetimeactivate = false;
+            StartCoroutine(Move());
+        }
     }
+
     IEnumerator Move()
     {
         while (true)
@@ -79,21 +78,44 @@ public class MovingPlatform : MonoBehaviour, IActivate
             Vector3 target = waypoints[index].position;
             float speed = segSpeeds[Mathf.Clamp(index - 1, 0, segSpeeds.Count - 1)];
 
-            while ((target - platform.position).sqrMagnitude > stopThreshold * stopThreshold)
+            while (true)
             {
-                platform.position = Vector3.MoveTowards(platform.position, target, speed * Time.deltaTime);
+                Vector3 toTarget = target - platform.position;
+                float sqrDist = toTarget.sqrMagnitude;
+                float sqrThresh = stopThreshold * stopThreshold;
+
+                if (sqrDist <= sqrThresh) break;
+
+                Vector3 nextPos = Vector3.MoveTowards(platform.position, target, speed * Time.deltaTime);
+                float nextSqrDist = (target - nextPos).sqrMagnitude;
+                if (nextSqrDist < sqrThresh)
+                {
+                    Vector3 dir = toTarget.normalized;
+                    platform.position = target - dir * stopThreshold;
+                    break;
+                }
+
+                platform.position = nextPos;
+
                 if (rotateTowardsPath)
                 {
-                    Vector3 dir = (target - platform.position).normalized;
+                    Vector3 dir = toTarget.normalized;
                     if (dir.sqrMagnitude > 0.01f)
-                        platform.rotation = Quaternion.Slerp(platform.rotation, Quaternion.LookRotation(dir), rotationSpeed * Time.deltaTime);
+                        platform.rotation = Quaternion.Slerp(
+                            platform.rotation,
+                            Quaternion.LookRotation(dir),
+                            rotationSpeed * Time.deltaTime
+                        );
                 }
+
                 yield return null;
             }
+
 
             yield return new WaitForSeconds(delay);
             index = GetNextIndex(index);
         }
+
     }
 
     int GetNextIndex(int current)
@@ -107,24 +129,36 @@ public class MovingPlatform : MonoBehaviour, IActivate
                 if (c.states[i]) active++;
 
             bool met = c.requireAll ? active == c.states.Count : active > 0;
+
             if (c.whenTriggered ? met : !met)
                 return Mathf.Clamp(c.targetIndex, 0, waypoints.Count - 1);
         }
+
         return (current + 1) % waypoints.Count;
     }
 
     class TriggerRelay : MonoBehaviour
     {
-        Condition cond; int id;
-        public void Setup(Condition c, int i) { cond = c; id = i; }
+        Condition cond;
+        int id;
+
+        public void Setup(Condition c, int i)
+        {
+            cond = c;
+            id = i;
+        }
+
         void OnTriggerEnter(Collider o)
         {
-            if (o.CompareTag("Player")) cond.states[id] = true;
+            if (o.CompareTag("Player"))
+                cond.states[id] = true;
         }
+
         void OnTriggerExit(Collider o)
         {
             if (!o.CompareTag("Player")) return;
             if (cond.triggers[id].stayTriggered) return;
+
             cond.states[id] = false;
         }
     }
@@ -132,6 +166,7 @@ public class MovingPlatform : MonoBehaviour, IActivate
     void OnDrawGizmos()
     {
         if (waypoints == null || waypoints.Count < 2) return;
+
         Gizmos.color = Color.red;
         for (int i = 0; i < waypoints.Count; i++)
         {
@@ -140,7 +175,7 @@ public class MovingPlatform : MonoBehaviour, IActivate
         }
     }
 
-    public void activate() 
+    public void activate()
     {
         UseActivate = false;
     }
