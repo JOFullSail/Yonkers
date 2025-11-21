@@ -748,8 +748,8 @@ MonoBehaviour:
   room: {fileID: 0}
   damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
   healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
-  healthBarOffset: {x: 0, y: 2, z: 0}
-  damageNumberOffset: {x: 0, y: 3.5, z: 0}
+  healthBarOffset: {x: 0, y: 3.5, z: 0}
+  damageNumberOffset: {x: 0, y: 2.5, z: 0}
   projectile: {fileID: 4092872357349286730, guid: 94706be9cfa2f2d4b8593c6576516cee, type: 3}
   projectileModel: {fileID: 6032664455426554129}
   shootPos: {fileID: 8321994169993396581}

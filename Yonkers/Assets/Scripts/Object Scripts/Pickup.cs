@@ -71,6 +71,7 @@ public class Pickup : MonoBehaviour
                         gun.ammoReserves += ammoAmount;
 
                         wasConsumed = true;
+                        GameManager.instance.playerScript.updatePlayerUI();
                     }
                     break;
             }

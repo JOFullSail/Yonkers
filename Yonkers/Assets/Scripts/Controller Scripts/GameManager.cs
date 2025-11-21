@@ -730,6 +730,9 @@ public class GameManager : MonoBehaviour
         playerScript.transform.position = playerSpawn.transform.position;
         playerScript.transform.rotation = playerSpawn.transform.rotation;
 
+        playerScript.clearKnockback();
+        playerScript.movementResetFull();
+
         stateUnpause();
         menuActive = null;
         Cursor.visible = false;
