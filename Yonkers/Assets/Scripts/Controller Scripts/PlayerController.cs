@@ -370,6 +370,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             timers();
             shoot();
             playerMovement();
+
+            if (gameObject.transform.position.y < 0f)
+                GameManager.instance.RespawnFromCheckpoint(false);
         }
     }
 
@@ -1551,7 +1554,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
     }
 
-    void movementResetFull() // Used to reset player Movement values
+    public void movementResetFull() // Used to reset player Movement values
     {
         currentSpeedX = speedZero;
         currentSpeedZ = speedZero;
