@@ -17,8 +17,8 @@ MonoBehaviour:
   ammoCurrent: 0
   ammoMax: 1
   ammoReserves: 0
-  maxAmmoReserves: 0
-  ammoType: 0
+  maxAmmoReserves: 2
+  ammoType: 2
   recoilDistance: 0.1
   recoilRecoverySpeed: 10
   recoilSharpness: 20
@@ -31,8 +31,9 @@ MonoBehaviour:
   shootSound:
   - {fileID: 8300000, guid: 40e71b0f7bd610849b40f150553f4702, type: 3}
   shootSoundVol: 0.5
-  reloadSound: []
-  reloadSoundVol: 0
+  reloadSound:
+  - {fileID: 8300000, guid: c3430338b7987524d96ce1f63db280cd, type: 3}
+  reloadSoundVol: 0.5
   positionWhenHeld: {x: 0.2, y: -0.28, z: -0.17}
   rotationWhenHeld: {x: -95.017, y: 15.203, z: -93.746}
   scaleWhenHeld: {x: 1, y: 1, z: 1}
