@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: -4070368544397487681}
   m_Layer: 0
   m_Name: Sniper Ammo Crate
-  m_TagString: AmmoDrop
+  m_TagString: AmmoMedium
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

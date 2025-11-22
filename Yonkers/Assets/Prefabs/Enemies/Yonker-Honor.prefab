@@ -1486,8 +1486,8 @@ MonoBehaviour:
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
   explosionDamage: 0
   canDropItems: 0
-  possibleItemDrops: []
-  dropChance: 0
+  dropTable: {fileID: 11400000, guid: df13f2b780a1c1b4c92128882bd5b6b1, type: 2}
+  baseDropChance: 25
   room: {fileID: 0}
   damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
   healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}

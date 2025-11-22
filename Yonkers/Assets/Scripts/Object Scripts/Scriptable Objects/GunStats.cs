@@ -5,6 +5,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GunStats", menuName = "Scriptable Objects/GunStats")]
 public class GunStats : ScriptableObject
 {
+    public enum AmmoType
+    {
+        Light,   // pistol, SMG
+        Medium,  // rifle
+        Heavy,   // rockets
+    }
+
     public GameObject gunModel;
 
     [Header("Universal Stats")]
@@ -13,6 +20,7 @@ public class GunStats : ScriptableObject
     [Range(1, 50)] public int ammoMax;
     [Range(0, 999)] public int ammoReserves;
     [Range(0, 999)] public int maxAmmoReserves;
+    public AmmoType ammoType;
 
     public float recoilDistance = 0.1f;
     public float recoilRecoverySpeed = 10f;

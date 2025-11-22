@@ -19,7 +19,9 @@ TagManager:
   - Stone
   - Rock
   - HealthDrop
-  - AmmoDrop
+  - AmmoLight
+  - AmmoMedium
+  - AmmoHeavy
   layers:
   - Default
   - TransparentFX
