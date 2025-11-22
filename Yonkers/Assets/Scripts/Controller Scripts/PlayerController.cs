@@ -1545,6 +1545,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     public void applyPushback(Vector3 direction)
     {
+        if (gameObject.layer == 11)
+            return;
+
         pushBack = direction;
     }
 
