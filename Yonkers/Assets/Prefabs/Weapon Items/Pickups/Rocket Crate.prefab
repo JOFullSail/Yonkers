@@ -87,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 1713475358106123006}
   serializedVersion: 2
   m_LocalRotation: {x: -0.50000006, y: 0.49999997, z: 0.49999997, w: 0.50000006}
-  m_LocalPosition: {x: 3.9857655, y: -96.6993, z: -220.24678}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 299.99997, y: 300, z: 300.00003}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: -4070368544397487681}
   - component: {fileID: 3540941520398939978}
   - component: {fileID: 1069958814337369769}
+  - component: {fileID: 6334263995864765293}
   m_Layer: 0
   m_Name: Rocket Crate
   m_TagString: AmmoHeavy
@@ -215,7 +216,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.09, y: 122.15, z: 256.95}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3585636063797350238}
@@ -390,8 +391,8 @@ MonoBehaviour:
   type: 2
   gun: {fileID: 11400000, guid: 815eb8f6ad637c64ea4b9e75e5b6a28d, type: 2}
   ammoAmount: 1
-  healingAmount: 1
-  rotation: {x: 0, y: 0, z: 100}
+  healingAmount: 0
+  rotation: {x: 0, y: 100, z: 0}
 --- !u!114 &1069958814337369769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,3 +418,24 @@ MonoBehaviour:
   rotationSpeed: 5
   UseActivate: 0
   conditions: []
+--- !u!65 &6334263995864765293
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8530755518147922094}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0586367, y: 0.46501118, z: 0.76559013}
+  m_Center: {x: 0, y: 0.23251382, z: 0}

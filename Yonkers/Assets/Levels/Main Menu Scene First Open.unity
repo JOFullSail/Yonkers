@@ -236,6 +236,28 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5930702838156305917, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
   m_PrefabInstance: {fileID: 1591269426}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &989961704 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1489950748642376763, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+  m_PrefabInstance: {fileID: 1591269426}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &1418851846 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4593515181822253247, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+  m_PrefabInstance: {fileID: 1591269426}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!114 &1498338171 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5445201661536266989, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
@@ -255,6 +277,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1489950748642376763, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.b
+      value: 0.6226415
+      objectReference: {fileID: 0}
+    - target: {fileID: 1489950748642376763, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.g
+      value: 0.6226415
+      objectReference: {fileID: 0}
+    - target: {fileID: 1489950748642376763, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.r
+      value: 0.6226415
+      objectReference: {fileID: 0}
     - target: {fileID: 2740421596843876308, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
       propertyPath: m_Name
       value: UI
@@ -449,9 +483,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1913597408}
     - target: {fileID: 8494790786211921183, guid: 921e41958db311341afd99e127ff3e5c, type: 3}
+      propertyPath: respawnButton
+      value: 
+      objectReference: {fileID: 989961704}
+    - target: {fileID: 8494790786211921183, guid: 921e41958db311341afd99e127ff3e5c, type: 3}
       propertyPath: buttonFunctions
       value: 
       objectReference: {fileID: 1498338171}
+    - target: {fileID: 8494790786211921183, guid: 921e41958db311341afd99e127ff3e5c, type: 3}
+      propertyPath: respawnButtons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8494790786211921183, guid: 921e41958db311341afd99e127ff3e5c, type: 3}
+      propertyPath: 'respawnButtons.Array.data[0]'
+      value: 
+      objectReference: {fileID: 989961704}
+    - target: {fileID: 8494790786211921183, guid: 921e41958db311341afd99e127ff3e5c, type: 3}
+      propertyPath: 'respawnButtons.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1418851846}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

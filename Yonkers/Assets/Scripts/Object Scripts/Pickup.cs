@@ -65,11 +65,28 @@ public class Pickup : MonoBehaviour
                     break;
 
                 case PickupType.Ammo:
-                    int index = GameManager.instance.playerScript.GunList.IndexOf(gun); // returns -1 if item not found
-                    if (index != -1 && gun.ammoReserves < gun.maxAmmoReserves)
-                    {
-                        gun.ammoReserves += ammoAmount;
 
+                    GunStats.AmmoType ammoType = gun.ammoType;
+
+                    bool gaveAmmo = false;
+
+                    foreach (var g in GameManager.instance.playerScript.GunList)
+                    {
+                        if (g.ammoType == ammoType)
+                        {
+                            if (g.ammoReserves < g.maxAmmoReserves)
+                            {
+                                g.ammoReserves = Mathf.Min(
+                                    g.ammoReserves + ammoAmount,
+                                    g.maxAmmoReserves
+                                );
+                                gaveAmmo = true;
+                            }
+                        }
+                    }
+
+                    if (gaveAmmo)
+                    {
                         wasConsumed = true;
                         GameManager.instance.playerScript.updatePlayerUI();
                     }
