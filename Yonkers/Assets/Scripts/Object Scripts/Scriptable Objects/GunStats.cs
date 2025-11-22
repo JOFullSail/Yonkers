@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GunStats", menuName = "Scriptable Objects/GunStats")]
@@ -36,6 +37,11 @@ public class GunStats : ScriptableObject
 
     [Header("Transform Modifiers")]
     public Vector3 positionWhenHeld = new Vector3(0.2850304f, -0.2229996f, 0.4335518f);
-    public Vector3 rotationWhenHeld = new Vector3(-89.98f, 0f, 0f);
+    public Quaternion rotationWhenHeld = new Quaternion(-89.98f, 0f, 0f, 0f);
     public Vector3 scaleWhenHeld = Vector3.one;
+
+    [Header("Reload Animation")]
+    public float reloadMoveDistance = 0.2f;
+    public float reloadRotateAngle = 25f;
+    public float reloadSpeed = 8f;
 }
