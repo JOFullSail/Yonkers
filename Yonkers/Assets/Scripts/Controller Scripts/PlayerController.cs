@@ -797,7 +797,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             StartCoroutine(RecoilRoutine());
             updatePlayerUI();
         }
-        else if (gunList[gunListIdx].ammoCurrent <= 0 && Input.GetButton("Fire1") && !isRecoiling)
+        else if (gunList[gunListIdx].ammoCurrent <= 0 && Input.GetButton("Fire1") && !isRecoiling && gunList[gunListIdx].ammoReserves > 0)
         {
             if (!isReloading)
             {
