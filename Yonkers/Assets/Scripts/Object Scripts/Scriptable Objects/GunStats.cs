@@ -13,8 +13,10 @@ public class GunStats : ScriptableObject
     [Range(1, 50)] public int ammoMax;
     [Range(0, 999)] public int ammoReserves;
     [Range(0, 999)] public int maxAmmoReserves;
-    [Range(0, 60)] public float recoilToCamera;
-    [Range(0, 500)] public float recoilToUser;
+
+    public float recoilDistance = 0.1f;
+    public float recoilRecoverySpeed = 10f;
+    public float recoilSharpness = 20f;
 
     [Tooltip("Special Weapons are dropped when ammunition runs out.")]
     public bool isSpecial;

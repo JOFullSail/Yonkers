@@ -148,6 +148,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool isPlayingSteps;
     bool ceilingHit;
     bool isReloading;
+    bool isRecoiling;
     
     //Floats
     public float gravityOffTimer; // Used to time a duration of having no gravity.
@@ -785,12 +786,23 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void shoot()
     {
-        if (Input.GetButton("Fire1") && gunList.Count > 0 && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate && !isReloading)
+        if (gunList.Count == 0)
+            return;
+
+        if (Input.GetButton("Fire1") && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate && !isReloading)
         {
             shootApply();
             audSFX.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
-
+            StopCoroutine(RecoilRoutine());
+            StartCoroutine(RecoilRoutine());
             updatePlayerUI();
+        }
+        else if (gunList[gunListIdx].ammoCurrent <= 0 && Input.GetButton("Fire1") && !isRecoiling)
+        {
+            if (!isReloading)
+            {
+                StartCoroutine(DoReload());
+            }
         }
 
 
@@ -798,15 +810,44 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (gunList.Count > 0) switchGun();
     }
 
+    IEnumerator RecoilRoutine()
+    {
+        isRecoiling = true;
+        Vector3 recoilPos = gunList[gunListIdx].positionWhenHeld + new Vector3(0, 0, -gunList[gunListIdx].recoilDistance);
+
+        float t = 0;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime * gunList[gunListIdx].recoilSharpness;
+            gunModel.transform.localPosition = Vector3.Lerp(gunList[gunListIdx].positionWhenHeld, recoilPos, t);
+            yield return null;
+        }
+
+        t = 0;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * gunList[gunListIdx].recoilRecoverySpeed;
+            gunModel.transform.localPosition = Vector3.Lerp(recoilPos, gunList[gunListIdx].positionWhenHeld, t);
+            yield return null;
+        }
+
+        gunModel.transform.localPosition = gunList[gunListIdx].positionWhenHeld;
+
+        isRecoiling = false;
+    }
+
     void reload()
     {
         if (gunList.Count == 0)
             return;
 
-        if ((Input.GetButtonDown("Reload") || gunList[gunListIdx].ammoCurrent <= 0) && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0 && gunList[gunListIdx].ammoCurrent != gunList[gunListIdx].ammoMax)
+        if ((Input.GetButtonDown("Reload")) && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0 && gunList[gunListIdx].ammoCurrent != gunList[gunListIdx].ammoMax)
         {
             if (!isReloading)
+            {
                 StartCoroutine(DoReload());
+            } 
         }
     }
 
