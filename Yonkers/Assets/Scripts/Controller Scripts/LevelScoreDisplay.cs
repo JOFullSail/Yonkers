@@ -3,8 +3,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class LevelScoreDisplay : MonoBehaviour,
-    IPointerEnterHandler, IPointerExitHandler,
-    ISelectHandler, IDeselectHandler
+    IPointerEnterHandler, IPointerExitHandler, // Interfaces to implement if this class needs OnPointerEnter/Exit callbacks (for mouse hovering in menus)
+    ISelectHandler, IDeselectHandler // Interfaces to implement if this class needs OnSelect/Deselect callbacks (for keyboard input in menus)
 {
     [SerializeField] GameObject displayAspect;
     [SerializeField] GameObject OnTop;
@@ -42,15 +42,13 @@ public class LevelScoreDisplay : MonoBehaviour,
     // MOUSE HOVER
     public void OnPointerEnter(PointerEventData eventData)
     {
-        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(null); // Clear previous selection
 
         ShowBox();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        EventSystem.current.SetSelectedGameObject(null);
-
         HideBox();
     }
 
