@@ -799,12 +799,13 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void reload()
     {
-        if (Input.GetButtonDown("Reload") && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0)
+        if (Input.GetButtonDown("Reload") && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0 && gunList[gunListIdx].ammoCurrent != gunList[gunListIdx].ammoMax)
         {
             audSFX.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
             int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
+            ammoToLoad -= gunList[gunListIdx].ammoCurrent;
             gunList[gunListIdx].ammoReserves -= ammoToLoad;
-            gunList[gunListIdx].ammoCurrent = ammoToLoad;
+            gunList[gunListIdx].ammoCurrent += ammoToLoad;
 
             updatePlayerUI();
         }
