@@ -525,6 +525,12 @@ public class GameManager : MonoBehaviour
         //Debug.Log("Save data cleared.");
     }
 
+    public void ResetInventory()
+    {
+        PlayerPrefs.DeleteKey(InvKey);
+        PlayerPrefs.Save();
+    }
+
     /// <summary>
     /// Save level progression and scores
     /// </summary>

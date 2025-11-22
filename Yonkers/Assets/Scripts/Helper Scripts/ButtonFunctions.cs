@@ -220,6 +220,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.ResetSave();
         GameManager.instance.ResetProgression();
+        GameManager.instance.ResetInventory();
         GameManager.instance.levelLocks();
         GameManager.instance.statetoLevelSelect();
 

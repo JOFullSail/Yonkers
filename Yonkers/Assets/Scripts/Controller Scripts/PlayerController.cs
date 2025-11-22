@@ -899,6 +899,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     public void changeGun()
     {
+        if(gunList.Count == 0) 
+            return;
+
         shootDmg = gunList[gunListIdx].hitscanShootDamage;
         shootDist = gunList[gunListIdx].hitscanShootDist;
         shootRate = gunList[gunListIdx].shootRate;
