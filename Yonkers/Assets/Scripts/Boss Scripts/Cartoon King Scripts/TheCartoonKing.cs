@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
@@ -90,7 +89,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     [SerializeField] Vector3 healthBarOffset = new Vector3(0, 2f, 0);
     [SerializeField] Vector3 damageNumberOffset = new Vector3(0, 2.5f, 0);
 
-
     int HP;
     int HPP2;
     bool isDead = false;
@@ -127,7 +125,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     int strafediceRoll;
     int diceRoll;
 
-
     //ATTACK TIMERS:
     float switchTimer;
     float stanceTimer;
@@ -148,11 +145,14 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     //GENERAL STATS:
     float originalSpeed;
     float distance;
- 
+
     //THE STATS THE ENEMY STARTS WITH:
     void Start()
     {
-        maxHP = HP;
+        foreach (Button button in GameManager.instance.respawnButtons)
+        {
+            button.enabled = false;
+        }
         if (healthBar != null)
         {
             healthBarInstance = Instantiate(healthBar, transform);
@@ -168,6 +168,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         originalSpeed = baseMoveSpeed;
         kingColor = model.material.color;
         HP = Health;
+        maxHP = HP;
         HPP2 = HP / 2;
         agent.speed = originalSpeed;
 
@@ -178,6 +179,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             isEntryMono = true;
             entryMonoTimer = 0;
             canBeDamaged = false;
+            model.material.color = Color.darkSlateGray;
         }
     }
 
@@ -188,17 +190,17 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         if (isEntryMono)
         {
             entryMonoTimer += Time.deltaTime;
-            if(entryMonoTimer > entryMonoLength)
+            if (entryMonoTimer > entryMonoLength)
             {
                 isEntryMono = false;
                 canBeDamaged = true;
-                if(battleStartSound != null)
+                model.material.color = kingColor;
+                if (battleStartSound != null)
                     sfxAudioSource.PlayOneShot(battleStartSound);
             }
         }
 
-
-        if(!isDead && !isEntryMono)
+        if (!isDead && !isEntryMono)
         {
             playerDir = GameManager.instance.player.transform.position - transform.position;
             playerTarget = GameManager.instance.player.transform.position;
@@ -254,41 +256,64 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             {
                 agent.updateRotation = false;
                 agent.isStopped = true;
-                animator.SetTrigger("Dash");
+
+                if (!dashLocalfound && chargeTimer == 0)
+                    animator.SetTrigger("Dash");
+
                 model.material.color = Color.blue;
                 agent.SetDestination(transform.position);
                 chargeTimer += Time.deltaTime;
-                if(doDashWindupFX)
+
+                if (doDashWindupFX)
                 {
                     if (dashWindupSounds.Count() > 0)
                         voiceAudioSource.PlayOneShot(dashWindupSounds[Random.Range(0, dashWindupSounds.Length)]);
 
                     doDashWindupFX = false;
                 }
-                
 
+                // when charge complete, lock in a dash target
                 if (chargeTimer >= punchMax && dashLocalfound == false)
                 {
-
-                    savePlayerposition();
-                    dashLocalfound = true;
-
+                    // try to find a valid dash target; if we fail, cancel dash and return to default
+                    if (savePlayerposition())
+                    {
+                        dashLocalfound = true;
+                    }
+                    else
+                    {
+                        dashTimer = 0;
+                        chargeTimer = 0;
+                        model.material.color = kingColor;
+                        punched = false;
+                        defaultState = true;
+                        SetNeutral();
+                        doDashFX = true;
+                        doDashWindupFX = true;
+                        dashLocalfound = false;
+                        dashState = false;
+                        agent.updateRotation = true;
+                        agent.isStopped = false;
+                        return;
+                    }
                 }
+
                 if (dashLocalfound == true)
                 {
-                    if(dashAttackSounds.Count() > 0 && doDashFX)
+                    if (dashAttackSounds.Count() > 0 && doDashFX)
                     {
                         animator.SetTrigger("ExecuteDash");
                         sfxAudioSource.PlayOneShot(dashAttackSounds[Random.Range(0, dashAttackSounds.Length)]);
                         doDashFX = false;
                     }
-                        
+
                     transform.position = Vector3.Lerp(transform.position, punchPosition, Time.deltaTime * punchSpeed);
                     punch(punchForce, (GameManager.instance.player.transform.position - transform.position));
                     dashTimer += Time.deltaTime;
                 }
 
-                if (Vector3.Distance(transform.position, punchPosition) < 0.01f || punched == true || dashTimer >= punchSpeed)
+                // dash end conditions
+                if (Vector3.Distance(transform.position, punchPosition) <= 0.15f || punched == true || dashTimer >= punchSpeed)
                 {
                     dashTimer = 0;
                     chargeTimer = 0;
@@ -316,13 +341,11 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                     voiceAudioSource.PlayOneShot(rocketVoicelines[Random.Range(0, rocketVoicelines.Length)]);
                     doRocketFX = false;
                 }
-                    
 
                 faceTarget();
                 model.material.color = Color.orangeRed;
                 agent.SetDestination(transform.position);
                 chargeTimer += Time.deltaTime;
-
 
                 if (chargeTimer >= attackRate)
                 {
@@ -333,8 +356,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                         shootRockets();
                     }
 
-
-                        if (stanceTimer >= rocketMax)
+                    if (stanceTimer >= rocketMax)
                     {
                         chargeTimer = 0;
                         stanceTimer = 0;
@@ -356,7 +378,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                 model.material.color = Color.purple;
                 agent.SetDestination(transform.position);
                 chargeTimer += Time.deltaTime;
-
 
                 if (chargeTimer >= sniperMax)
                 {
@@ -385,13 +406,11 @@ public class TheCartoonKing : MonoBehaviour, IDamage
                     voiceAudioSource.PlayOneShot(laserVoicelines[Random.Range(0, laserVoicelines.Length)]);
                     doLaserFX = false;
                 }
-                    
 
                 faceTarget();
                 model.material.color = Color.black;
                 agent.SetDestination(transform.position);
                 chargeTimer += Time.deltaTime;
-
 
                 if (chargeTimer >= attackRate)
                 {
@@ -416,9 +435,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         }
     }
 
-    
-
-
     //DICE ROLL FUCNTION NOTES:
     void diceRollCheck()
     {
@@ -431,20 +447,19 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             diceRoll = Random.Range(1, 3);
         }
 
-
         if (diceRoll == 1)
         {
             dashState = true;
             SetAngry();
         }
 
-        if(diceRoll == 2)
+        if (diceRoll == 2)
         {
             rocketState = true;
             SetAngry();
         }
 
-        if(diceRoll == 3)
+        if (diceRoll == 3)
         {
             sniperState = true;
         }
@@ -455,15 +470,13 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         }
     }
 
-    
-    
     //MOVEMENT CHECK FUNCTIONS NOTES:
     //void movementCheck() sees if the king is too close to the player
     void movementCheck() //checks if the current state calls for certain movement
     {
         //If the distance between player and enemy is close, strafe. Otherwise, chase.
         distance = Vector3.Distance(GameManager.instance.player.transform.position, transform.position);
-        if ( distance <= strafeDist)
+        if (distance <= strafeDist)
         {
             strafeMode = true;
             canMove = false;
@@ -474,7 +487,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             strafeMode = false;
             canMove = true;
         }
-        
+
     }
 
     //FACE TARGET FUNCTIONS NOTES:
@@ -486,7 +499,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     }
 
     //STRAFE RIGHT FUNCTION NOTES:
-    //void strafeRight() function allows the king to circle around the player to right. It will also move closer and closer to the player.
     void strafeRight()
     {
         Vector3 strafeRightDir = Vector3.Cross(playerDir.normalized, Vector3.up);
@@ -494,7 +506,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     }
 
     //STRAFE LEFT FUNCTION NOTES:
-    //void strafeLeft() function allows the king to circle around the player to left. It will also move closer and closer to the player.
     void strafeLeft()
     {
         Vector3 strafeLeftDir = Vector3.Cross(playerDir.normalized, Vector3.up);
@@ -502,7 +513,6 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     }
 
     //SHOOT PELLETS FUNCTION NOTES:
-    //void shootPellets() instantiates the pellet
     void shootPellets()
     {
         shootTimer = 0;
@@ -535,7 +545,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             HLaserB = false;
             return;
         }
-        if(VLaserB == true)
+        if (VLaserB == true)
         {
             Instantiate(VLaser, shootPos.position, transform.rotation);
             HLaserB = true;
@@ -545,33 +555,63 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     }
 
     //PUNCH FUNCTION NOTES:
-    //void punch(float Force, Vector3 dir) takes the direction and force to knock back the player. If the enemy gets to close during his punch phase, he will damage and knockback the player.
     void punch(float Force, Vector3 dir)
     {
-
         dir = dir.normalized;
         Vector3 totalPunch = dir * Force;
 
         if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= meleeReach)
         {
-            if(punchImpactSounds.Count() > 0)
+            if (punchImpactSounds.Count() > 0)
                 sfxAudioSource.PlayOneShot(punchImpactSounds[Random.Range(0, punchImpactSounds.Length)]);
 
-            //Debug.Log("Ouch!!!");
             GameManager.instance.playerScript.Knockbacked = true;
             GameManager.instance.playerScript.applyPushback(totalPunch);
             GameManager.instance.playerScript.takeDamage(meleeDamage);
             punched = true;
         }
     }
-    //SAVE PLAYER POSITION FUNCTION NOTES:
-    //void savePlayerposition() make the enemy scan the players position and saves it in punchPosition while creating a punch direction. This function is mainly used for
-    //scanning the player's position once to help the enemy dash.
-    void savePlayerposition()
-    {
-        punchPosition = new Vector3(GameManager.instance.player.transform.position.x, transform.position.y, GameManager.instance.player.transform.position.z);
-        //Debug.Log("Player Dectected");
 
+    // returns true if a valid dash target was found
+    bool savePlayerposition()
+    {
+        // base desired dash target = player's XZ, King's Y
+        Vector3 desired = new Vector3(
+            GameManager.instance.player.transform.position.x,
+            transform.position.y,
+            GameManager.instance.player.transform.position.z);
+
+        NavMeshHit hit;
+
+        // Try to snap to nearest valid navmesh point around the player
+        if (NavMesh.SamplePosition(desired, out hit, 3f, NavMesh.AllAreas))
+        {
+            punchPosition = hit.position;
+        }
+        else
+        {
+            // Try a midpoint between King and player if player point is invalid
+            Vector3 midpoint = transform.position +
+                (desired - transform.position).normalized * 3f;
+
+            if (NavMesh.SamplePosition(midpoint, out hit, 3f, NavMesh.AllAreas))
+                punchPosition = hit.position;
+            else
+                return false; // no valid dash target found
+        }
+
+        // Slight inward nudge to keep off the exact navmesh border
+        Vector3 inward = punchPosition - transform.position;
+        inward.y = 0;
+
+        if (inward.sqrMagnitude > 0.0001f)
+            punchPosition -= inward.normalized * 0.25f;
+
+        // If target is basically our current position, treat as invalid
+        if (Vector3.Distance(punchPosition, transform.position) < 0.1f)
+            return false;
+
+        return true;
     }
 
     public void takeDamage(int amount)
@@ -591,31 +631,32 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         StartCoroutine(flashRed());
         StartCoroutine(GetHurt());
 
-        if(HP > 0 && hurtSounds.Count() > 0)
+        if (HP > 0 && hurtSounds.Count() > 0)
             voiceAudioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
 
-        if(HP <= 0)
+        if (HP <= 0)
         {
             isDead = true;
             defaultState = false;
-            if(deathSound != null)
+            if (deathSound != null)
             {
                 voiceAudioSource.Stop();
                 sfxAudioSource.Stop();
                 voiceAudioSource.PlayOneShot(deathSound);
             }
-                
-            if(collisionBox != null)
+
+            if (collisionBox != null)
             {
                 collisionBox.enabled = false;
             }
             agent.isStopped = true;
+            agent.enabled = false;
+            if (healthBarInstance != null)
+                Destroy(healthBarInstance);
             SetDead();
             animator.SetBool("isDead", true);
             StartCoroutine(GameEndCountdownTimer(afterDeathTimer));
         }
-            
-        
     }
 
     IEnumerator GameEndCountdownTimer(int seconds)
@@ -647,6 +688,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             SetAngry();
     }
 }
+
 
 //CODING JOURNAL:
 //I will create a series of bools that give the enemy a variety of states and a check similiar to FNAF. Once the dice has been rolled, it will choose to atttack that way.

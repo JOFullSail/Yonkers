@@ -77,7 +77,7 @@ public class Explosion : MonoBehaviour
 
             // Pushback
             IPushback pb = col.GetComponentInParent<IPushback>();
-            if (pb != null)
+            if (pb != null && col.gameObject.layer != 11)
             {
                 Vector3 contactPoint = Physics.ClosestPoint(explosionLocation, col, col.transform.position, col.transform.rotation);
                 Vector3 direction = (contactPoint - explosionLocation);

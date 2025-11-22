@@ -123,6 +123,7 @@ public class GameManager : MonoBehaviour
     public LevelManager currentlevelManager;
     public TMP_Text WinGradetxt;
     public Image WinGradeImg;
+    public Button[] respawnButtons;
 
     public bool isPaused;
     private bool isReloadingScene = false;
@@ -776,6 +777,8 @@ public class GameManager : MonoBehaviour
         CameraScript = null;
         cam = null;
 
+        foreach (Button button in respawnButtons)
+            button.enabled = true;
         // Wait a short delay before relinking
         StartCoroutine(ReinitializeAfterLoad(scene));
     }

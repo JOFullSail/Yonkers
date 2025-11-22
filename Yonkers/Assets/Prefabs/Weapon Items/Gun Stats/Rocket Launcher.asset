@@ -38,5 +38,5 @@ MonoBehaviour:
   rotationWhenHeld: {x: -95.017, y: 15.203, z: -93.746}
   scaleWhenHeld: {x: 1, y: 1, z: 1}
   reloadMoveDistance: 0.2
-  reloadRotateAngle: 25
+  reloadRotateAngle: -25
   reloadSpeed: 8
