@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TMPro;
+using Unity.Android.Gradle.Manifest;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -145,6 +146,7 @@ public class GameManager : MonoBehaviour
 
     private const string SaveKey = "PlayerSaveData";
     private const string ProgressKey = "MetaProgressionData";
+    private const string InvKey = "InventoryData";
 
     private Dictionary<string, int> levelScores = new Dictionary<string, int>();
     private Dictionary<string, int> levelGrades = new Dictionary<string, int>();
@@ -159,12 +161,17 @@ public class GameManager : MonoBehaviour
         public int HP;
         public int selectedGun;
         public string currentScene;
-        public List<GunStatsData> guns = new List<GunStatsData>();
 
         public float posX, posY, posZ;
         public float rotX, rotY, rotZ;
 
         public float currentScore;
+    }
+
+    [Serializable]
+    public class InventoryData
+    {
+        public List<GunStatsData> guns = new List<GunStatsData>();
     }
 
     [Serializable]
@@ -398,7 +405,23 @@ public class GameManager : MonoBehaviour
 
         data.currentScore = currentlevelManager.CurrentScore;
 
+        SaveInventory();
 
+        string json = JsonUtility.ToJson(data);
+        string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+
+        PlayerPrefs.SetString(SaveKey, encoded);
+        PlayerPrefs.Save();
+
+        //Debug.Log($"Game saved");
+    }
+
+    public void SaveInventory()
+    {
+        if (playerScript == null)
+            return;
+
+        InventoryData data = new InventoryData();
         foreach (GunStats gun in playerScript.GunList)
         {
             GunStatsData g = new GunStatsData
@@ -415,12 +438,36 @@ public class GameManager : MonoBehaviour
         string json = JsonUtility.ToJson(data);
         string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
 
-        PlayerPrefs.SetString(SaveKey, encoded);
+        PlayerPrefs.SetString(InvKey, encoded);
         PlayerPrefs.Save();
-
-        //Debug.Log($"Game saved");
     }
 
+    public void LoadInventory()
+    {
+        if (!PlayerPrefs.HasKey(InvKey))
+            return;
+
+        string encoded = PlayerPrefs.GetString(InvKey);
+        string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+        InventoryData data = JsonUtility.FromJson<InventoryData>(json);
+
+        playerScript.GunList.Clear();
+        if (data.guns != null)
+        {
+            foreach (GunStatsData g in data.guns)
+            {
+                GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+
+                if (gun == null)
+                    continue;
+
+                gun.ammoCurrent = g.ammoCurrent;
+                gun.ammoReserves = g.ammoReserves;
+
+                playerScript.GunList.Add(gun);
+            }
+        }
+    }
     /// <summary>
     /// Load the player's last saved state and place them at the last checkpoint they hit.
     /// </summary>
@@ -451,25 +498,10 @@ public class GameManager : MonoBehaviour
                 currentlevelManager.CurrentScore = data.currentScore;
 
                 // Restore gun list
-                playerScript.GunList.Clear();
-                if (data.guns != null)
-                {
-                    foreach (GunStatsData g in data.guns)
-                    {
-                        GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+                LoadInventory();
 
-                        if (gun == null)
-                            continue;
-
-                        gun.ammoCurrent = g.ammoCurrent;
-                        gun.ammoReserves = g.ammoReserves;
-
-                        playerScript.GunList.Add(gun);
-                    }
-
-                    playerScript.GunListIndex = data.selectedGun;
-                    playerScript.changeGun();
-                }
+                playerScript.GunListIndex = data.selectedGun;
+                playerScript.changeGun();
             }
             playerScript.updatePlayerUI();
 
@@ -987,6 +1019,8 @@ public class GameManager : MonoBehaviour
 
         if (!SceneManager.GetActiveScene().name.Contains("Menu"))
         {
+            LoadInventory();
+            playerScript.changeGun();
             enablePlayerUI();
             stateUnpause();
             playerScript.updatePlayerUI();

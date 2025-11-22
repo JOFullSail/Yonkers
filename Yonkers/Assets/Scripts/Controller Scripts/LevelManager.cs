@@ -102,7 +102,7 @@ public class LevelManager : MonoBehaviour
 
         GameManager.instance.SaveProgression();
 
-        GameManager.instance.SavePlayerToMemory();
+        GameManager.instance.SaveInventory();
 
         GameManager.instance.stateLevelComplete();
     }
