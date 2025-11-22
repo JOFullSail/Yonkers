@@ -236,6 +236,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5930702838156305917, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
   m_PrefabInstance: {fileID: 1591269426}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1498338171 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5445201661536266989, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+  m_PrefabInstance: {fileID: 1591269426}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21703fb58dc279f44acc3f7ec54b01a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::buttonFunctions
 --- !u!1001 &1591269426
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -328,7 +339,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8081277409926755906, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+    - {fileID: 5492267500862300170, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+    - {fileID: 1982688202733971966, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+    - {fileID: 7477806316065418363, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+    - {fileID: 3793199277796505302, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+    - {fileID: 632962235636395290, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -423,6 +440,10 @@ PrefabInstance:
       propertyPath: menuSettings
       value: 
       objectReference: {fileID: 1913597408}
+    - target: {fileID: 8494790786211921183, guid: 921e41958db311341afd99e127ff3e5c, type: 3}
+      propertyPath: buttonFunctions
+      value: 
+      objectReference: {fileID: 1498338171}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

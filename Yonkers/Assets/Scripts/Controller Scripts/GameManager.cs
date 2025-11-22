@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TMPro;
-using Unity.Android.Gradle.Manifest;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -51,6 +50,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject PlayerReticleDisplay;
     [SerializeField] GameObject PlayerClimbStaminaDisplay;
     [SerializeField] GameObject LoadingScreen;
+    [SerializeField] ButtonFunctions buttonFunctions;
     [SerializeField] Sprite gradeiconS;
     [SerializeField] Sprite gradeiconA;
     [SerializeField] Sprite gradeiconB;
@@ -261,7 +261,7 @@ public class GameManager : MonoBehaviour
                 menuActive.SetActive(true);
 
             }
-            else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen)
+            else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen && menuActive != menuSettings)
             {
                 stateUnpause();
             }
@@ -277,7 +277,7 @@ public class GameManager : MonoBehaviour
                 menuActive.SetActive(true);
 
             }
-            else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen)
+            else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen && menuActive != menuSettings)
             {
                 stateUnpause();
             }
@@ -315,6 +315,9 @@ public class GameManager : MonoBehaviour
         {
             disablePlayerUI();
         }
+
+        if (menuActive != null && (menuActive == menuSettings || menuActive == menuLevelSelect || menuActive == CreditsScreen) && (Input.GetButton("Cancel") || Input.GetButton("Pause")))
+            buttonFunctions.Backfrom();
     }
 
     public void stateLevelComplete()
