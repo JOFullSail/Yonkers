@@ -245,11 +245,10 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 #if UNITY_WEBGL
-        if (Input.GetButtonDown("Pause") && currScene.name != "Main Menu Scene" && currScene.name != "Main Menu Scene First Open")
+        if (Input.GetButtonDown("Pause") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open")
         {
             if (menuActive == null)
             {
-                disablePlayerUI();
                 statePause();
                 menuActive = menuPause;
                 menuActive.SetActive(true);
@@ -258,16 +257,14 @@ public class GameManager : MonoBehaviour
             else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen)
             {
                 stateUnpause();
-                enablePlayerUI();
             }
         }
         ExitButton.SetActive(false);
 #else
-        if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene" && currScene.name != "Main Menu Scene First Open")
+        if (Input.GetButtonDown("Cancel") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open")
         {
             if (menuActive == null)
             {
-                disablePlayerUI();
                 statePause();
                 menuActive = menuPause;
                 menuActive.SetActive(true);
@@ -276,13 +273,12 @@ public class GameManager : MonoBehaviour
             else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen)
             {
                 stateUnpause();
-                enablePlayerUI();
             }
         }
 #endif
         if (playerScript != null)
         {
-            if (playerScript.GunList.Count > 0 && SceneManager.GetActiveScene().name != "Main Menu Scene" && GameManager.instance.isPaused == false)
+            if (playerScript.GunList.Count > 0 && SceneManager.GetActiveScene().name != "Main Menu Scene" && GameManager.instance.menuActive == null)
             {
                 PlayerAmmoDisplay.SetActive(true);
             }
@@ -291,7 +287,7 @@ public class GameManager : MonoBehaviour
                 PlayerAmmoDisplay.SetActive(false);
             }
         }
-        else if(GameManager.instance.isPaused) {
+        else if(GameManager.instance.menuActive != null) {
         
             PlayerAmmoDisplay.SetActive(false);
         }
@@ -301,7 +297,15 @@ public class GameManager : MonoBehaviour
             inLvLgrade.sprite = GradeImageGetter(currentLvLgrade);
             inLvlgradetext.colorGradientPreset = GradientGetter(currentLvLgrade);
             inLvlScoreNumber.colorGradientPreset = GradientGetter(currentLvLgrade);
-            inLvlScoreNumber.text = currentlevelManager.currentScore.ToString("F0");
+            inLvlScoreNumber.text = currentlevelManager.currentScore.ToString("F0"); 
+        }
+        if (menuActive == null)
+        {
+            enablePlayerUI();
+        }
+        else
+        {
+            disablePlayerUI();
         }
     }
 
