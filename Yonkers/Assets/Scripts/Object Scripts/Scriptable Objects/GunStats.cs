@@ -39,7 +39,7 @@ public class GunStats : ScriptableObject
 
     [Header("Transform Modifiers")]
     public Vector3 positionWhenHeld = new Vector3(0.2850304f, -0.2229996f, 0.4335518f);
-    public Quaternion rotationWhenHeld = new Quaternion(-89.98f, 0f, 0f, 0f);
+    public Vector3 rotationWhenHeld = new Vector3(-89.98f, 0f, 0f);
     public Vector3 scaleWhenHeld = Vector3.one;
 
     [Header("Reload Animation")]

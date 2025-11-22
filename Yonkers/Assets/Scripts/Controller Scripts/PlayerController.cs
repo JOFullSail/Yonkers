@@ -857,14 +857,14 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         audSFX.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
 
         Vector3 loweredPos = gunList[gunListIdx].positionWhenHeld + new Vector3(0, -gunList[gunListIdx].reloadMoveDistance, 0);
-        Quaternion loweredRot = gunList[gunListIdx].rotationWhenHeld * Quaternion.Euler(gunList[gunListIdx].reloadRotateAngle, 0, 0);
+        Quaternion loweredRot = Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld) * Quaternion.Euler(gunList[gunListIdx].reloadRotateAngle, 0, 0);
 
         float timer = 0;
         while (timer < 1f)
         {
             timer += Time.deltaTime * gunList[gunListIdx].reloadSpeed;
             gunModel.transform.localPosition = Vector3.Lerp(gunList[gunListIdx].positionWhenHeld, loweredPos, timer);
-            gunModel.transform.localRotation = Quaternion.Slerp(gunList[gunListIdx].rotationWhenHeld, loweredRot, timer);
+            gunModel.transform.localRotation = Quaternion.Slerp(Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld), loweredRot, timer);
             yield return null;
         }
         
@@ -875,7 +875,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             timer += Time.deltaTime * gunList[gunListIdx].reloadSpeed;
             gunModel.transform.localPosition = Vector3.Lerp(loweredPos, gunList[gunListIdx].positionWhenHeld, timer);
-            gunModel.transform.localRotation = Quaternion.Slerp(loweredRot, gunList[gunListIdx].rotationWhenHeld, timer);
+            gunModel.transform.localRotation = Quaternion.Slerp(loweredRot, Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld), timer);
             yield return null;
         }
         int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
@@ -884,7 +884,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         gunList[gunListIdx].ammoCurrent += ammoToLoad;
 
         gunModel.transform.localPosition = gunList[gunListIdx].positionWhenHeld;
-        gunModel.transform.localRotation = gunList[gunListIdx].rotationWhenHeld;
+        gunModel.transform.localRotation = Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld);
         isReloading = false;
 
         updatePlayerUI();
@@ -911,7 +911,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (gunModel != null)
         {
             gunModel.transform.localScale = gunList[gunListIdx].scaleWhenHeld;
-            gunModel.transform.localRotation = gunList[gunListIdx].rotationWhenHeld;
+            gunModel.transform.localRotation = Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld);
             gunModel.transform.localPosition = gunList[gunListIdx].positionWhenHeld;
 
             gunModel.GetComponent<MeshFilter>().sharedMesh = gunList[gunListIdx].gunModel.GetComponent<MeshFilter>().sharedMesh;
