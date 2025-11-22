@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [Tooltip("Amount of time the player is allowed to climb a wall.\n\n- Will be overriden once the player reaches the top of a wall.")]
     [SerializeField] float climbDuration = 0.6f;
     [SerializeField] float climbHighlightDetection = 15f;
-    [SerializeField] float climbHighlightMultiplier = 1.25f;
+    [SerializeField] float climbHighlightMultiplier = 1.75f;
     [Tooltip("Max view distance between the player and the wall required for the player to climb a wall.")]
     [SerializeField] float climbWallDistance = 1.25f;
     [Tooltip("Max slope angle of a wall the player can climb.")]

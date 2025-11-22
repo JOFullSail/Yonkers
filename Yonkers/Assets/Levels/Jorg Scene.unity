@@ -1042,6 +1042,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: HP
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: audStepsVol
       value: 0.25
       objectReference: {fileID: 0}
@@ -1052,7 +1056,7 @@ PrefabInstance:
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: vocAudioSource
       value: 
-      objectReference: {fileID: 1831668427}
+      objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: audJumpVoiceVol
       value: 0.25
@@ -11970,11 +11974,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!82 &1831668427 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 7390291846817587992, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-  m_PrefabInstance: {fileID: 192906796}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1831864455
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13807,6 +13806,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!1001 &2083459208
 PrefabInstance:
   m_ObjectHideFlags: 0

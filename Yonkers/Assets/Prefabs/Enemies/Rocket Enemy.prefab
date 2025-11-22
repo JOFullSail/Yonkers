@@ -413,6 +413,87 @@ Transform:
   - {fileID: 8418385814992963439}
   m_Father: {fileID: 2529779255031372151}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3654014301874108669
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1284754810039316364}
+  - component: {fileID: 4945311725783821929}
+  - component: {fileID: 2153221796112443823}
+  m_Layer: 6
+  m_Name: DOT Damage Boundary
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1284754810039316364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3654014301874108669}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7613537278557208938}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4945311725783821929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3654014301874108669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7f77064c38e6842bd97cf9d67dfeb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Damage
+  type: 2
+  rb: {fileID: 0}
+  damageAmount: 1
+  isExplosive: 0
+  respawnUponTouch: 0
+  delayRespawnUponTouch: 0
+  delayTime: 0
+  splashDamageAmount: 0
+  damageRate: 1
+  speed: 0
+  destroyTime: 0
+  explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
+--- !u!136 &2153221796112443823
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3654014301874108669}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Height: 4.25
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.46, z: 0}
 --- !u!1 &3920917677285800857
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,6 +747,7 @@ Transform:
   m_Children:
   - {fileID: 7066168706203080934}
   - {fileID: 4954314161320318854}
+  - {fileID: 1284754810039316364}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &5437273660793681416
@@ -751,7 +833,7 @@ MonoBehaviour:
   projectile: {fileID: 4092872357349286730, guid: 94706be9cfa2f2d4b8593c6576516cee, type: 3}
   projectileModel: {fileID: 6032664455426554129}
   shootPos: {fileID: 8321994169993396581}
-  delayBetweenShots: 1
+  delayBetweenShots: 2
   shootSoundSource: {fileID: -7247077482703874002}
   audShoot:
   - {fileID: 8300000, guid: 40e71b0f7bd610849b40f150553f4702, type: 3}
