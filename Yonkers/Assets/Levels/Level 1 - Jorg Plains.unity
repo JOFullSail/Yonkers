@@ -34827,7 +34827,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: f25f7f33b9aab2f42ba8c852e568d2da, type: 3}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: levelMusicVol
-      value: 0.1
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: setlevelMusicVol
