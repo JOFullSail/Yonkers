@@ -187,7 +187,7 @@ PrefabInstance:
     - target: {fileID: 435682173128988826, guid: dfb02c7494c4cf44c87d96481b86b6da, type: 3}
       propertyPath: model
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 22313531}
     - target: {fileID: 5900499558154895673, guid: dfb02c7494c4cf44c87d96481b86b6da, type: 3}
       propertyPath: m_Name
       value: Ranged Enemy (6)
@@ -238,6 +238,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dfb02c7494c4cf44c87d96481b86b6da, type: 3}
+--- !u!137 &22313531 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5593848701363200591, guid: dfb02c7494c4cf44c87d96481b86b6da, type: 3}
+  m_PrefabInstance: {fileID: 22313530}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &61409125
 GameObject:
   m_ObjectHideFlags: 0
