@@ -788,22 +788,6 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             shootApply();
             audSFX.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
-            // For special guns
-            if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
-            {
-                gunList.RemoveAt(gunListIdx);
-                gunListIdx = 0;
-                if (gunList.Count > 0)
-                {
-                    changeGun();
-                }
-                else
-                {
-                    gunModel.GetComponent<MeshFilter>().sharedMesh = null;
-                    gunModel.GetComponent<MeshRenderer>().sharedMaterial = null;
-                }
-
-            }
 
             updatePlayerUI();
         }

@@ -160,6 +160,11 @@ public class GameManager : MonoBehaviour
         public int selectedGun;
         public string currentScene;
         public List<GunStatsData> guns = new List<GunStatsData>();
+
+        public float posX, posY, posZ;
+        public float rotX, rotY, rotZ;
+
+        public float currentScore;
     }
 
     [Serializable]
@@ -378,12 +383,22 @@ public class GameManager : MonoBehaviour
         data.selectedGun = playerScript.GunListIndex;
         data.currentScene = SceneManager.GetActiveScene().name;
 
+        data.posX = playerSpawn.transform.position.x;
+        data.posY = playerSpawn.transform.position.y;
+        data.posZ = playerSpawn.transform.position.z;
+
+        data.rotX = playerSpawn.transform.rotation.eulerAngles.x;
+        data.rotY = playerSpawn.transform.rotation.eulerAngles.y;
+        data.rotZ = playerSpawn.transform.rotation.eulerAngles.z;
+
+        data.currentScore = currentlevelManager.CurrentScore;
+
 
         foreach (GunStats gun in playerScript.GunList)
         {
             GunStatsData g = new GunStatsData
             {
-                gunName = gun.name,
+                gunName = gun.name.Replace("(Clone)", "").Trim(),
                 ammoCurrent = gun.ammoCurrent,
                 ammoReserves = gun.ammoReserves,
                 Maxammo = gun.ammoMax,
@@ -422,8 +437,13 @@ public class GameManager : MonoBehaviour
             if (player != null)
             {
                 playerScript.CurrentHealth = data.HP;
-                player.transform.position = playerSpawn.transform.position;
-                player.transform.rotation = playerSpawn.transform.rotation;
+                player.transform.position = new Vector3(data.posX, data.posY, data.posZ);
+                player.transform.rotation = Quaternion.Euler(data.rotX, data.rotY, data.rotZ);
+
+                playerSpawn.transform.position = player.transform.position;
+                playerSpawn.transform.rotation = player.transform.rotation;
+
+                currentlevelManager.CurrentScore = data.currentScore;
 
                 // Restore gun list
                 playerScript.GunList.Clear();
@@ -431,23 +451,19 @@ public class GameManager : MonoBehaviour
                 {
                     foreach (GunStatsData g in data.guns)
                     {
-                        if (g.gunName != "Pistol" && g.gunName != "Sniper" && g.gunName != "SMG" && g.gunName != "Rocket Lancher")
-                        {
-                            break;
-                        }
-                        GunStats gun;
-                        gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+                        GunStats gun = Instantiate(gunDatabase.GetGunByName(g.gunName));
+
                         if (gun == null)
-                        {
-                            //Debug.LogWarning($"Gun '{g.gunName}' not found in database!");
                             continue;
-                        }
-                        gun.ammoCurrent = g.Maxammo;
-                        gun.ammoReserves = g.MaxammoReserves;
+
+                        gun.ammoCurrent = g.ammoCurrent;
+                        gun.ammoReserves = g.ammoReserves;
+
                         playerScript.GunList.Add(gun);
-                        playerScript.GunListIndex = data.selectedGun;
-                        playerScript.changeGun();
                     }
+
+                    playerScript.GunListIndex = data.selectedGun;
+                    playerScript.changeGun();
                 }
             }
             playerScript.updatePlayerUI();
@@ -721,9 +737,11 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Save player and load given level.
     /// </summary>
-    public void LoadNextLevel(string nextScene)
+    public void LoadNextLevel(string nextScene, bool saveMemory = true)
     {
-        SavePlayerToMemory();  // Save to memory first
+        if(saveMemory)
+            SavePlayerToMemory();
+
         StartCoroutine(LoadingScreenEnable(nextScene));
         
     }
@@ -770,7 +788,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void GetUI()
     {
-        if (needUIReload == true)
+        if (needUIReload == true || PlayerHPDisplay == null)
         {
             menuActive = null;
             menuPause = null;
@@ -791,12 +809,9 @@ public class GameManager : MonoBehaviour
             playerHealScreen = null;
             needUIReload = false;
             playerBrightnessOverlay = null;
-           
+
         }
-        else
-        {
-            return;
-        }
+        else return;
 
         GameObject uiRoot = GameObject.Find("UI");
         if (uiRoot == null)
@@ -918,32 +933,60 @@ public class GameManager : MonoBehaviour
             CameraScript = MainCamera.GetComponent<CameraController>();
             cam = MainCamera.GetComponent<Camera>();
         }
+        lvlManagerObj = FindInactive("LevelManager");
+        if (lvlManagerObj != null)
+            currentlevelManager = lvlManagerObj.GetComponent<LevelManager>();
 
         // Refresh UI
         GetUI();
         playerDamageScreen.color = new Color(colorOrig.r, colorOrig.g, colorOrig.b, 0f);
 
-        // Load player data only if the scene changed
-        if (SceneManager.GetActiveScene().name != persistentPlayerState.lastScene)
-            LoadPlayerFromMemory();
+        string loadedScene = SceneManager.GetActiveScene().name;
 
-        persistentPlayerState.lastScene = SceneManager.GetActiveScene().name;
+        bool usedCheckpointSave = false;
 
-        if (playerScript != null)
-            playerScript.updatePlayerUI();
-
-        //Debug.Log($"Scene '{scene.name}' initialized.");
-        isReloadingScene = false;
-
-        isPaused = false;
-
-        if (scene.name.Contains("Level") || scene.name.Contains("Scene"))
+        // CASE 1: checkpoint load for this scene
+        if (PlayerPrefs.HasKey(SaveKey))
         {
-            if (PlayerPrefs.HasKey(SaveKey))
+            string encoded = PlayerPrefs.GetString(SaveKey);
+            string json = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
+            PlayerSaveData save = JsonUtility.FromJson<PlayerSaveData>(json);
+
+            if (save.currentScene == loadedScene)
+            {
                 LoadGame();
+                usedCheckpointSave = true;
+            }
         }
+
+        // CASE 2: normal level transition
+        bool cameFromMenu =
+        GameManager.OpenMainMenu ||
+        GameManager.OpenLevelSelect ||
+        scene.name == "Main Menu Scene" ||
+        scene.name == "Main Menu Scene First Open";
+
+        if (!usedCheckpointSave && loadedScene != persistentPlayerState.lastScene && !cameFromMenu)
+        {
+            LoadPlayerFromMemory();
+        }
+
+        persistentPlayerState.lastScene = loadedScene;
+
+        isReloadingScene = false;
+        isPaused = false;
         Time.timeScale = timeScaleOrig;
-    }
+
+        OpenMainMenu = false;
+        OpenLevelSelect = false;
+
+        if (!SceneManager.GetActiveScene().name.Contains("Menu"))
+        {
+            enablePlayerUI();
+            stateUnpause();
+            SaveGame();
+        }
+}
 
     public void menuChange(GameObject menuchoice)
     {
