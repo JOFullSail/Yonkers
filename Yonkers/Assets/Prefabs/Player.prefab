@@ -401,7 +401,7 @@ MonoBehaviour:
   projectile: {fileID: 0}
   useCanClimbTag: 0
   climbSpeed: 10.25
-  climbDuration: 0.6
+  climbDuration: 1.5
   climbHighlightDetection: 15
   climbHighlightMultiplier: 1.25
   climbWallDistance: 1.25
