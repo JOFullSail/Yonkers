@@ -104,7 +104,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //[SerializeField] float debugClimbSpeed = 50f;
 
     [Header("Audio")]
-    [SerializeField] AudioSource aud;
+    [SerializeField] AudioSource audSFX;
+    [SerializeField] AudioSource audVoice;
     //[SerializeField] AudioSource audClimbSource;
     [SerializeField] AudioClip[] audJump;
     [Range(0, 1)][SerializeField] float audJumpVol;
@@ -665,7 +666,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 ++jumpCount;
             }
             
-            aud.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
+            audSFX.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
         }
     }
 
@@ -709,7 +710,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     StartCoroutine(flashDmgScreen());
                 }
-                aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
+                audVoice.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
             }
             else
             {
@@ -786,7 +787,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (Input.GetButton("Fire1") && gunList.Count > 0 && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate)
         {
             shootApply();
-            aud.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
+            audSFX.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
             // For special guns
             if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
             {
@@ -816,7 +817,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         if (Input.GetButtonDown("Reload") && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0)
         {
-            aud.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
+            audSFX.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
             int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
             gunList[gunListIdx].ammoReserves -= ammoToLoad;
             gunList[gunListIdx].ammoCurrent = ammoToLoad;
@@ -1325,7 +1326,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     currentDashSpeedZ = dashSpeed;
                 }
                 Instantiate(dashFX, transform.position, transform.rotation);
-                aud.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
+                audSFX.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
                 StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
             }
         }
@@ -1642,23 +1643,23 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         isPlayingSteps = true;
         if (currentFootsteptag == "Grass")
         {
-            aud.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol); 
+            audSFX.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol); 
         }
         else if (currentFootsteptag == "Metal")
         {
-            aud.PlayOneShot(audMetalSteps[Random.Range(0, audMetalSteps.Length)], audMetalStepsVol);
+            audSFX.PlayOneShot(audMetalSteps[Random.Range(0, audMetalSteps.Length)], audMetalStepsVol);
         }
         else if (currentFootsteptag == "Royal")
         {
-            aud.PlayOneShot(audRoyalSteps[Random.Range(0, audRoyalSteps.Length)], audRoyalStepsVol);
+            audSFX.PlayOneShot(audRoyalSteps[Random.Range(0, audRoyalSteps.Length)], audRoyalStepsVol);
         }
         else if (currentFootsteptag == "Stone")
         {
-            aud.PlayOneShot(audStoneSteps[Random.Range(0, audStoneSteps.Length)], audStoneStepsVol);
+            audSFX.PlayOneShot(audStoneSteps[Random.Range(0, audStoneSteps.Length)], audStoneStepsVol);
         }
         else if (currentFootsteptag == "Rock")
         {
-            aud.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
+            audSFX.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
         }
 
             yield return new WaitForSeconds(0.3f);

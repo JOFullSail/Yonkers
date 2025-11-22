@@ -31717,6 +31717,10 @@ PrefabInstance:
       value: 9999999
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
+      propertyPath: levelMusicVol
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: gradeAMinScore
       value: 490000
       objectReference: {fileID: 0}
@@ -34462,7 +34466,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: c136a0057aca9e44295c9aeadf125e51, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 4d2fdbe11f49f9348bf59c19fe4675ad, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &2114326957
 Transform:
