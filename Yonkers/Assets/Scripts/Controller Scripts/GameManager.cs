@@ -989,6 +989,7 @@ public class GameManager : MonoBehaviour
         {
             enablePlayerUI();
             stateUnpause();
+            playerScript.updatePlayerUI();
             SaveGame();
         }
     }
