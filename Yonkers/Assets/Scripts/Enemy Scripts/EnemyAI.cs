@@ -512,11 +512,51 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
         if (canDropItems && Random.Range(0, 100) <= dropChance && possibleItemDrops.Count() > 0)
         {
             int itemPos = Random.Range(0, possibleItemDrops.Length);
-            Vector3 dropPos = transform.position;
-            dropPos.y += 0.5f;
-            Instantiate(possibleItemDrops[itemPos], dropPos, possibleItemDrops[itemPos].transform.rotation);
+            GameObject item = possibleItemDrops[itemPos];
+            float adjustedChance = GetAdjustedDropChance(item);
+
+            if (Random.value <= adjustedChance)
+            {
+                Vector3 dropPos = transform.position + Vector3.up * 0.5f;
+                Instantiate(item, dropPos, item.transform.rotation);
+            }
         }
 
         Destroy(gameObject);
+    }
+
+    private float GetAdjustedDropChance(GameObject item)
+    {
+        float baseChance = dropChance / 100f; // convert to 0–1
+        float needFactor = 0f;
+
+        // Identify item type
+        if (item.CompareTag("HealthDrop"))
+        {
+            // HP percentages
+            float hpPercent = (float)GameManager.instance.playerScript.CurrentHealth /
+                              GameManager.instance.playerScript.OriginalHealth;
+
+            // HP need curve: (1 - health)^1.5
+            needFactor = Mathf.Pow(1f - hpPercent, 1.5f);
+        }
+        else if (item.CompareTag("AmmoDrop"))
+        {
+            // Total ammo percentage across all guns
+            float totalAmmoCurrent = 0f;
+            float totalAmmoMax = 0f;
+
+            foreach (var gun in GameManager.instance.playerScript.GunList)
+            {
+                totalAmmoCurrent += gun.ammoReserves;
+                totalAmmoMax += gun.maxAmmoReserves;
+            }
+
+            float ammoPercent = (totalAmmoCurrent / totalAmmoMax);
+            needFactor = Mathf.Pow(1f - ammoPercent, 1.5f);
+        }
+
+        // Final adjusted chance
+        return Mathf.Clamp01(baseChance * (1f + needFactor * 1.5f));
     }
 }

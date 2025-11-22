@@ -18,6 +18,8 @@ TagManager:
   - Royal
   - Stone
   - Rock
+  - HealthDrop
+  - AmmoDrop
   layers:
   - Default
   - TransparentFX

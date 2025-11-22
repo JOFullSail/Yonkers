@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SMG Ammo Crate (1) Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 8530755518147922094, guid: e1024daa375f0884b894eb9a92d609d8, type: 3}
+      propertyPath: m_TagString
+      value: AmmoDrop
+      objectReference: {fileID: 0}
     - target: {fileID: 9108539908053840504, guid: e1024daa375f0884b894eb9a92d609d8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.55
