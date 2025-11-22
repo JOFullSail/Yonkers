@@ -273,7 +273,7 @@ public class GameManager : MonoBehaviour
 #endif
         if (playerScript != null)
         {
-            if (playerScript.GunList.Count > 0 && SceneManager.GetActiveScene().name != "Main Menu Scene" && GameManager.instance.isPaused == false)
+            if (playerScript.GunList.Count > 0 && SceneManager.GetActiveScene().name != "Main Menu Scene" && GameManager.instance.menuActive == null)
             {
                 PlayerAmmoDisplay.SetActive(true);
             }
@@ -282,7 +282,7 @@ public class GameManager : MonoBehaviour
                 PlayerAmmoDisplay.SetActive(false);
             }
         }
-        else if(GameManager.instance.isPaused) {
+        else if(GameManager.instance.menuActive != null) {
         
             PlayerAmmoDisplay.SetActive(false);
         }
