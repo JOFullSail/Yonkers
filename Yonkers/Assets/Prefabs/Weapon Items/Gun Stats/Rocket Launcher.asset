@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GunStats
   gunModel: {fileID: 4490302565791019165, guid: f26add0b8561051438426890f3bd0f19, type: 3}
   shootRate: 0.1
-  ammoCurrent: 0
+  ammoCurrent: 1
   ammoMax: 1
   ammoReserves: 0
-  recoilToCamera: 0
-  recoilToUser: 0
+  maxAmmoReserves: 0
+  recoilDistance: 0.1
+  recoilRecoverySpeed: 10
+  recoilSharpness: 20
   isSpecial: 1
   projectile: {fileID: 4092872357349286730, guid: 3bef1433a85e5aa438d34ea091772b56, type: 3}
   isHitscan: 0
@@ -28,6 +30,11 @@ MonoBehaviour:
   shootSound:
   - {fileID: 8300000, guid: 40e71b0f7bd610849b40f150553f4702, type: 3}
   shootSoundVol: 0.5
+  reloadSound: []
+  reloadSoundVol: 0
   positionWhenHeld: {x: 0.2, y: -0.28, z: -0.17}
-  rotationWhenHeld: {x: -95.017, y: 15.203, z: -93.746}
+  rotationWhenHeld: {x: -95.017, y: 15.203, z: -93.746, w: 0}
   scaleWhenHeld: {x: 1, y: 1, z: 1}
+  reloadMoveDistance: 0.2
+  reloadRotateAngle: 25
+  reloadSpeed: 8

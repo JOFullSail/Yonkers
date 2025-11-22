@@ -1,71 +1,67 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-public class LevelScoreDisplay : MonoBehaviour
+
+public class LevelScoreDisplay : MonoBehaviour,
+    IPointerEnterHandler, IPointerExitHandler,
+    ISelectHandler, IDeselectHandler
 {
     [SerializeField] GameObject displayAspect;
-    [SerializeField] GameObject OnTop; //used for buttond 4 and 5 to display the right one;
-    [SerializeField] GameObject RealParent;// used to reassign parnet back to rght right one for level 4 and 5;
-    Vector3 OGpostion;
-    bool isDisplaying = false;
-    bool getOGpostion = true;
+    [SerializeField] GameObject OnTop;
+    [SerializeField] GameObject RealParent;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Update()
+    Vector3 OGposition;
+    bool getOGposition = true;
+
+    void ShowBox()
     {
-        if ((EventSystem.current.IsPointerOverGameObject() == true && EventSystem.current.currentSelectedGameObject == gameObject && isDisplaying == false))
+        if (getOGposition)
         {
-            if (getOGpostion == true)
-            {
-                OGpostion = displayAspect.transform.localPosition;
-                getOGpostion = false;
-            }
+            OGposition = displayAspect.transform.localPosition;
+            getOGposition = false;
+        }
 
-            if (gameObject.name == "Level 1 Button")
-            {
-                displayAspect.transform.parent.SetParent(OnTop.transform, false);
-                gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(245, -5, 0);
-            }
-            else if (gameObject.name == "Level 2 Button")
-            {
-                displayAspect.transform.parent.SetParent(OnTop.transform, false);
-                gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(245, -5, 0);
-            }
-            else if (gameObject.name == "Level 3 Button")
-            {
-                displayAspect.transform.parent.SetParent(OnTop.transform, false);
-                gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(245, -5, 0);
-            }
-            else if (gameObject.name == "Level 4 Button")
-            {
-                displayAspect.transform.parent.SetParent(OnTop.transform, false);
-                gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(-245, -5, 0);
-            }
-            else if (gameObject.name == "Level 5 Button")
-            {
-                displayAspect.transform.parent.SetParent(OnTop.transform, false);
-                gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(-245, -5, 0);
-            }
-            else if (gameObject.name == "Level 6 Button")
-            {
-                displayAspect.transform.parent.SetParent(OnTop.transform, false);
-                gameObject.transform.parent.SetParent(OnTop.transform, false);
-                displayAspect.transform.localPosition = new Vector3(-245, -5, 0); 
-            }
-            isDisplaying = true;
-        }
-        else if ((EventSystem.current.currentSelectedGameObject != gameObject && isDisplaying == true))
-        {
-            displayAspect.transform.parent.SetParent(RealParent.transform, false);
-            gameObject.transform.parent.SetParent(RealParent.transform, false);
-            displayAspect.transform.localPosition = OGpostion;
-            isDisplaying = false;
-            getOGpostion = true;
-        }
+        displayAspect.transform.parent.SetParent(OnTop.transform, false);
+        transform.parent.SetParent(OnTop.transform, false);
+
+        if (name.Contains("1") || name.Contains("2") || name.Contains("3"))
+            displayAspect.transform.localPosition = new Vector3(245, -5, 0);
+        else
+            displayAspect.transform.localPosition = new Vector3(-245, -5, 0);
+    }
+
+    void HideBox()
+    {
+        displayAspect.transform.parent.SetParent(RealParent.transform, false);
+        transform.parent.SetParent(RealParent.transform, false);
+        displayAspect.transform.localPosition = OGposition;
+
+        getOGposition = true;
+    }
+
+    // MOUSE HOVER
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+
+        ShowBox();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+
+        HideBox();
+    }
+
+    // KEYBOARD
+    public void OnSelect(BaseEventData eventData)
+    {
+        ShowBox();
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        HideBox();
     }
 }

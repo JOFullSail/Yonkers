@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Sprite gradeiconC;
     [SerializeField] Sprite gradeiconD;
     [SerializeField] Sprite gradeiconUn;//ungraded
-    
+
     [SerializeField] GameObject inLVLScorenGrade;
     public TMP_ColorGradient hasAmmoGradient;
     public TMP_ColorGradient NoAmmoGradient;
@@ -228,10 +228,10 @@ public class GameManager : MonoBehaviour
                 goalObject = GameObject.FindWithTag("Goal");
                 MainCamera = GameObject.FindWithTag("MainCamera");
                 CameraScript = MainCamera.GetComponent<CameraController>();
-                cam = MainCamera.GetComponent<Camera>();  
+                cam = MainCamera.GetComponent<Camera>();
             }
 
-            timeScaleOrig = Time.timeScale;   
+            timeScaleOrig = Time.timeScale;
             menuActive = mainMenu;
             colorOrig = playerDamageScreen.color;
             menuActive.SetActive(true);
@@ -287,8 +287,9 @@ public class GameManager : MonoBehaviour
                 PlayerAmmoDisplay.SetActive(false);
             }
         }
-        else if(GameManager.instance.menuActive != null) {
-        
+        else if (GameManager.instance.menuActive != null)
+        {
+
             PlayerAmmoDisplay.SetActive(false);
         }
         if (currentlevelManager != null)
@@ -297,7 +298,7 @@ public class GameManager : MonoBehaviour
             inLvLgrade.sprite = GradeImageGetter(currentLvLgrade);
             inLvlgradetext.colorGradientPreset = GradientGetter(currentLvLgrade);
             inLvlScoreNumber.colorGradientPreset = GradientGetter(currentLvLgrade);
-            inLvlScoreNumber.text = currentlevelManager.currentScore.ToString("F0"); 
+            inLvlScoreNumber.text = currentlevelManager.currentScore.ToString("F0");
         }
         if (menuActive == null)
         {
@@ -313,7 +314,7 @@ public class GameManager : MonoBehaviour
     {
         statePause();
         menuActive = menuLevelComplete;
-        
+
         menuActive.SetActive(true);
     }
     public void stateMainMenuOpen()
@@ -406,7 +407,7 @@ public class GameManager : MonoBehaviour
                 ammoCurrent = gun.ammoCurrent,
                 ammoReserves = gun.ammoReserves,
                 Maxammo = gun.ammoMax,
-                MaxammoReserves =gun.maxAmmoReserves
+                MaxammoReserves = gun.maxAmmoReserves
             };
             data.guns.Add(g);
         }
@@ -529,7 +530,7 @@ public class GameManager : MonoBehaviour
             levelScores.Clear();
             levelGrades.Clear();
             if (levelOrder.Count > 0)
-                unlockedLevels.Add(levelOrder[0]); 
+                unlockedLevels.Add(levelOrder[0]);
             return;
         }
 
@@ -666,8 +667,8 @@ public class GameManager : MonoBehaviour
         if (playerScript.CurrentHealth <= 0)
             playerScript.CurrentHealth = playerScript.OriginalHealth;
         playerScript.GunList.Clear();
-        
-        if(persistentPlayerState.guns.Count() != 0)
+
+        if (persistentPlayerState.guns.Count() != 0)
         {
             foreach (GunStatsData g in persistentPlayerState.guns)
             {
@@ -684,7 +685,7 @@ public class GameManager : MonoBehaviour
                 playerScript.changeGun();
         }
         lvlManagerObj = FindInactive("LevelManager");
-        currentlevelManager = lvlManagerObj.GetComponent<LevelManager>(); 
+        currentlevelManager = lvlManagerObj.GetComponent<LevelManager>();
         playerScript.updatePlayerUI();
 
         //Debug.Log("Player state restored from memory after scene load.");
@@ -743,11 +744,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void LoadNextLevel(string nextScene, bool saveMemory = true)
     {
-        if(saveMemory)
+        if (saveMemory)
             SavePlayerToMemory();
 
         StartCoroutine(LoadingScreenEnable(nextScene));
-        
+
     }
 
     /// <summary>
@@ -873,7 +874,7 @@ public class GameManager : MonoBehaviour
         ScoreLVL4 = FindInactive("Score Text 4").GetComponent<TMP_Text>();
         ScoreLVL5 = FindInactive("Score Text 5").GetComponent<TMP_Text>();
         ScoreLVL6 = FindInactive("Score Text 6").GetComponent<TMP_Text>();
-        GradeLVL1 = FindInactive("Grade Image 1").GetComponent<Image>(); 
+        GradeLVL1 = FindInactive("Grade Image 1").GetComponent<Image>();
         GradeLVL2 = FindInactive("Grade Image 2").GetComponent<Image>();
         GradeLVL3 = FindInactive("Grade Image 3").GetComponent<Image>();
         GradeLVL4 = FindInactive("Grade Image 4").GetComponent<Image>();
@@ -890,7 +891,7 @@ public class GameManager : MonoBehaviour
         PlayerClimbStaminaDisplay = FindInactive("Player Climb Stamina");
         LoadingScreen = FindInactive("Loading Screen");
         LoadingScreendotdotdot = FindInactive("Loading Text ...").GetComponent<TMP_Text>();
-        inLvLgrade = FindInactive("inlvlGradeImg").GetComponent<Image>(); 
+        inLvLgrade = FindInactive("inlvlGradeImg").GetComponent<Image>();
         inLvlScoreNumber = FindInactive("InlevelScoreNumber").GetComponent<TMP_Text>();
         inLvlgradetext = FindInactive("inlvlGrade:").GetComponent<TMP_Text>();
         WinGradetxt = FindInactive("RealFinalGrade:").GetComponent<TMP_Text>();
@@ -990,7 +991,7 @@ public class GameManager : MonoBehaviour
             stateUnpause();
             SaveGame();
         }
-}
+    }
 
     public void menuChange(GameObject menuchoice)
     {
@@ -1095,7 +1096,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void RecordLevelScore(int score, char grade)
     {
-        string levelName = SceneManager.GetActiveScene().name; 
+        string levelName = SceneManager.GetActiveScene().name;
 
         levelScores[levelName] = score;
         levelGrades[levelName] = grade;
@@ -1192,7 +1193,7 @@ public class GameManager : MonoBehaviour
     {
         if (musicSource == null) return;
 
-        if(LevelManager.instance != null && LevelManager.instance.levelMusic != null)
+        if (LevelManager.instance != null && LevelManager.instance.levelMusic != null)
             levelMusic = LevelManager.instance.levelMusic;
 
         if (musicSource.clip == levelMusic && musicSource.isPlaying) return;
@@ -1433,8 +1434,8 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-        IEnumerator Loadingdots()
-    { 
+    IEnumerator Loadingdots()
+    {
         yield return new WaitForSecondsRealtime(1f);
     }
 }

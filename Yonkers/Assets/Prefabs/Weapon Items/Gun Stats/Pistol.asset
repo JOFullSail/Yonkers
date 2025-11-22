@@ -16,10 +16,11 @@ MonoBehaviour:
   shootRate: 0.5
   ammoCurrent: 10
   ammoMax: 10
-  ammoReserves: 949
+  ammoReserves: 810
   maxAmmoReserves: 999
-  recoilToCamera: 0
-  recoilToUser: 0
+  recoilDistance: 0.1
+  recoilRecoverySpeed: 10
+  recoilSharpness: 20
   isSpecial: 0
   projectile: {fileID: 0}
   isHitscan: 1
@@ -33,5 +34,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d85099fefd84d429788e09001413207b, type: 3}
   reloadSoundVol: 0.03
   positionWhenHeld: {x: 0.2, y: -0.2229996, z: 0.4335518}
-  rotationWhenHeld: {x: 0, y: 0, z: 0}
+  rotationWhenHeld: {x: 0, y: 0, z: 0, w: 0}
   scaleWhenHeld: {x: 1, y: 1, z: 1}
+  reloadMoveDistance: 0.2
+  reloadRotateAngle: 25
+  reloadSpeed: 8
