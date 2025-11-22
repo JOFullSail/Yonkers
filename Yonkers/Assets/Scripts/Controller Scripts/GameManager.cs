@@ -7,6 +7,7 @@ using System.Text;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
@@ -70,6 +71,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip menuMusic;
     [SerializeField] private AudioClip levelMusic;
+    public AudioMixer audMix;
+    public TMP_Text FOVcurrentNumber;
+    public TMP_Text MouseSenscurrentNumber;
+    public TMP_Text BrightnesscurrentNumber;
+    public TMP_Text MastervolcurrentNumber;
+    public TMP_Text MusicvolcurrentNumber;
+    public TMP_Text SFXvolcurrentNumber;
+    public TMP_Text CVoicescurrentNumber;
     public GameObject lvlManagerObj;
     public GameObject playerSpawn;
     public GameObject player;
@@ -231,11 +240,10 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 #if UNITY_WEBGL
-        if (Input.GetButtonDown("Pause") && currScene.name != "Main Menu Scene" && currScene.name != "Main Menu Scene First Open")
+        if (Input.GetButtonDown("Pause") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open")
         {
             if (menuActive == null)
             {
-                disablePlayerUI();
                 statePause();
                 menuActive = menuPause;
                 menuActive.SetActive(true);
@@ -244,16 +252,14 @@ public class GameManager : MonoBehaviour
             else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen)
             {
                 stateUnpause();
-                enablePlayerUI();
             }
         }
         ExitButton.SetActive(false);
 #else
-        if (Input.GetButtonDown("Cancel") && currScene.name != "Main Menu Scene" && currScene.name != "Main Menu Scene First Open")
+        if (Input.GetButtonDown("Cancel") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open")
         {
             if (menuActive == null)
             {
-                disablePlayerUI();
                 statePause();
                 menuActive = menuPause;
                 menuActive.SetActive(true);
@@ -262,7 +268,6 @@ public class GameManager : MonoBehaviour
             else if ((menuActive == menuPause || menuActive != null) && menuActive != LoadingScreen)
             {
                 stateUnpause();
-                enablePlayerUI();
             }
         }
 #endif
@@ -287,7 +292,15 @@ public class GameManager : MonoBehaviour
             inLvLgrade.sprite = GradeImageGetter(currentLvLgrade);
             inLvlgradetext.colorGradientPreset = GradientGetter(currentLvLgrade);
             inLvlScoreNumber.colorGradientPreset = GradientGetter(currentLvLgrade);
-            inLvlScoreNumber.text = currentlevelManager.currentScore.ToString("F0");
+            inLvlScoreNumber.text = currentlevelManager.currentScore.ToString("F0"); 
+        }
+        if (menuActive == null)
+        {
+            enablePlayerUI();
+        }
+        else
+        {
+            disablePlayerUI();
         }
     }
 
@@ -815,6 +828,13 @@ public class GameManager : MonoBehaviour
         submenuLockedlevel4 = FindInactive("Locked 4");
         submenuLockedlevel5 = FindInactive("Locked 5");
         submenuLockedlevel6 = FindInactive("Locked 6");
+        FOVcurrentNumber = FindInactive("FOV Current Value").GetComponent<TMP_Text>(); ;
+        MouseSenscurrentNumber = FindInactive("Mouse Sens Current Value").GetComponent<TMP_Text>(); ;
+        BrightnesscurrentNumber = FindInactive("Brightness Current Value").GetComponent<TMP_Text>(); ;
+        MastervolcurrentNumber = FindInactive("MasterVol Current Value").GetComponent<TMP_Text>(); ;
+        MusicvolcurrentNumber = FindInactive("MusicVol Current Value").GetComponent<TMP_Text>(); ;
+        SFXvolcurrentNumber = FindInactive("SFXVol Current Value").GetComponent<TMP_Text>(); ;
+        CVoicescurrentNumber = FindInactive("Character Voices Vol Current Value").GetComponent<TMP_Text>(); ;
         submenuUnlockedlevel2button = FindInactive("Level 2 Button");
         submenuUnlockedlevel2stats = FindInactive("Level 2 Button Back Ground");
         submenuUnlockedlevel3button = FindInactive("Level 3 Button");

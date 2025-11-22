@@ -1,15 +1,25 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
+using UnityEngine.Audio;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Rendering;
 
 public class ButtonFunctions : MonoBehaviour
 {
     public Image FOVSliderParent;
     public Image mouSensSliderParent;
     public Image brightnessSliderParent;
+    public Image MasterVolSliderParent;
+    public Image MusicVolSliderParent;
+    public Image SFXVolSliderParent;
+    public Image CharacterVoicesSliderParent;
 
+    public float MasterVolorig;
+    public float MusicVolorig;
+    public float SFXVolorig;
+    public float CVVolorig;
     void Start()
     {
         if (SettingsData.instance != null)
@@ -20,9 +30,13 @@ public class ButtonFunctions : MonoBehaviour
             }
             if (FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
             {
-                FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOV, SettingsData.instance.FOVMin, SettingsData.instance.FOVMax);
-                mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSens, SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax);
-                brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightness, SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax);
+                FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOVMin, SettingsData.instance.FOVMax,SettingsData.instance.FOV);
+                mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax,SettingsData.instance.mouSens);
+                brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax,SettingsData.instance.brightness);
+                MasterVolSliderParent.fillAmount = normalize(SettingsData.instance.MasterVolMin, SettingsData.instance.MasterVolMax, SettingsData.instance.MasterVol);
+                MusicVolSliderParent.fillAmount = normalize(SettingsData.instance.MusicVolMin, SettingsData.instance.MusicVolMax, SettingsData.instance.MusicVol);
+                SFXVolSliderParent.fillAmount = normalize(SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVolMax, SettingsData.instance.SFXVol);
+                CharacterVoicesSliderParent.fillAmount = normalize(SettingsData.instance.CharacterVoicesVolMin, SettingsData.instance.CharacterVoicesVolMax, SettingsData.instance.CharacterVoicesVol);
             }
         }
     }
@@ -70,7 +84,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         if (LevelManager.instance.pointsLostOnRespawn > 0)
             LevelManager.instance.CurrentScore -= LevelManager.instance.pointsLostOnRespawn;
-
+        GameManager.instance.playerScript.clearKnockback();
         GameManager.instance.stateUnpause();
         GameManager.instance.RespawnFromCheckpoint(true);
     }
@@ -78,6 +92,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         GameManager.instance.stateUnpause();
+        GameManager.instance.LoadGame();
     }
     public void play()
     {
@@ -101,10 +116,60 @@ public class ButtonFunctions : MonoBehaviour
 
         // Applying Values
         SettingsData.instance.FOV = sliderValue;
-        if (GameManager.instance.cam.fieldOfView > 0) GameManager.instance.cam.fieldOfView = sliderValue;
+        GameManager.instance.FOVcurrentNumber.text = sliderValue.ToString();
+        if (GameManager.instance.cam.fieldOfView > 0) GameManager.instance.cam.fieldOfView = sliderValue; 
 
         // Updating UI Bars
         FOVSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+    }
+    public void masterVol(Slider slider)
+    {
+        // Whole Number Settings
+        float sliderValue;
+        sliderValue = slider.value;
+        // Applying Values
+        GameManager.instance.audMix.SetFloat("MasterVolume", Mathf.Log10(sliderValue)*20);
+        SettingsData.instance.MasterVol = sliderValue; 
+        GameManager.instance.MastervolcurrentNumber.text = (sliderValue*100).ToString("F0");
+        // Updating UI Bars
+        MasterVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+    }
+    public void musicVol(Slider slider)
+    {
+        // Whole Number Settings
+        float sliderValue;
+        sliderValue = slider.value;
+        // Applying Values
+        GameManager.instance.audMix.SetFloat("MusicVolume", Mathf.Log10(sliderValue) * 20);
+        SettingsData.instance.MusicVol =  sliderValue;
+        GameManager.instance.MusicvolcurrentNumber.text = (sliderValue * 100).ToString("F0");
+        // Updating UI Bars
+        MusicVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+    }
+    public void SFXVol(Slider slider)
+    {
+        // Whole Number Settings
+        float sliderValue;
+        sliderValue = slider.value;
+        // Applying Values
+        SettingsData.instance.SFXVol = sliderValue;
+        GameManager.instance.audMix.SetFloat("SFXVolume", Mathf.Log10(sliderValue) * 20);
+        GameManager.instance.SFXvolcurrentNumber.text = (sliderValue * 100).ToString("F0");
+        // Updating UI Bars
+        SFXVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+    }
+    public void charactervoicesVol(Slider slider)
+    {
+        // Whole Number Settings
+        float sliderValue;
+        if (SettingsData.instance.CharacterVoicesVolWholeNumbers) sliderValue = (int)slider.value;
+        else sliderValue = slider.value;
+        // Applying Values
+        SettingsData.instance.CharacterVoicesVol = sliderValue;
+        GameManager.instance.audMix.SetFloat("VoiceVolume", Mathf.Log10(sliderValue) * 20);
+        GameManager.instance.CVoicescurrentNumber.text = (sliderValue * 100).ToString("F0");
+        // Updating UI Bars
+        CharacterVoicesSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
 
     public void mouSens(Slider slider)
@@ -115,6 +180,7 @@ public class ButtonFunctions : MonoBehaviour
 
         // Applying Values
         SettingsData.instance.mouSens = sliderValue;
+        GameManager.instance.MouseSenscurrentNumber.text = sliderValue.ToString();
         if (GameManager.instance.CameraScript) GameManager.instance.CameraScript.mouSens = sliderValue;
 
         // Updating UI Bars
@@ -146,6 +212,7 @@ public class ButtonFunctions : MonoBehaviour
             clr.a = alphaValue;
             GameManager.instance.playerBrightnessOverlay.color = clr;
         }
+        GameManager.instance.BrightnesscurrentNumber.text = sliderValue.ToString();
         brightnessSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
     
@@ -182,7 +249,6 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.LoadNextLevel("Main Menu Scene");
         GameManager.instance.clearActive();
         GameManager.instance.LoadProgression();
-        GameManager.instance.disablePlayerUI();
         GameManager.instance.backtoMainmenu();
     }
     public void toCredits() //credits in main menu uses this!
@@ -209,12 +275,12 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.clearActive();
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
-        GameManager.instance.disablePlayerUI();
 
     }
     //Continue goes to level select but uses player's current save data
     public void ContinuetoLevelSelect()
     {
+        GameManager.instance.LoadProgression();
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
     }
@@ -225,17 +291,17 @@ public class ButtonFunctions : MonoBehaviour
             gotoLevel2();
             return;
         }
-        else if (SceneManager.GetActiveScene().name == "Level 1 - Yonk Hill")
+        else if (SceneManager.GetActiveScene().name == "Level 2 - Yonk Hill")
         {
             gotoLevel3();
             return;
         }
-        else if (SceneManager.GetActiveScene().name == "Level 2 - Yonk Factory")//ADD NAMES!
+        else if (SceneManager.GetActiveScene().name == "Level 3 - Yonk Factory")//ADD NAMES!
         {
             gotoLevel4();
             return;
         }
-        else if (SceneManager.GetActiveScene().name == "Level 3- The Wall")
+        else if (SceneManager.GetActiveScene().name == "Level 4 - The Wall")
         {
             gotoLevel5();
             return;
@@ -252,33 +318,32 @@ public class ButtonFunctions : MonoBehaviour
     public void gotoLevel1()//head to level 1
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
         GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
-
+        GameManager.instance.LoadGame();
 
     }
     public void gotoLevel2()//head to level 2
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 1 - Yonk Hill");
+        GameManager.instance.LoadNextLevel("Level 2 - Yonk Hill");
+        GameManager.instance.LoadGame();
     }
     public void gotoLevel3()//head to level 3
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 2 - Yonk Factory");
+        GameManager.instance.LoadNextLevel("Level 3 - Yonk Factory");
+        GameManager.instance.LoadGame();
     } 
     public void gotoLevel4()//head to level 4
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 3- The Wall");
+        GameManager.instance.LoadNextLevel("Level 4 - The Wall");
+        GameManager.instance.LoadGame();
     }
     public void gotoLevel5()//head to level 5
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 5- THE FINAL YONK");
+        GameManager.instance.LoadNextLevel("Level 5 - THE FINAL YONK");
+        GameManager.instance.LoadGame(); 
     }
 }
