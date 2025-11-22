@@ -291,17 +291,17 @@ public class ButtonFunctions : MonoBehaviour
             gotoLevel2();
             return;
         }
-        else if (SceneManager.GetActiveScene().name == "Level 1 - Yonk Hill")
+        else if (SceneManager.GetActiveScene().name == "Level 2 - Yonk Hill")
         {
             gotoLevel3();
             return;
         }
-        else if (SceneManager.GetActiveScene().name == "Level 2 - Yonk Factory")//ADD NAMES!
+        else if (SceneManager.GetActiveScene().name == "Level 3 - Yonk Factory")//ADD NAMES!
         {
             gotoLevel4();
             return;
         }
-        else if (SceneManager.GetActiveScene().name == "Level 3- The Wall")
+        else if (SceneManager.GetActiveScene().name == "Level 4 - The Wall")
         {
             gotoLevel5();
             return;
@@ -327,24 +327,24 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 1 - Yonk Hill");
+        GameManager.instance.LoadNextLevel("Level 2 - Yonk Hill");
     }
     public void gotoLevel3()//head to level 3
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 2 - Yonk Factory");
+        GameManager.instance.LoadNextLevel("Level 3 - Yonk Factory");
     } 
     public void gotoLevel4()//head to level 4
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 3- The Wall");
+        GameManager.instance.LoadNextLevel("Level 4 - The Wall");
     }
     public void gotoLevel5()//head to level 5
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 5- THE FINAL YONK");
+        GameManager.instance.LoadNextLevel("Level 5 - THE FINAL YONK");
     }
 }
