@@ -84,7 +84,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         if (LevelManager.instance.pointsLostOnRespawn > 0)
             LevelManager.instance.CurrentScore -= LevelManager.instance.pointsLostOnRespawn;
-
+        GameManager.instance.playerScript.clearKnockback();
         GameManager.instance.stateUnpause();
         GameManager.instance.RespawnFromCheckpoint(true);
     }
@@ -92,6 +92,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         GameManager.instance.stateUnpause();
+        GameManager.instance.LoadGame();
     }
     public void play()
     {
@@ -116,7 +117,7 @@ public class ButtonFunctions : MonoBehaviour
         // Applying Values
         SettingsData.instance.FOV = sliderValue;
         GameManager.instance.FOVcurrentNumber.text = sliderValue.ToString();
-        if (GameManager.instance.cam.fieldOfView > 0) GameManager.instance.cam.fieldOfView = sliderValue;
+        if (GameManager.instance.cam.fieldOfView > 0) GameManager.instance.cam.fieldOfView = sliderValue; 
 
         // Updating UI Bars
         FOVSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
@@ -248,7 +249,6 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.LoadNextLevel("Main Menu Scene");
         GameManager.instance.clearActive();
         GameManager.instance.LoadProgression();
-        GameManager.instance.disablePlayerUI();
         GameManager.instance.backtoMainmenu();
     }
     public void toCredits() //credits in main menu uses this!
@@ -275,12 +275,12 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.clearActive();
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
-        GameManager.instance.disablePlayerUI();
 
     }
     //Continue goes to level select but uses player's current save data
     public void ContinuetoLevelSelect()
     {
+        GameManager.instance.LoadProgression();
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
     }
@@ -318,33 +318,32 @@ public class ButtonFunctions : MonoBehaviour
     public void gotoLevel1()//head to level 1
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
         GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
-
+        GameManager.instance.LoadGame();
 
     }
     public void gotoLevel2()//head to level 2
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
         GameManager.instance.LoadNextLevel("Level 2 - Yonk Hill");
+        GameManager.instance.LoadGame();
     }
     public void gotoLevel3()//head to level 3
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
         GameManager.instance.LoadNextLevel("Level 3 - Yonk Factory");
+        GameManager.instance.LoadGame();
     } 
     public void gotoLevel4()//head to level 4
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
         GameManager.instance.LoadNextLevel("Level 4 - The Wall");
+        GameManager.instance.LoadGame();
     }
     public void gotoLevel5()//head to level 5
     {
         GameManager.instance.stateUnpause();
-        GameManager.instance.enablePlayerUI();
         GameManager.instance.LoadNextLevel("Level 5 - THE FINAL YONK");
+        GameManager.instance.LoadGame(); 
     }
 }
