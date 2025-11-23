@@ -11071,6 +11071,7 @@ GameObject:
   - component: {fileID: 529753571}
   - component: {fileID: 529753570}
   - component: {fileID: 529753572}
+  - component: {fileID: 529753573}
   m_Layer: 0
   m_Name: Platform
   m_TagString: Untagged
@@ -11171,6 +11172,23 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &529753573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529753567}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifierVolume
+  m_SerializedVersion: 0
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 1, z: 0}
+  m_Area: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &533616652
 GameObject:
   m_ObjectHideFlags: 0
@@ -13237,7 +13255,7 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 12817
   m_UseGeometry: 0
   m_DefaultArea: 0
   m_GenerateLinks: 0
@@ -20131,8 +20149,16 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4510749989317414373, guid: 9001800429e67964284fe8f5ab9ed0bc, type: 3}
+      propertyPath: stoppingDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4510749989317414373, guid: 9001800429e67964284fe8f5ab9ed0bc, type: 3}
       propertyPath: initialAttackDelay
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5674799451293093876, guid: 9001800429e67964284fe8f5ab9ed0bc, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6327477208707926472, guid: 9001800429e67964284fe8f5ab9ed0bc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -20750,15 +20776,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7743745355525926415, guid: 991998a0fa357ef4bb8eea8b95905c68, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.26718
+      value: -1.22
       objectReference: {fileID: 0}
     - target: {fileID: 7743745355525926415, guid: 991998a0fa357ef4bb8eea8b95905c68, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 73.00477
+      value: 73.82
       objectReference: {fileID: 0}
     - target: {fileID: 7743745355525926415, guid: 991998a0fa357ef4bb8eea8b95905c68, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 241.31331
+      value: 242.47
       objectReference: {fileID: 0}
     - target: {fileID: 7743745355525926415, guid: 991998a0fa357ef4bb8eea8b95905c68, type: 3}
       propertyPath: m_LocalRotation.w
