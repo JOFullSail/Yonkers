@@ -1502,6 +1502,7 @@ MonoBehaviour:
   targetDistance: 50
   reach: 2
   isSuicider: 1
+  suicideOnTouch: 1
   audEn: {fileID: 6208982158495579647}
   audPunch:
   - {fileID: 8300000, guid: b8cc333d7b8157346bf7df9953079973, type: 3}
@@ -1548,9 +1549,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.75
-  m_Height: 3.86
+  m_Height: 3
   m_Direction: 1
-  m_Center: {x: 0, y: 1.75, z: 0}
+  m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!195 &5089994146430952583
 NavMeshAgent:
   m_ObjectHideFlags: 0

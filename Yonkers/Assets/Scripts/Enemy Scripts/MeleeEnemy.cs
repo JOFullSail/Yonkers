@@ -16,6 +16,7 @@ public class MeleeEnemy : EnemyAI
     [SerializeField] float targetDistance;
     [SerializeField] float reach;
     [SerializeField] bool isSuicider;
+    [SerializeField] bool suicideOnTouch;
     [SerializeField] AudioSource audEn;
     [SerializeField] AudioClip[] audPunch;
     [Range(0, 1)][SerializeField] float audPunchVol;
@@ -26,6 +27,7 @@ public class MeleeEnemy : EnemyAI
     float attackTimer;
     float chargeTimer;
     Vector3 playerPosition;
+    Vector3 transformPosition;
     Vector3 newPushPosition;
     Vector3 dir;
 
@@ -33,12 +35,17 @@ public class MeleeEnemy : EnemyAI
     {
         foreach (TrailRenderer trail in dashTrails)
             trail.emitting = false;
+        if (!isSuicider) suicideOnTouch = false;
     }
 
     void Update()
     {
+        transformPosition = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z);
         if (playerDetected)
             playerPosition = GameManager.instance.player.transform.position - transform.position;
+        
+        if (suicideOnTouch && Vector3.Distance(GameManager.instance.player.transform.position, transformPosition) <= reach)
+            punch(pushForce, playerPosition);
 
         attackTimer += Time.deltaTime;
 
@@ -74,7 +81,7 @@ public class MeleeEnemy : EnemyAI
                     Time.deltaTime * dashSpeed
                 );
 
-                punch(pushForce, (GameManager.instance.player.transform.position - transform.position));
+                punch(pushForce, playerPosition);
             }
 
             if (Vector3.Distance(transform.position, newPushPosition) <= 0.1f || punched)
@@ -96,7 +103,7 @@ public class MeleeEnemy : EnemyAI
         dir = dir.normalized;
         Vector3 totalPunch = dir * Force;
 
-        if (Vector3.Distance(GameManager.instance.player.transform.position, transform.position) <= reach)
+        if (Vector3.Distance(GameManager.instance.player.transform.position, transformPosition) <= reach)
         {
             animator.SetTrigger("Attack");
             GameManager.instance.playerScript.Knockbacked = true;
@@ -116,7 +123,7 @@ public class MeleeEnemy : EnemyAI
     void dashattack()
     {
         RaycastHit detected;
-        Debug.DrawRay(transform.position, playerPosition, Color.blue);
+        //Debug.DrawRay(transform.position, playerPosition, Color.blue);
 
         if (Physics.Raycast(transform.position, playerPosition.normalized, out detected, targetDistance))
         {
