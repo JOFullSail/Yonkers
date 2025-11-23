@@ -282,30 +282,17 @@ public class ButtonFunctions : MonoBehaviour
     public void ContinuetoLevelSelect()
     {
         GameManager.instance.levelLocks();
-        GameManager.instance.menuTolevel();
+        GameManager.instance.statetoLevelSelect(); 
     }
       public void Nextlevel()
     {
-        if(SceneManager.GetActiveScene().name == "Level 1 - Jorg Plains")
-        {
-            gotoLevel2();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "Level 2 - Yonk Hill")
-        {
-            gotoLevel3();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "Level 3 - Yonk Factory")//ADD NAMES!
-        {
-            gotoLevel4();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "Level 4 - The Wall")
-        {
-            gotoLevel5();
-            return;
-        }
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+
+        string scenePath = SceneUtility.GetScenePathByBuildIndex(nextSceneIndex);
+
+        string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+
+        GameManager.instance.LoadNextLevel(sceneName);
     }
     public void gotoMainmenu()
     {

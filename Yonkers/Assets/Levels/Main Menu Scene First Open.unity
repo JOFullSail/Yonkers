@@ -277,29 +277,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1489950748642376763, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-      propertyPath: m_Colors.m_DisabledColor.b
-      value: 0.6226415
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489950748642376763, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-      propertyPath: m_Colors.m_DisabledColor.g
-      value: 0.6226415
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489950748642376763, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-      propertyPath: m_Colors.m_DisabledColor.r
-      value: 0.6226415
-      objectReference: {fileID: 0}
     - target: {fileID: 2740421596843876308, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
       propertyPath: m_Name
       value: UI
-      objectReference: {fileID: 0}
-    - target: {fileID: 3979053521847293049, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-      propertyPath: m_text
-      value: You Win!
-      objectReference: {fileID: 0}
-    - target: {fileID: 5930702838156305917, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7425041027192894116, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
       propertyPath: m_Pivot.x
@@ -381,13 +361,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8081277409926755906, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-    - {fileID: 5492267500862300170, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-    - {fileID: 1982688202733971966, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-    - {fileID: 7477806316065418363, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-    - {fileID: 3793199277796505302, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
-    - {fileID: 632962235636395290, guid: 026e9dc6c7e41854188faf3865d97843, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

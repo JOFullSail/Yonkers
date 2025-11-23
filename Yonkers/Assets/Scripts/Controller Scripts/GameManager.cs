@@ -43,8 +43,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject submenuUnlockedlevel4stats;
     [SerializeField] GameObject submenuUnlockedlevel5button;
     [SerializeField] GameObject submenuUnlockedlevel5stats;
-    [SerializeField] GameObject submenuUnlockedlevel6button;
-    [SerializeField] GameObject submenuUnlockedlevel6stats;
     [SerializeField] GameObject PlayerHPDisplay;
     [SerializeField] GameObject PlayerAmmoDisplay;
     [SerializeField] GameObject PlayerReticleDisplay;
@@ -104,13 +102,12 @@ public class GameManager : MonoBehaviour
     public TMP_Text ScoreLVL3;
     public TMP_Text ScoreLVL4;
     public TMP_Text ScoreLVL5;
-    public TMP_Text ScoreLVL6;
     public Image GradeLVL1;
     public Image GradeLVL2;
     public Image GradeLVL3;
     public Image GradeLVL4;
     public Image GradeLVL5;
-    public Image GradeLVL6;
+    public Image OverallGrade;
     public GameObject checkpointLabel;
     public Image playerDamageScreen;
     public Image playerHealScreen;
@@ -136,7 +133,7 @@ public class GameManager : MonoBehaviour
     public Scene currScene;
     int loadingdottick;
     char currentLvLgrade;
-    public char finalGrade;
+    public char finalGrade = 'U';
 
 
     [Header("Gun Database")]
@@ -182,6 +179,7 @@ public class GameManager : MonoBehaviour
         public List<string> levelNames = new List<string>();
         public List<int> levelScores = new List<int>();
         public List<int> levelGrades = new List<int>(); // ASCII Codes
+        public char SavedFinal = 'n';
     }
 
     [Serializable]
@@ -253,7 +251,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 #if UNITY_WEBGL
-        if (Input.GetButtonDown("Pause") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open")
+        if (Input.GetButtonDown("Pause") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open" && menuActive != menuDead)
         {
             if (menuActive == null)
             {
@@ -269,7 +267,7 @@ public class GameManager : MonoBehaviour
         }
         ExitButton.SetActive(false);
 #else
-        if (Input.GetButtonDown("Cancel") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open")
+        if (Input.GetButtonDown("Cancel") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open" && menuActive != menuDead)
         {
             if (menuActive == null)
             {
@@ -550,7 +548,7 @@ public class GameManager : MonoBehaviour
             progress.levelScores.Add(kvp.Value);
             progress.levelGrades.Add(levelGrades.TryGetValue(kvp.Key, out int grade) ? grade : 'D');
         }
-
+        progress.SavedFinal = finalGrade;
         string jsonP = JsonUtility.ToJson(progress);
         string encodedP = Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonP));
 
@@ -620,13 +618,9 @@ public class GameManager : MonoBehaviour
                 ScoreLVL5.text = score.ToString();
                 GradeLVL5.sprite = GradeImageGetter(grade);
             }
-            else if (uiIndex == 5)
-            {
-                ScoreLVL6.text = score.ToString();
-                GradeLVL6.sprite = GradeImageGetter(grade);
-            }
         }
-
+        finalGrade = data.SavedFinal;
+        OverallGrade.sprite = GradeImageGetter(finalGrade);
         //Debug.Log("Progress loaded.");
     }
 
@@ -647,8 +641,7 @@ public class GameManager : MonoBehaviour
         ScoreLVL5.text = "00000000";
         GradeLVL5.sprite = gradeiconUn;
 
-        ScoreLVL6.text = "00000000";
-        GradeLVL6.sprite = gradeiconUn;
+        OverallGrade.sprite = gradeiconUn;
     }
 
     /// <summary>
@@ -878,16 +871,15 @@ public class GameManager : MonoBehaviour
         mainMenu = FindInactive("Main Menu");
         menuPause = FindInactive("Pause Menu");
         menuSettings = FindInactive("Settings Menu");
-        menuLevelSelect = FindInactive("Level Select Menu");
+        menuLevelSelect = FindInactive("Level Select Menu (1)");
         CreditsScreen = FindInactive("Credits (1)");
         submenuGameplaySettings = FindInactive("Gameplay Menu");
         submenuAudioSettings = FindInactive("Audio Menu");
         ExitButton = FindInactive("Exit Game Button");
-        submenuLockedlevel2 = FindInactive("Locked 2");
+        submenuLockedlevel2 = FindInactive("Locked 2 (1)");
         submenuLockedlevel3 = FindInactive("Locked 3");
         submenuLockedlevel4 = FindInactive("Locked 4");
         submenuLockedlevel5 = FindInactive("Locked 5");
-        submenuLockedlevel6 = FindInactive("Locked 6");
         FOVcurrentNumber = FindInactive("FOV Current Value").GetComponent<TMP_Text>(); ;
         MouseSenscurrentNumber = FindInactive("Mouse Sens Current Value").GetComponent<TMP_Text>(); ;
         BrightnesscurrentNumber = FindInactive("Brightness Current Value").GetComponent<TMP_Text>(); ;
@@ -895,16 +887,14 @@ public class GameManager : MonoBehaviour
         MusicvolcurrentNumber = FindInactive("MusicVol Current Value").GetComponent<TMP_Text>(); ;
         SFXvolcurrentNumber = FindInactive("SFXVol Current Value").GetComponent<TMP_Text>(); ;
         CVoicescurrentNumber = FindInactive("Character Voices Vol Current Value").GetComponent<TMP_Text>(); ;
-        submenuUnlockedlevel2button = FindInactive("Level 2 Button");
-        submenuUnlockedlevel2stats = FindInactive("Level 2 Button Back Ground");
+        submenuUnlockedlevel2button = FindInactive("Level 2 Button (1)");
+        submenuUnlockedlevel2stats = FindInactive("Level 2 Button Back Ground (1)");
         submenuUnlockedlevel3button = FindInactive("Level 3 Button");
         submenuUnlockedlevel3stats = FindInactive("Level 3 Button Back Ground");
         submenuUnlockedlevel4button = FindInactive("Level 4 Button");
         submenuUnlockedlevel4stats = FindInactive("Level 4 Button Back Ground");
         submenuUnlockedlevel5button = FindInactive("Level 5 Button");
         submenuUnlockedlevel5stats = FindInactive("Level 5 Button Back Ground");
-        submenuUnlockedlevel6button = FindInactive("Level 6 Button");
-        submenuUnlockedlevel6stats = FindInactive("Level 6 Button Back Ground");
         inLVLScorenGrade = FindInactive("In Level Score and Grade");
         currScene = SceneManager.GetActiveScene();
         playerHPBar = FindInactive("Player HP Fill").GetComponent<Image>();
@@ -917,13 +907,12 @@ public class GameManager : MonoBehaviour
         ScoreLVL3 = FindInactive("Score Text 3").GetComponent<TMP_Text>();
         ScoreLVL4 = FindInactive("Score Text 4").GetComponent<TMP_Text>();
         ScoreLVL5 = FindInactive("Score Text 5").GetComponent<TMP_Text>();
-        ScoreLVL6 = FindInactive("Score Text 6").GetComponent<TMP_Text>();
         GradeLVL1 = FindInactive("Grade Image 1").GetComponent<Image>();
         GradeLVL2 = FindInactive("Grade Image 2").GetComponent<Image>();
         GradeLVL3 = FindInactive("Grade Image 3").GetComponent<Image>();
         GradeLVL4 = FindInactive("Grade Image 4").GetComponent<Image>();
         GradeLVL5 = FindInactive("Grade Image 5").GetComponent<Image>();
-        GradeLVL6 = FindInactive("Grade Image 6").GetComponent<Image>();
+        OverallGrade = FindInactive("OVALGradeimg").GetComponent<Image>();
         ammoCurrent = FindInactive("Ammo Current").GetComponent<TMP_Text>();
         ammoReserves = FindInactive("Ammo Reserves").GetComponent<TMP_Text>();
         checkpointLabel = FindInactive("Checkpoint Label");
@@ -1220,9 +1209,11 @@ public class GameManager : MonoBehaviour
     {
         // TODO - Play cutscene
         finalGrade = GetFinalGrade();
+        OverallGrade.sprite = GradeImageGetter(finalGrade);
         WinGradetxt.colorGradientPreset = GradientGetter(finalGrade);
         WinGradeImg.sprite = GradeImageGetter(finalGrade);
         //Debug.Log("Final Grade is " + finalGrade);
+        SaveProgression();
         stateWin();
     }
 
@@ -1334,18 +1325,6 @@ public class GameManager : MonoBehaviour
         else
         {
             return;
-        }
-        if (!IsLevelUnlocked(levelOrder[index]))
-        {
-            submenuLockedlevel6.SetActive(true);
-            submenuUnlockedlevel6button.SetActive(false);
-            submenuUnlockedlevel6stats.SetActive(false);
-        }
-        else
-        {
-            submenuLockedlevel6.SetActive(false);
-            submenuUnlockedlevel6button.SetActive(true);
-            submenuUnlockedlevel6stats.SetActive(true);
         }
     }
     IEnumerator LoadingScreenEnable(string level)
@@ -1472,11 +1451,6 @@ public class GameManager : MonoBehaviour
                 {
                     ScoreLVL5.text = score.ToString();
                     GradeLVL5.sprite = GradeImageGetter(grade);
-                }
-                else if (index == 5)
-                {
-                    ScoreLVL6.text = score.ToString();
-                    GradeLVL6.sprite = GradeImageGetter(grade);
                 }
             }
         }
