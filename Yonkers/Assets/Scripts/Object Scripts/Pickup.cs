@@ -38,21 +38,35 @@ public class Pickup : MonoBehaviour
                 case PickupType.Gun:
                     if (gun != null)
                     {
+                        sameGunCheck = false;
+
+                        string pickupName = gun.name.Replace("(Clone)", "").Trim();
+
                         for (int indx = 0; indx < GameManager.instance.playerScript.GunList.Count; indx++)
                         {
-                            if (gun.name == GameManager.instance.playerScript.GunList[indx].name)
+                            string inventoryName = GameManager.instance.playerScript.GunList[indx]
+                                .name.Replace("(Clone)", "").Trim();
+
+                            if (pickupName == inventoryName)
                             {
-                                GameManager.instance.playerScript.GunList[indx].ammoReserves = GameManager.instance.playerScript.GunList[indx].maxAmmoReserves;
-                                GameManager.instance.playerScript.GunList[indx].ammoCurrent = GameManager.instance.playerScript.GunList[indx].maxAmmoReserves;
+                                var g = GameManager.instance.playerScript.GunList[indx];
+
+                                g.ammoReserves = g.maxAmmoReserves;
+                                g.ammoCurrent = g.ammoMax;
+
                                 sameGunCheck = true;
+                                break;
                             }
                         }
-                        if(sameGunCheck == false)
+
+                        if (!sameGunCheck)
                         {
                             gun.ammoCurrent = gun.ammoMax;
                             pickup.GetGunStats(gun);
                         }
+
                         wasConsumed = true;
+                        GameManager.instance.playerScript.updatePlayerUI();
                     }
                     break;
 
