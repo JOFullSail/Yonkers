@@ -319,7 +319,7 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 2 - Yonk Hill");
+        GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
 
 
     }
