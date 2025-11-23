@@ -12425,7 +12425,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: pointslostrate
-      value: 105
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: pointsLostOnRespawn
