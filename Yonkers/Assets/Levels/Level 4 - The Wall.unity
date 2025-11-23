@@ -8182,6 +8182,10 @@ PrefabInstance:
       propertyPath: m_RayTracingMode
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6747077823688914818, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+      propertyPath: far clip plane
+      value: 2000
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
