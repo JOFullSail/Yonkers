@@ -30,9 +30,9 @@ public class ButtonFunctions : MonoBehaviour
             }
             if (FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
             {
-                FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOVMin, SettingsData.instance.FOVMax,SettingsData.instance.FOV);
-                mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax,SettingsData.instance.mouSens);
-                brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax,SettingsData.instance.brightness);
+                FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOVMin, SettingsData.instance.FOVMax, SettingsData.instance.FOV);
+                mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax, SettingsData.instance.mouSens);
+                brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax, SettingsData.instance.brightness);
                 MasterVolSliderParent.fillAmount = normalize(SettingsData.instance.MasterVolMin, SettingsData.instance.MasterVolMax, SettingsData.instance.MasterVol);
                 MusicVolSliderParent.fillAmount = normalize(SettingsData.instance.MusicVolMin, SettingsData.instance.MusicVolMax, SettingsData.instance.MusicVol);
                 SFXVolSliderParent.fillAmount = normalize(SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVolMax, SettingsData.instance.SFXVol);
@@ -90,8 +90,8 @@ public class ButtonFunctions : MonoBehaviour
     }
     public void restart()
     {
+        GameManager.instance.ResetSave();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        GameManager.instance.stateUnpause();
     }
     public void play()
     {
@@ -127,9 +127,9 @@ public class ButtonFunctions : MonoBehaviour
         float sliderValue;
         sliderValue = slider.value;
         // Applying Values
-        GameManager.instance.audMix.SetFloat("MasterVolume", Mathf.Log10(sliderValue)*20);
-        SettingsData.instance.MasterVol = sliderValue; 
-        GameManager.instance.MastervolcurrentNumber.text = (sliderValue*100).ToString("F0");
+        GameManager.instance.audMix.SetFloat("MasterVolume", Mathf.Log10(sliderValue) * 20);
+        SettingsData.instance.MasterVol = sliderValue;
+        GameManager.instance.MastervolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         MasterVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
@@ -140,7 +140,7 @@ public class ButtonFunctions : MonoBehaviour
         sliderValue = slider.value;
         // Applying Values
         GameManager.instance.audMix.SetFloat("MusicVolume", Mathf.Log10(sliderValue) * 20);
-        SettingsData.instance.MusicVol =  sliderValue;
+        SettingsData.instance.MusicVol = sliderValue;
         GameManager.instance.MusicvolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         MusicVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
@@ -214,15 +214,16 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.BrightnesscurrentNumber.text = sliderValue.ToString();
         brightnessSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
-    
+
     //new game goes to level select and refreshes player data
     public void NewGametoLevelSelect()
     {
         GameManager.instance.ResetSave();
         GameManager.instance.ResetProgression();
+        GameManager.instance.ResetInventory();
         GameManager.instance.levelLocks();
         GameManager.instance.statetoLevelSelect();
-        
+
     }
     //to settings menu
     public void toSettings()
@@ -257,10 +258,11 @@ public class ButtonFunctions : MonoBehaviour
     }
     public void Backfrom() //back from settings uses this! also "back" while in main menu scene!
     {
+
         if (SceneManager.GetActiveScene().name == "Main Menu Scene" || SceneManager.GetActiveScene().name == "Main Menu Scene First Open")
         {
             GameManager.instance.backtoMainmenu();
-            
+
         }
         else
         {
@@ -271,7 +273,7 @@ public class ButtonFunctions : MonoBehaviour
     public void backtoLevelselect()
     {
 
-        GameManager.instance.LoadNextLevel("Main Menu Scene");
+        GameManager.instance.LoadNextLevel("Main Menu Scene", false);
         GameManager.instance.clearActive();
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
@@ -284,34 +286,21 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
     }
-      public void Nextlevel()
+    public void Nextlevel()
     {
-        if(SceneManager.GetActiveScene().name == "Level 1 - Jorg Plains")
-        {
-            gotoLevel2();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "Level 2 - Yonk Hill")
-        {
-            gotoLevel3();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "Level 3 - Yonk Factory")//ADD NAMES!
-        {
-            gotoLevel4();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "Level 4 - The Wall")
-        {
-            gotoLevel5();
-            return;
-        }
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+
+        string scenePath = SceneUtility.GetScenePathByBuildIndex(nextSceneIndex);
+
+        string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+
+        GameManager.instance.LoadNextLevel(sceneName);
     }
     public void gotoMainmenu()
     {
-        
+
         GameManager.instance.statePause();
-        GameManager.instance.LoadNextLevel("Main Menu Scene");
+        GameManager.instance.LoadNextLevel("Main Menu Scene", false);
         GameManager.OpenMainMenu = true;
 
     }
@@ -319,32 +308,30 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
-
-
+        GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains", false);
     }
     public void gotoLevel2()//head to level 2
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 2 - Yonk Hill");
+        GameManager.instance.LoadNextLevel("Level 2 - Yonk Hill", false);
     }
     public void gotoLevel3()//head to level 3
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 3 - Yonk Factory");
-    } 
+        GameManager.instance.LoadNextLevel("Level 3 - Yonk Factory", false);
+    }
     public void gotoLevel4()//head to level 4
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 4 - The Wall");
+        GameManager.instance.LoadNextLevel("Level 4 - The Wall", false);
     }
     public void gotoLevel5()//head to level 5
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 5 - THE FINAL YONK");
+        GameManager.instance.LoadNextLevel("Level 5 - THE FINAL YONK", false);
     }
 }
