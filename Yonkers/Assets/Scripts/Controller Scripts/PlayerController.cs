@@ -376,7 +376,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             if (gameObject.transform.position.y < 0f)
             {
                 takeDamage(1);
-                GameManager.instance.RespawnFromCheckpoint(false);
+                if (HP > 0)
+                    GameManager.instance.RespawnFromCheckpoint(false);
             }
         }
     }
