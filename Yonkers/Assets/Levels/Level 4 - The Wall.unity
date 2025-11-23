@@ -8003,25 +8003,9 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: audClimbVol
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: climbDuration
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: audClimbSource
       value: 
       objectReference: {fileID: 1328229187}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: audClimb.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: 'audClimb.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: bcb72b3117897ba50aff8525d6c1596c, type: 3}
     - target: {fileID: 2701138106116441341, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -283.96616
@@ -8065,10 +8049,6 @@ PrefabInstance:
     - target: {fileID: 4181560455072038926, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 6196117169817356683, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: m_RayTracingMode
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6747077823688914818, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: far clip plane

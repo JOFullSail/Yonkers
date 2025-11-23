@@ -796,7 +796,7 @@ MonoBehaviour:
   deathVFX: {fileID: 8254294199374504725, guid: da67c3745d168eb47a3c86221c2241f3, type: 3}
   agent: {fileID: 5979280869925726344}
   headPos: {fileID: 543218958392525815}
-  scoreValue: 10
+  scoreValue: 150
   HP: 4
   FOV: 180
   baseMoveSpeed: 12

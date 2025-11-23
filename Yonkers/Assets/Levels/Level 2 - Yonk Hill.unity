@@ -25397,19 +25397,11 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: climbDuration
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: audClimbSource
       value: 
       objectReference: {fileID: 1888207115}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: debugFastClimb
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: useCanClimbTag
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
@@ -25425,29 +25417,13 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: audClimb.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: debugClimbInfinitely
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: InvincibilityDuration
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: dashTrails.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: 'audClimb.Array.data[0]'
+      propertyPath: 'dashTrails.Array.data[1]'
       value: 
-      objectReference: {fileID: 8300000, guid: bcb72b3117897ba50aff8525d6c1596c, type: 3}
-    - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
-      propertyPath: climbHighlightMultiplier
-      value: 1.75
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 492482071}
     - target: {fileID: 2701138106116441341, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 78.899994
@@ -25489,14 +25465,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 6090463757851183992, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4181560455072038926, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1727852531}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+--- !u!96 &492482071 stripped
+TrailRenderer:
+  m_CorrespondingSourceObject: {fileID: 2205079922213116833, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
+  m_PrefabInstance: {fileID: 492482070}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &492556050 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2199285245540641334, guid: b06da4b2659b0fd4dac44b05dd9c4593, type: 3}
