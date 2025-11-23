@@ -104,6 +104,8 @@ public class LevelManager : MonoBehaviour
 
         GameManager.instance.SaveInventory();
 
+        GameManager.instance.ResetSave();
+
         GameManager.instance.stateLevelComplete();
     }
     public char currentGrade()
