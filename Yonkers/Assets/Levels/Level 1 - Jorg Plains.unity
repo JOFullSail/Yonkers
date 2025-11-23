@@ -12576,8 +12576,8 @@ Transform:
   m_GameObject: {fileID: 597030526}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 30.087, y: 93.226654, z: 244.95}
-  m_LocalScale: {x: 4.7735953, y: 3.9513597, z: 4.38}
+  m_LocalPosition: {x: 30.087, y: 93.4965, z: 244.81}
+  m_LocalScale: {x: 4.7735953, y: 3.9513597, z: 4.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1444290633}
@@ -31686,7 +31686,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: climbHighlightMultiplier
-      value: 1.25
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 2701138106116441341, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -32610,7 +32610,7 @@ Transform:
   m_GameObject: {fileID: 1690360971}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.3999991, y: 94.506, z: 244.2}
+  m_LocalPosition: {x: 2.1009002, y: 94.506, z: 244.2}
   m_LocalScale: {x: 51.20766, y: 1.4, z: 2.88}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -38838,7 +38838,7 @@ Transform:
   m_GameObject: {fileID: 1936233423}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.4740005, y: 42.257, z: 270.758}
+  m_LocalPosition: {x: 2.473, y: 42.257, z: 270.758}
   m_LocalScale: {x: 60, y: 105.88619, z: 48}
   m_ConstrainProportionsScale: 0
   m_Children: []

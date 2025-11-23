@@ -25398,7 +25398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: climbDuration
-      value: 0.6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: audClimbSource
@@ -25442,7 +25442,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: bcb72b3117897ba50aff8525d6c1596c, type: 3}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: climbHighlightMultiplier
-      value: 1.25
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 2701138106116441341, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.x
