@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 5425232}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -528,7 +528,7 @@ GameObject:
   - component: {fileID: 15593457}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -809,9 +809,9 @@ GameObject:
   - component: {fileID: 25578178}
   - component: {fileID: 25578177}
   - component: {fileID: 25578176}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dirt 1 (14)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -922,7 +922,7 @@ GameObject:
   - component: {fileID: 25682428}
   m_Layer: 9
   m_Name: Grass (22)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2652,7 +2652,7 @@ GameObject:
   - component: {fileID: 102169500}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3189,9 +3189,9 @@ GameObject:
   - component: {fileID: 129878336}
   - component: {fileID: 129878335}
   - component: {fileID: 129878334}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dirt 1 (13)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3302,7 +3302,7 @@ GameObject:
   - component: {fileID: 134744634}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3795,7 +3795,7 @@ GameObject:
   - component: {fileID: 152921912}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4504,7 +4504,7 @@ GameObject:
   - component: {fileID: 194184147}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5059,7 +5059,7 @@ GameObject:
   - component: {fileID: 217643603}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5619,7 +5619,7 @@ GameObject:
   - component: {fileID: 227557542}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6688,7 +6688,7 @@ GameObject:
   - component: {fileID: 288030983}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6869,7 +6869,7 @@ GameObject:
   - component: {fileID: 302461096}
   m_Layer: 9
   m_Name: Grass (1)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10392,7 +10392,7 @@ GameObject:
   - component: {fileID: 481241216}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11511,7 +11511,7 @@ GameObject:
   - component: {fileID: 536613192}
   m_Layer: 9
   m_Name: Grass (25)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12222,7 +12222,7 @@ GameObject:
   - component: {fileID: 574534242}
   m_Layer: 9
   m_Name: Grass (18)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12673,7 +12673,7 @@ GameObject:
   - component: {fileID: 609167780}
   m_Layer: 9
   m_Name: Grass (29)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13203,7 +13203,7 @@ GameObject:
   - component: {fileID: 634532057}
   m_Layer: 9
   m_Name: Grass (27)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14594,7 +14594,7 @@ GameObject:
   - component: {fileID: 723250391}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15436,7 +15436,7 @@ GameObject:
   - component: {fileID: 763454951}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15880,7 +15880,7 @@ GameObject:
   - component: {fileID: 786082813}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16102,7 +16102,7 @@ GameObject:
   - component: {fileID: 791734807}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16324,7 +16324,7 @@ GameObject:
   - component: {fileID: 798732115}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16435,7 +16435,7 @@ GameObject:
   - component: {fileID: 798794520}
   m_Layer: 9
   m_Name: Grass (30)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16990,7 +16990,7 @@ GameObject:
   - component: {fileID: 824144120}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17104,7 +17104,7 @@ GameObject:
   - component: {fileID: 829034301}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17542,7 +17542,7 @@ GameObject:
   - component: {fileID: 841627779}
   m_Layer: 9
   m_Name: Stone 1 (4)
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18452,9 +18452,9 @@ GameObject:
   - component: {fileID: 889246165}
   - component: {fileID: 889246164}
   - component: {fileID: 889246163}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dirt 1 (12)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21548,7 +21548,7 @@ GameObject:
   - component: {fileID: 1093944803}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21773,7 +21773,7 @@ GameObject:
   - component: {fileID: 1102578319}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22205,7 +22205,7 @@ GameObject:
   - component: {fileID: 1130427467}
   m_Layer: 9
   m_Name: Grass (21)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23624,7 +23624,7 @@ GameObject:
   - component: {fileID: 1190751362}
   m_Layer: 9
   m_Name: Grass (24)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23735,7 +23735,7 @@ GameObject:
   - component: {fileID: 1191109457}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23846,7 +23846,7 @@ GameObject:
   - component: {fileID: 1197516981}
   m_Layer: 9
   m_Name: Grass (28)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24182,7 +24182,7 @@ GameObject:
   - component: {fileID: 1229759431}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24909,7 +24909,7 @@ GameObject:
   - component: {fileID: 1247127401}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25329,7 +25329,7 @@ GameObject:
   - component: {fileID: 1271492488}
   m_Layer: 9
   m_Name: Grass (26)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27241,7 +27241,7 @@ GameObject:
   - component: {fileID: 1364884160}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27416,7 +27416,7 @@ GameObject:
   - component: {fileID: 1370461754}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28295,7 +28295,7 @@ GameObject:
   - component: {fileID: 1433493429}
   m_Layer: 9
   m_Name: Grass (17)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28499,7 +28499,7 @@ GameObject:
   - component: {fileID: 1448513754}
   m_Layer: 9
   m_Name: Grass (32)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28723,7 +28723,7 @@ GameObject:
   - component: {fileID: 1474199020}
   m_Layer: 9
   m_Name: Grass (23)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29267,7 +29267,7 @@ GameObject:
   - component: {fileID: 1539734094}
   m_Layer: 9
   m_Name: Grass (33)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29600,7 +29600,7 @@ GameObject:
   - component: {fileID: 1552471605}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30698,7 +30698,7 @@ GameObject:
   - component: {fileID: 1593979321}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31435,7 +31435,7 @@ GameObject:
   - component: {fileID: 1630267762}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -33057,7 +33057,7 @@ GameObject:
   - component: {fileID: 1725986449}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -33451,7 +33451,7 @@ GameObject:
   - component: {fileID: 1733738108}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -33673,7 +33673,7 @@ GameObject:
   - component: {fileID: 1740507602}
   m_Layer: 9
   m_Name: Stone 1 (5)
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -33784,7 +33784,7 @@ GameObject:
   - component: {fileID: 1744109166}
   m_Layer: 9
   m_Name: Stone 1 (2)
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -34014,7 +34014,7 @@ GameObject:
   - component: {fileID: 1752152812}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -34555,7 +34555,7 @@ GameObject:
   - component: {fileID: 1768306134}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -34944,7 +34944,7 @@ GameObject:
   - component: {fileID: 1793596233}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -35691,7 +35691,7 @@ GameObject:
   - component: {fileID: 1819301303}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36607,7 +36607,7 @@ GameObject:
   - component: {fileID: 1860049497}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36927,7 +36927,7 @@ GameObject:
   - component: {fileID: 1869707836}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37652,7 +37652,7 @@ GameObject:
   - component: {fileID: 1905666548}
   m_Layer: 9
   m_Name: Stone 1
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37824,7 +37824,7 @@ GameObject:
   - component: {fileID: 1906515956}
   m_Layer: 9
   m_Name: Stone 1 (3)
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38046,7 +38046,7 @@ GameObject:
   - component: {fileID: 1918034068}
   m_Layer: 9
   m_Name: Grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38495,7 +38495,7 @@ GameObject:
   - component: {fileID: 1925420759}
   m_Layer: 9
   m_Name: Grass (31)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38606,7 +38606,7 @@ GameObject:
   - component: {fileID: 1932102918}
   m_Layer: 9
   m_Name: Grass (2)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38939,7 +38939,7 @@ GameObject:
   - component: {fileID: 1939129333}
   m_Layer: 9
   m_Name: Stone 1 (1)
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39842,7 +39842,7 @@ GameObject:
   - component: {fileID: 1996501116}
   m_Layer: 9
   m_Name: Grass (20)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39953,7 +39953,7 @@ GameObject:
   - component: {fileID: 2000012357}
   m_Layer: 9
   m_Name: Grass (19)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -40230,9 +40230,9 @@ GameObject:
   - component: {fileID: 2009967897}
   - component: {fileID: 2009967896}
   - component: {fileID: 2009967895}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dirt 1 (11)
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
