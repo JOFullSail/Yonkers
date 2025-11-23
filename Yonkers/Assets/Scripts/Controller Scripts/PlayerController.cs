@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] LayerMask ignoreShooting;
     [SerializeField] LayerMask ignoreClimbing;
     [SerializeField] LayerMask ignorefeetNorm;
-    [SerializeField] LayerMask ignorefeetInvinc; 
+    [SerializeField] LayerMask ignorefeetInvinc;
 
     [Header("General")]
     [SerializeField] int HP = 10;
@@ -149,7 +149,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     bool ceilingHit;
     bool isReloading;
     bool isRecoiling;
-    
+
     //Floats
     public float gravityOffTimer; // Used to time a duration of having no gravity.
     public float gravityLockout = 0; //amount of time gravity is disabled
@@ -192,7 +192,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     Vector3 knockback;   // Used to hold pushBack.x and z.
 
     // For climb()
-    
+
     // If the player's raycast detected a wall
     bool wallDetected;
     // If the player wall jumped.
@@ -215,15 +215,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     int noClimbLayers;
     string noClimbTag;
     string currentFootsteptag;
-    
+
     float newWallHeight = 0f;
-    
+
     Renderer highlightWall;
     Vector3 prevWallPos;
     Vector3 newWallPos;
     Vector3 prevWallNorm;
     Vector3 newWallNorm;
-    
+
     // For Jump()
     Vector3 ceilingRayUp;
     List<Vector3> ceilingRays;
@@ -338,9 +338,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         isPlayingSteps = false;
         invertMove = false;
         newWallNorm.y = 7f;
-        
+
         ceilingRayInit();
-        
+
         if (useCanClimbTag) noClimbTag = "CanClimb";
         else noClimbTag = "NoClimb";
 
@@ -348,11 +348,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
         //if (debugClimbAnything)
         //{
-            //noClimbLayers = 0;
-            //noClimbTag = "Player";
+        //noClimbLayers = 0;
+        //noClimbTag = "Player";
         //}
         //else 
-            noClimbLayers = ignoreClimbing.value;
+        noClimbLayers = ignoreClimbing.value;
 
     }
 
@@ -408,7 +408,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isJumping = true;
             Instantiate(jumpEffect, feet.transform.position, Quaternion.identity);
         }
-            
+
         else isJumping = false;
     }
 
@@ -416,7 +416,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         float difference = (Mathf.Acos(norm1) * Mathf.Rad2Deg) - (Mathf.Acos(norm2) * Mathf.Rad2Deg);
         if (difference >= climbMinAngleDiff) return true;
-        else return false; 
+        else return false;
     }
 
     void highlightColor(Renderer obj)
@@ -425,7 +425,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             highlightWall.material.color /= climbHighlightMultiplier;
         }
-        
+
         highlightWall = obj;
         obj.material.color *= climbHighlightMultiplier;
     }
@@ -451,16 +451,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     }
     void footcheck()
     {
-        if(gameObject.layer == 3)
+        if (gameObject.layer == 3)
         {
-            if((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetNorm))){
+            if ((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetNorm)))
+            {
                 if (hit.collider.gameObject.tag == "Grass" || hit.collider.gameObject.tag == "Metal" || hit.collider.gameObject.tag == "Stone" || hit.collider.gameObject.tag == "Royal" || hit.collider.gameObject.tag == "Rock")
-                { 
+                {
                     currentFootsteptag = hit.collider.tag;
                 }
             }
         }
-        else if(gameObject.layer ==11)
+        else if (gameObject.layer == 11)
         {
             if ((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetInvinc)))
             {
@@ -470,24 +471,40 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 }
             }
         }
-        
+
     }
     void climb()
     {
         bool canClimb = false;
-        
+
         // Wall climb conditions and wall highlight visual feedback.
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbHighlightDetection,
-                ~noClimbLayers))
+        Vector3 climbOrigin = transform.position + Vector3.up * 1f;
+        Vector3 camForward = Camera.main.transform.forward;
+        camForward.y = 0f;
+        camForward.Normalize();
+
+        Vector3 climbDirection = camForward;
+
+        if (Physics.Raycast(climbOrigin, climbDirection, out hit, climbWallDistance, ~noClimbLayers))
         {
             // Wall Vaulting
-            if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
-            
+            if (!isClimbing)
+            {
+                float topOffset = 0.1f;
+
+                newWallHeight = hit.collider.bounds.max.y - topOffset;
+            }
+
             isTaller = transform.position.y >= newWallHeight;
             // Resetting norm for vaulting over walls.
-            if (isTaller) 
+            if (isTaller)
                 prevWallNorm.y = 7f;
-            
+
+            if (isTaller && isClimbing)
+            {
+                climbTimeLeft = true;
+            }
+
             // Storing data of the wall the player is currently facing.
             newWallPos = hit.transform.position;
             newWallPos.y = 0;
@@ -504,7 +521,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isBelowMaxSlope = wallAngle <= climbMaxSlopeAngle;
             isFallOrClimb = playerVel.y < -1 || isClimbing;
             notSameWall = prevWallPos == null || newWallPos != prevWallPos;
-            isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= climbMinAngleDiff;
+            float wallTolerance = 25f;
+            isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= (climbMinAngleDiff - wallTolerance);
             climbTimeLeft = climbTimer <= climbDuration; //|| debugClimbInfinitely;
 
             // Wall Check
@@ -513,12 +531,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                  isBelowMaxSlope &&
                  isAboveMinDiff &&
                  notSameWall && climbTimeLeft && gravityOn) //||
-                //debugClimbAnything && canBeClimbed && isFallOrClimb
+                                                            //debugClimbAnything && canBeClimbed && isFallOrClimb
                     ) // For debugClimbAnything.
 
             {
                 canClimb = true;
-                
+
                 // Highlight Check
                 if (hit.collider.TryGetComponent<Renderer>(out var obj))
                 {
@@ -538,15 +556,19 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             highlightClear();
         }
-        
+
         // Wall Climbing (try using transform.forward without Camera.main)
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDistance, ~noClimbLayers))
-        { 
+        Vector3 wallCheckForward = Camera.main.transform.forward;
+        wallCheckForward.y = 0f;
+        wallCheckForward.Normalize();
+
+        if (Physics.Raycast(Camera.main.transform.position, wallCheckForward, out hit, climbWallDistance, ~noClimbLayers))
+        {
             wallDetected = true;
-            
+
             // Displays the normal of the wall the player is facing.
             //Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
-            
+
             // Player Climb Authorization
             if (canClimb && !controller.isGrounded && isFallOrClimb && (jumpTimer < jumpGraceClimb || !(isJumping && isClimbing)))
             {
@@ -554,16 +576,28 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     wallJumping = false;
                     if (jumpCount > 0) --jumpCount;
-                    //audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
                 }
-                
+
+                Vector3 adjustedClimbDir = Camera.main.transform.forward;
+                adjustedClimbDir.y = Mathf.Clamp(adjustedClimbDir.y, -0.35f, 0.35f);
+
+                playerVel = adjustedClimbDir * climbSpeed;
                 playerVel.y = climbSpeed;
+
                 isClimbing = true;
-                
-                GameManager.instance.playerClimbStamina.fillAmount = ButtonFunctions.normalize(climbDuration, 0, climbTimer);
+
+                GameManager.instance.playerClimbStamina.fillAmount =
+                    ButtonFunctions.normalize(climbDuration, 0, climbTimer);
             }
-            else // Not climbing
+            else
             {
+                if (isTaller)
+                {
+                    isClimbing = true;
+                    climbTimeLeft = true;
+                    return;
+                }
+
                 if (isJumping)
                 {
                     jumpTimer = 0;
@@ -571,18 +605,27 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     {
                         wallJumping = true;
                         climbTimeLeft = false;
-                        //audClimbSource.Stop();
                         GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     }
                 }
-                
+
                 if (!climbTimeLeft)
                 {
                     prevWallPos = newWallPos;
                     prevWallNorm = newWallNorm;
                     GameManager.instance.playerClimbStamina.fillAmount = 0f;
                 }
-                
+
+                if (isClimbing)
+                {
+                    currentSpeedX = 0f;
+                    currentSpeedZ = 0f;
+                    momentumDirX = Vector3.zero;
+                    momentumDirZ = Vector3.zero;
+                    playerVel.x = 0f;
+                    playerVel.z = 0f;
+                }
+
                 isClimbing = false;
             }
         }
@@ -603,8 +646,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
 
         if (!wallJumping && isJumping && prevWallNorm.z != 7f && jumpTimer >= jumpGraceWall)
-        { 
-            ++jumpCount; 
+        {
+            ++jumpCount;
             jumpCheck();
         }
 
@@ -614,7 +657,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             GameManager.instance.playerClimbStamina.fillAmount = 1f;
         }
     }
-    
+
     // Hardcoded, but could be serialized later
     void ceilingRayInit()
     {
@@ -623,7 +666,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         Quaternion pitch = Quaternion.AngleAxis(330f, transform.right);
         Vector3 direction = pitch * Camera.main.transform.forward;
         ceilingRayUp = Camera.main.transform.up; // Distance = 0.4f
-        
+
         for (int i = 0; i < 8; ++i) // Distance = 0.5f
         {
             Quaternion yaw = Quaternion.AngleAxis(45f * i, Camera.main.transform.up);
@@ -637,7 +680,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         // Ceiling Hit (would have been better with a sphere collider)
         //Debug.DrawRay(Camera.main.transform.position, ceilingRayUp * 0.4f);
         //foreach (Vector3 ray in ceilingRays) 
-            //Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
+        //Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
         if (playerVel.y <= 0) ceilingHit = false;
         else if (Physics.Raycast(Camera.main.transform.position, ceilingRayUp, out hit, 0.4f))
         {
@@ -659,7 +702,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             playerVel.y = 0;
             ceilingHit = false;
         }
-        
+
         // Jump
         if (isJumping)
         {
@@ -667,7 +710,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 ++jumpCount;
             }
-            
+
             audSFX.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
         }
     }
@@ -683,8 +726,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             Instantiate(gunList[gunListIdx].hitEffect, hit.point, Quaternion.identity);
 
             IDamage dmg = hit.collider.GetComponent<IDamage>();
-            IActivate act = hit.collider.GetComponent<IActivate>();  
-            
+            IActivate act = hit.collider.GetComponent<IActivate>();
+
             if (dmg != null)
             {
                 dmg.takeDamage(shootDmg);
@@ -702,11 +745,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     public void takeDamage(int amount)
     {
         if (GameManager.instance.player.layer == 3)
-        { 
+        {
             HP -= amount;
             InvincibilityTimer = 0;
             updatePlayerUI();
-            if(amount > 0)
+            if (amount > 0)
             {
                 if (HP > 0)
                 {
@@ -773,7 +816,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
         if (isClimbing) climbTimer += Time.deltaTime;
         else climbTimer = 0;
-        
+
         shootTimer += Time.deltaTime;
         dashCooldownTimer += Time.deltaTime;
         ragdollTimer();
@@ -847,7 +890,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             if (!isReloading)
             {
                 StartCoroutine(DoReload());
-            } 
+            }
         }
     }
 
@@ -867,7 +910,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             gunModel.transform.localRotation = Quaternion.Slerp(Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld), loweredRot, timer);
             yield return null;
         }
-        
+
         yield return new WaitForSeconds(1f);
 
         timer = 0;
@@ -899,7 +942,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     public void changeGun()
     {
-        if(gunList.Count == 0) 
+        if (gunList.Count == 0)
             return;
 
         shootDmg = gunList[gunListIdx].hitscanShootDamage;
@@ -1539,6 +1582,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         else if (isDashing == false && isClimbing == false)
         {
             //Debug.Log("Not Floor");
+            playerVel.x = 0f;
+            playerVel.z = 0f;
             playerVel.y -= gravity * Time.deltaTime;
         }
     }
@@ -1709,7 +1754,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         isPlayingSteps = true;
         if (currentFootsteptag == "Grass")
         {
-            audSFX.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol); 
+            audSFX.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol);
         }
         else if (currentFootsteptag == "Metal")
         {
@@ -1728,7 +1773,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             audSFX.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
         }
 
-            yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.3f);
 
         isPlayingSteps = false;
     }
@@ -1749,10 +1794,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 GameManager.instance.ammoReserves.colorGradientPreset = GameManager.instance.NoAmmoGradient;
             }
-                GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
+            GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
         }
     }
- 
+
 }
 
 
