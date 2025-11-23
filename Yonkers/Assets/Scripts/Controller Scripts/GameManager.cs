@@ -1212,12 +1212,12 @@ public class GameManager : MonoBehaviour
     private void HandleGameWon()
     {
         // TODO - Play cutscene
+        EventController.RaiseGameComplete();
         finalGrade = GetFinalGrade();
         OverallGrade.sprite = GradeImageGetter(finalGrade);
         WinGradetxt.colorGradientPreset = GradientGetter(finalGrade);
         WinGradeImg.sprite = GradeImageGetter(finalGrade);
         OverallGrade.sprite = GradeImageGetter(finalGrade);
-        SaveProgression();
         //Debug.Log("Final Grade is " + finalGrade);
         SaveProgression();
         stateWin();

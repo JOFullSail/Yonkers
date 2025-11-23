@@ -70,11 +70,13 @@ public class LevelManager : MonoBehaviour
     private void OnEnable()
     {
         EventController.OnLevelComplete += HandleLevelComplete;
+        EventController.OnGameComplete += HandleFinalLevelComplete;
     }
 
     private void OnDisable()
     {
         EventController.OnLevelComplete -= HandleLevelComplete;
+        EventController.OnGameComplete -= HandleFinalLevelComplete;
     }
 
     private void HandleLevelComplete()
@@ -133,5 +135,34 @@ public class LevelManager : MonoBehaviour
             levelGrade = Grade.D;
         }
         return (char)levelGrade;
+    }
+
+    private void HandleFinalLevelComplete()
+    {
+        levelScore = (int)currentScore;
+
+        if (levelScore >= gradeSMinScore)
+        {
+            levelGrade = Grade.S;
+            if (sRankNeedsAllEnemiesDead && numberOfEnemies > 0)
+                levelGrade = Grade.A;
+        }
+
+        else if (levelScore >= gradeAMinScore)
+            levelGrade = Grade.A;
+        else if (levelScore >= gradeBMinScore)
+            levelGrade = Grade.B;
+        else if (levelScore >= gradeCMinScore)
+            levelGrade = Grade.C;
+        else
+            levelGrade = Grade.D;
+
+        GameManager.instance.RecordLevelScore(levelScore, (char)levelGrade);
+
+        GameManager.instance.SaveProgression();
+
+        GameManager.instance.SaveInventory();
+
+        GameManager.instance.ResetSave();
     }
 }

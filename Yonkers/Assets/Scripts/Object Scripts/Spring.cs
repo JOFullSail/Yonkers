@@ -42,7 +42,7 @@ public class Spring : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.isTrigger)
+        if (other.isTrigger || other.CompareTag("Player") == false)
                 return;
         if (springDelayTimer > springDelay)
         {
