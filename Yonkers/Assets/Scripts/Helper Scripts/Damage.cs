@@ -9,7 +9,7 @@ public class Damage : MonoBehaviour
 
     [SerializeField] int damageAmount;
 
-    [Tooltip("Checking this will do nothing if damage type is set to DOT")]
+    [Tooltip("Checking this will do nothing if damage type is set to DOT.")]
     [SerializeField] bool isExplosive;
 
     [Tooltip("Respawns the player if they take damage.")]
@@ -90,7 +90,7 @@ public class Damage : MonoBehaviour
             {
                 dmg.takeDamage(damageAmount);
 
-                if (respawnUponTouch && !delayRespawnUponTouch)
+                if (respawnUponTouch && !delayRespawnUponTouch && GameManager.instance.playerScript.CurrentHealth > 0)
                 {
                     GameManager.instance.RespawnFromCheckpoint(false);
                 }
@@ -145,6 +145,6 @@ public class Damage : MonoBehaviour
         yield return new WaitForSeconds(delayTime);
         GameManager.instance.player.transform.parent = null;
         //GameManager.instance.playerScript.controller.enabled = false;
-        GameManager.instance.RespawnFromCheckpoint(true);
+        GameManager.instance.RespawnFromCheckpoint(false);
     }
 }

@@ -496,22 +496,23 @@ MonoBehaviour:
   explosionPrefab: {fileID: 0}
   explosionDamage: 0
   canDropItems: 0
-  possibleItemDrops: []
-  dropChance: 0
+  dropTable: {fileID: 11400000, guid: df13f2b780a1c1b4c92128882bd5b6b1, type: 2}
+  baseDropChance: 25
   room: {fileID: 0}
   damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
   healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
   healthBarOffset: {x: 0, y: 4, z: 0}
   damageNumberOffset: {x: 0, y: 2.5, z: 0}
   enemyPOS: {fileID: 6327477208707926472}
-  pushForce: 60
+  pushForce: 45
   meleeDamage: 1
   meleeDelay: 2
   meleeRecharge: 0
   dashSpeed: 8
   targetDistance: 25
-  reach: 2
+  reach: 3
   isSuicider: 0
+  suicideOnTouch: 0
   audEn: {fileID: -1201055083429867957}
   audPunch:
   - {fileID: 8300000, guid: b8cc333d7b8157346bf7df9953079973, type: 3}

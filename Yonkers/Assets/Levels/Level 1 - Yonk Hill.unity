@@ -15972,6 +15972,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
+  isBossProjectile: 0
 --- !u!1001 &321344595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17697,6 +17698,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
+  isBossProjectile: 0
 --- !u!114 &344613042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36330,6 +36332,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
+  isBossProjectile: 0
 --- !u!114 &718951536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50786,6 +50789,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!4 &1029817196
 Transform:
   m_ObjectHideFlags: 0
@@ -56172,10 +56176,14 @@ PrefabInstance:
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: levelMusic
       value: 
-      objectReference: {fileID: 8300000, guid: 938260ab6ccdf1e4d92886088bc64b46, type: 3}
+      objectReference: {fileID: 8300000, guid: dfc3849ee1efc2d40973d6747b40a21a, type: 3}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: levelMaxScore
       value: 1200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
+      propertyPath: levelMusicVol
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: gradeAMinScore
@@ -68020,6 +68028,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 2305939433503514429, guid: 22b9c5e84f7cf7848ba70a9df931c43c, type: 3}
+  isBossProjectile: 0
 --- !u!1 &1382470834
 GameObject:
   m_ObjectHideFlags: 0
@@ -80404,6 +80413,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!114 &1638243460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95672,6 +95682,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!4 &1952977739
 Transform:
   m_ObjectHideFlags: 0
@@ -110715,6 +110726,7 @@ MonoBehaviour:
   speed: 0
   destroyTime: 0
   explosionPrefab: {fileID: 0}
+  isBossProjectile: 0
 --- !u!114 &3867178676258737677
 MonoBehaviour:
   m_ObjectHideFlags: 0

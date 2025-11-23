@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [SerializeField] LayerMask ignoreShooting;
     [SerializeField] LayerMask ignoreClimbing;
     [SerializeField] LayerMask ignorefeetNorm;
-    [SerializeField] LayerMask ignorefeetInvinc; 
+    [SerializeField] LayerMask ignorefeetInvinc;
 
     [Header("General")]
     [SerializeField] int HP = 10;
@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [Tooltip("Amount of time the player is allowed to climb a wall.\n\n- Will be overriden once the player reaches the top of a wall.")]
     [SerializeField] float climbDuration = 0.6f;
     [SerializeField] float climbHighlightDetection = 15f;
-    [SerializeField] float climbHighlightMultiplier = 1.25f;
+    [SerializeField] float climbHighlightMultiplier = 1.75f;
     [Tooltip("Max view distance between the player and the wall required for the player to climb a wall.")]
     [SerializeField] float climbWallDistance = 1.25f;
     [Tooltip("Max slope angle of a wall the player can climb.")]
@@ -104,7 +104,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     //[SerializeField] float debugClimbSpeed = 50f;
 
     [Header("Audio")]
-    [SerializeField] AudioSource aud;
+    [SerializeField] AudioSource audSFX;
+    [SerializeField] AudioSource audVoice;
     //[SerializeField] AudioSource audClimbSource;
     [SerializeField] AudioClip[] audJump;
     [Range(0, 1)][SerializeField] float audJumpVol;
@@ -146,7 +147,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     public bool invertMove;
     bool isPlayingSteps;
     bool ceilingHit;
-    
+    bool isReloading;
+    bool isRecoiling;
+
     //Floats
     public float gravityOffTimer; // Used to time a duration of having no gravity.
     public float gravityLockout = 0; //amount of time gravity is disabled
@@ -189,7 +192,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     Vector3 knockback;   // Used to hold pushBack.x and z.
 
     // For climb()
-    
+
     // If the player's raycast detected a wall
     bool wallDetected;
     // If the player wall jumped.
@@ -212,15 +215,15 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     int noClimbLayers;
     string noClimbTag;
     string currentFootsteptag;
-    
+
     float newWallHeight = 0f;
-    
+
     Renderer highlightWall;
     Vector3 prevWallPos;
     Vector3 newWallPos;
     Vector3 prevWallNorm;
     Vector3 newWallNorm;
-    
+
     // For Jump()
     Vector3 ceilingRayUp;
     List<Vector3> ceilingRays;
@@ -335,9 +338,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         isPlayingSteps = false;
         invertMove = false;
         newWallNorm.y = 7f;
-        
+
         ceilingRayInit();
-        
+
         if (useCanClimbTag) noClimbTag = "CanClimb";
         else noClimbTag = "NoClimb";
 
@@ -345,11 +348,11 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
         //if (debugClimbAnything)
         //{
-            //noClimbLayers = 0;
-            //noClimbTag = "Player";
+        //noClimbLayers = 0;
+        //noClimbTag = "Player";
         //}
         //else 
-            noClimbLayers = ignoreClimbing.value;
+        noClimbLayers = ignoreClimbing.value;
 
     }
 
@@ -369,6 +372,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             timers();
             shoot();
             playerMovement();
+
+            if (gameObject.transform.position.y < 0f)
+                GameManager.instance.RespawnFromCheckpoint(false);
         }
     }
 
@@ -402,7 +408,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isJumping = true;
             Instantiate(jumpEffect, feet.transform.position, Quaternion.identity);
         }
-            
+
         else isJumping = false;
     }
 
@@ -410,7 +416,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     {
         float difference = (Mathf.Acos(norm1) * Mathf.Rad2Deg) - (Mathf.Acos(norm2) * Mathf.Rad2Deg);
         if (difference >= climbMinAngleDiff) return true;
-        else return false; 
+        else return false;
     }
 
     void highlightColor(Renderer obj)
@@ -419,7 +425,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             highlightWall.material.color /= climbHighlightMultiplier;
         }
-        
+
         highlightWall = obj;
         obj.material.color *= climbHighlightMultiplier;
     }
@@ -445,16 +451,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     }
     void footcheck()
     {
-        if(gameObject.layer == 3)
+        if (gameObject.layer == 3)
         {
-            if((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetNorm))){
+            if ((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetNorm)))
+            {
                 if (hit.collider.gameObject.tag == "Grass" || hit.collider.gameObject.tag == "Metal" || hit.collider.gameObject.tag == "Stone" || hit.collider.gameObject.tag == "Royal" || hit.collider.gameObject.tag == "Rock")
-                { 
+                {
                     currentFootsteptag = hit.collider.tag;
                 }
             }
         }
-        else if(gameObject.layer ==11)
+        else if (gameObject.layer == 11)
         {
             if ((Physics.Raycast(gameObject.transform.position, -(gameObject.transform.up), out hit, footchecklength, ignorefeetInvinc)))
             {
@@ -464,32 +471,52 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 }
             }
         }
-        
+
     }
     void climb()
     {
         bool canClimb = false;
-        
+
         // Wall climb conditions and wall highlight visual feedback.
+        Vector3 climbOrigin = transform.position + Vector3.up * 1f;
+        Vector3 camForward = Camera.main.transform.forward;
+        camForward.y = 0f;
+        camForward.Normalize();
+
+        Vector3 climbDirection = camForward;
+
+        int wallAngle;
+        int wallDifference;
+
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbHighlightDetection,
                 ~noClimbLayers))
         {
             // Wall Vaulting
-            if (!isClimbing) newWallHeight = hit.transform.position.y + 0.5f * hit.transform.localScale.y;
-            
+            if (!isClimbing)
+            {
+                float topOffset = 0f;
+
+                newWallHeight = hit.collider.bounds.max.y - topOffset;
+            }
+
             isTaller = transform.position.y >= newWallHeight;
             // Resetting norm for vaulting over walls.
-            if (isTaller) 
+            if (isTaller)
                 prevWallNorm.y = 7f;
-            
+
+            if (isTaller && isClimbing)
+            {
+                climbTimeLeft = true;
+            }
+
             // Storing data of the wall the player is currently facing.
             newWallPos = hit.transform.position;
             newWallPos.y = 0;
             newWallNorm = hit.normal;
 
             // Angle Calculation
-            int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
-            int wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
+            wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
+            wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
 
             // Climbing Wall Conditions
             if (useCanClimbTag) canBeClimbed = hit.collider.CompareTag(noClimbTag);
@@ -498,7 +525,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             isBelowMaxSlope = wallAngle <= climbMaxSlopeAngle;
             isFallOrClimb = playerVel.y < -1 || isClimbing;
             notSameWall = prevWallPos == null || newWallPos != prevWallPos;
-            isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= climbMinAngleDiff;
+            float wallTolerance = 25f;
+            isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= (climbMinAngleDiff - wallTolerance);
             climbTimeLeft = climbTimer <= climbDuration; //|| debugClimbInfinitely;
 
             // Wall Check
@@ -507,12 +535,12 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                  isBelowMaxSlope &&
                  isAboveMinDiff &&
                  notSameWall && climbTimeLeft && gravityOn) //||
-                //debugClimbAnything && canBeClimbed && isFallOrClimb
+                                                            //debugClimbAnything && canBeClimbed && isFallOrClimb
                     ) // For debugClimbAnything.
 
             {
                 canClimb = true;
-                
+
                 // Highlight Check
                 if (hit.collider.TryGetComponent<Renderer>(out var obj))
                 {
@@ -532,15 +560,46 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         {
             highlightClear();
         }
-        
+
         // Wall Climbing (try using transform.forward without Camera.main)
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbWallDistance, ~noClimbLayers))
-        { 
+        Vector3 wallCheckForward = Camera.main.transform.forward;
+        wallCheckForward.y = 0f;
+        wallCheckForward.Normalize();
+
+        if (Physics.Raycast(Camera.main.transform.position, wallCheckForward, out hit, climbWallDistance, ~noClimbLayers))
+        {
             wallDetected = true;
-            
+
             // Displays the normal of the wall the player is facing.
             //Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
             
+            // Climbing Wall Conditions (rushed code, but recalculating again to allow wall highlight to have its own seperate raycast)
+            wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
+            wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
+            
+            if (useCanClimbTag) canBeClimbed = hit.collider.CompareTag(noClimbTag);
+            else canBeClimbed = !hit.collider.CompareTag(noClimbTag);
+            isAboveMinSlope = controller.slopeLimit <= wallAngle;
+            isBelowMaxSlope = wallAngle <= climbMaxSlopeAngle;
+            isFallOrClimb = playerVel.y < -1 || isClimbing;
+            notSameWall = prevWallPos == null || newWallPos != prevWallPos;
+            float wallTolerance = 25f;
+            isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= (climbMinAngleDiff - wallTolerance);
+            climbTimeLeft = climbTimer <= climbDuration; //|| debugClimbInfinitely;
+
+            // Wall Check
+            if ((canBeClimbed &&
+                 isAboveMinSlope &&
+                 isBelowMaxSlope &&
+                 isAboveMinDiff &&
+                 notSameWall && climbTimeLeft && gravityOn) //||
+                //debugClimbAnything && canBeClimbed && isFallOrClimb
+               ) // For debugClimbAnything.
+
+            {
+                canClimb = true;
+            }
+
             // Player Climb Authorization
             if (canClimb && !controller.isGrounded && isFallOrClimb && (jumpTimer < jumpGraceClimb || !(isJumping && isClimbing)))
             {
@@ -548,16 +607,28 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                 {
                     wallJumping = false;
                     if (jumpCount > 0) --jumpCount;
-                    //audClimbSource.PlayOneShot(audClimb[Random.Range(0, audClimb.Length)], audClimbVol);
                 }
-                
+
+                Vector3 adjustedClimbDir = Camera.main.transform.forward;
+                adjustedClimbDir.y = Mathf.Clamp(adjustedClimbDir.y, -0.35f, 0.35f);
+
+                playerVel = adjustedClimbDir * climbSpeed;
                 playerVel.y = climbSpeed;
+
                 isClimbing = true;
-                
-                GameManager.instance.playerClimbStamina.fillAmount = ButtonFunctions.normalize(climbDuration, 0, climbTimer);
+
+                GameManager.instance.playerClimbStamina.fillAmount =
+                    ButtonFunctions.normalize(climbDuration, 0, climbTimer);
             }
-            else // Not climbing
+            else
             {
+                if (isTaller)
+                {
+                    isClimbing = true;
+                    climbTimeLeft = true;
+                    return;
+                }
+
                 if (isJumping)
                 {
                     jumpTimer = 0;
@@ -565,18 +636,27 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     {
                         wallJumping = true;
                         climbTimeLeft = false;
-                        //audClimbSource.Stop();
                         GameManager.instance.playerClimbStamina.fillAmount = 0f;
                     }
                 }
-                
+
                 if (!climbTimeLeft)
                 {
                     prevWallPos = newWallPos;
                     prevWallNorm = newWallNorm;
                     GameManager.instance.playerClimbStamina.fillAmount = 0f;
                 }
-                
+
+                if (isClimbing)
+                {
+                    currentSpeedX = 0f;
+                    currentSpeedZ = 0f;
+                    momentumDirX = Vector3.zero;
+                    momentumDirZ = Vector3.zero;
+                    playerVel.x = 0f;
+                    playerVel.z = 0f;
+                }
+
                 isClimbing = false;
             }
         }
@@ -597,8 +677,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
 
         if (!wallJumping && isJumping && prevWallNorm.z != 7f && jumpTimer >= jumpGraceWall)
-        { 
-            ++jumpCount; 
+        {
+            ++jumpCount;
             jumpCheck();
         }
 
@@ -608,7 +688,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             GameManager.instance.playerClimbStamina.fillAmount = 1f;
         }
     }
-    
+
     // Hardcoded, but could be serialized later
     void ceilingRayInit()
     {
@@ -617,7 +697,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         Quaternion pitch = Quaternion.AngleAxis(330f, transform.right);
         Vector3 direction = pitch * Camera.main.transform.forward;
         ceilingRayUp = Camera.main.transform.up; // Distance = 0.4f
-        
+
         for (int i = 0; i < 8; ++i) // Distance = 0.5f
         {
             Quaternion yaw = Quaternion.AngleAxis(45f * i, Camera.main.transform.up);
@@ -631,7 +711,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         // Ceiling Hit (would have been better with a sphere collider)
         //Debug.DrawRay(Camera.main.transform.position, ceilingRayUp * 0.4f);
         //foreach (Vector3 ray in ceilingRays) 
-            //Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
+        //Debug.DrawRay(Camera.main.transform.position, ray * 0.5f);
         if (playerVel.y <= 0) ceilingHit = false;
         else if (Physics.Raycast(Camera.main.transform.position, ceilingRayUp, out hit, 0.4f))
         {
@@ -653,7 +733,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             playerVel.y = 0;
             ceilingHit = false;
         }
-        
+
         // Jump
         if (isJumping)
         {
@@ -661,8 +741,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 ++jumpCount;
             }
-            
-            aud.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
+
+            audSFX.PlayOneShot(audJump[Random.Range(0, audJump.Length)], audJumpVol);
         }
     }
 
@@ -677,8 +757,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             Instantiate(gunList[gunListIdx].hitEffect, hit.point, Quaternion.identity);
 
             IDamage dmg = hit.collider.GetComponent<IDamage>();
-            IActivate act = hit.collider.GetComponent<IActivate>();  
-            
+            IActivate act = hit.collider.GetComponent<IActivate>();
+
             if (dmg != null)
             {
                 dmg.takeDamage(shootDmg);
@@ -696,17 +776,17 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     public void takeDamage(int amount)
     {
         if (GameManager.instance.player.layer == 3)
-        { 
+        {
             HP -= amount;
             InvincibilityTimer = 0;
             updatePlayerUI();
-            if(amount > 0)
+            if (amount > 0)
             {
                 if (HP > 0)
                 {
                     StartCoroutine(flashDmgScreen());
                 }
-                aud.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
+                audVoice.PlayOneShot(audHurt[Random.Range(0, audHurt.Length)], audHurtVol);
             }
             else
             {
@@ -767,7 +847,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
         if (isClimbing) climbTimer += Time.deltaTime;
         else climbTimer = 0;
-        
+
         shootTimer += Time.deltaTime;
         dashCooldownTimer += Time.deltaTime;
         ragdollTimer();
@@ -780,28 +860,23 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     void shoot()
     {
-        if (Input.GetButton("Fire1") && gunList.Count > 0 && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate)
+        if (gunList.Count == 0)
+            return;
+
+        if (Input.GetButton("Fire1") && gunList[gunListIdx].ammoCurrent > 0 && shootTimer >= shootRate && !isReloading)
         {
             shootApply();
-            aud.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
-            // For special guns
-            if (gunList[gunListIdx].ammoCurrent <= 0 && gunList[gunListIdx].ammoReserves <= 0 && gunList[gunListIdx].isSpecial)
-            {
-                gunList.RemoveAt(gunListIdx);
-                gunListIdx = 0;
-                if (gunList.Count > 0)
-                {
-                    changeGun();
-                }
-                else
-                {
-                    gunModel.GetComponent<MeshFilter>().sharedMesh = null;
-                    gunModel.GetComponent<MeshRenderer>().sharedMaterial = null;
-                }
-
-            }
-
+            audSFX.PlayOneShot(gunList[gunListIdx].shootSound[Random.Range(0, gunList[gunListIdx].shootSound.Length)], gunList[gunListIdx].shootSoundVol);
+            StopCoroutine(RecoilRoutine());
+            StartCoroutine(RecoilRoutine());
             updatePlayerUI();
+        }
+        else if (gunList[gunListIdx].ammoCurrent <= 0 && Input.GetButton("Fire1") && !isRecoiling && gunList[gunListIdx].ammoReserves > 0)
+        {
+            if (!isReloading)
+            {
+                StartCoroutine(DoReload());
+            }
         }
 
 
@@ -809,19 +884,85 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         if (gunList.Count > 0) switchGun();
     }
 
+    IEnumerator RecoilRoutine()
+    {
+        isRecoiling = true;
+        Vector3 recoilPos = gunList[gunListIdx].positionWhenHeld + new Vector3(0, 0, -gunList[gunListIdx].recoilDistance);
+
+        float t = 0;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime * gunList[gunListIdx].recoilSharpness;
+            gunModel.transform.localPosition = Vector3.Lerp(gunList[gunListIdx].positionWhenHeld, recoilPos, t);
+            yield return null;
+        }
+
+        t = 0;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * gunList[gunListIdx].recoilRecoverySpeed;
+            gunModel.transform.localPosition = Vector3.Lerp(recoilPos, gunList[gunListIdx].positionWhenHeld, t);
+            yield return null;
+        }
+
+        gunModel.transform.localPosition = gunList[gunListIdx].positionWhenHeld;
+
+        isRecoiling = false;
+    }
+
     void reload()
     {
-        if (Input.GetButtonDown("Reload") && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0)
-        {
-            aud.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
-            int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
-            gunList[gunListIdx].ammoReserves -= ammoToLoad;
-            gunList[gunListIdx].ammoCurrent = ammoToLoad;
+        if (gunList.Count == 0)
+            return;
 
-            updatePlayerUI();
+        if ((Input.GetButtonDown("Reload")) && gunList.Count > 0 && gunList[gunListIdx].ammoReserves > 0 && gunList[gunListIdx].ammoCurrent != gunList[gunListIdx].ammoMax)
+        {
+            if (!isReloading)
+            {
+                StartCoroutine(DoReload());
+            }
         }
     }
 
+    IEnumerator DoReload()
+    {
+        isReloading = true;
+        audSFX.PlayOneShot(gunList[gunListIdx].reloadSound[Random.Range(0, gunList[gunListIdx].reloadSound.Length)], gunList[gunListIdx].reloadSoundVol);
+
+        Vector3 loweredPos = gunList[gunListIdx].positionWhenHeld + new Vector3(0, -gunList[gunListIdx].reloadMoveDistance, 0);
+        Quaternion loweredRot = Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld) * Quaternion.Euler(gunList[gunListIdx].reloadRotateAngle, 0, 0);
+
+        float timer = 0;
+        while (timer < 1f)
+        {
+            timer += Time.deltaTime * gunList[gunListIdx].reloadSpeed;
+            gunModel.transform.localPosition = Vector3.Lerp(gunList[gunListIdx].positionWhenHeld, loweredPos, timer);
+            gunModel.transform.localRotation = Quaternion.Slerp(Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld), loweredRot, timer);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        timer = 0;
+        while (timer < 1f)
+        {
+            timer += Time.deltaTime * gunList[gunListIdx].reloadSpeed;
+            gunModel.transform.localPosition = Vector3.Lerp(loweredPos, gunList[gunListIdx].positionWhenHeld, timer);
+            gunModel.transform.localRotation = Quaternion.Slerp(loweredRot, Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld), timer);
+            yield return null;
+        }
+        int ammoToLoad = gunList[gunListIdx].ammoMax <= gunList[gunListIdx].ammoReserves ? gunList[gunListIdx].ammoMax : gunList[gunListIdx].ammoReserves;
+        ammoToLoad -= gunList[gunListIdx].ammoCurrent;
+        gunList[gunListIdx].ammoReserves -= ammoToLoad;
+        gunList[gunListIdx].ammoCurrent += ammoToLoad;
+
+        gunModel.transform.localPosition = gunList[gunListIdx].positionWhenHeld;
+        gunModel.transform.localRotation = Quaternion.Euler(gunList[gunListIdx].rotationWhenHeld);
+        isReloading = false;
+
+        updatePlayerUI();
+    }
     public void GetGunStats(GunStats gun)
     {
         gunList.Add(gun);
@@ -832,6 +973,9 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
     public void changeGun()
     {
+        if (gunList.Count == 0)
+            return;
+
         shootDmg = gunList[gunListIdx].hitscanShootDamage;
         shootDist = gunList[gunListIdx].hitscanShootDist;
         shootRate = gunList[gunListIdx].shootRate;
@@ -1322,7 +1466,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
                     currentDashSpeedZ = dashSpeed;
                 }
                 Instantiate(dashFX, transform.position, transform.rotation);
-                aud.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
+                audSFX.PlayOneShot(audDash[Random.Range(0, audDash.Length)], audDashVol);
                 StartCoroutine(dashWait((moveDirecX * currentDashSpeedX) * Time.deltaTime + (moveDirecZ * currentDashSpeedZ) * Time.deltaTime));
             }
         }
@@ -1469,6 +1613,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         else if (isDashing == false && isClimbing == false)
         {
             //Debug.Log("Not Floor");
+            playerVel.x = 0f;
+            playerVel.z = 0f;
             playerVel.y -= gravity * Time.deltaTime;
         }
     }
@@ -1550,7 +1696,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         }
     }
 
-    void movementResetFull() // Used to reset player Movement values
+    public void movementResetFull() // Used to reset player Movement values
     {
         currentSpeedX = speedZero;
         currentSpeedZ = speedZero;
@@ -1639,26 +1785,26 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         isPlayingSteps = true;
         if (currentFootsteptag == "Grass")
         {
-            aud.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol); 
+            audSFX.PlayOneShot(audGrassSteps[Random.Range(0, audGrassSteps.Length)], audGrassStepsVol);
         }
         else if (currentFootsteptag == "Metal")
         {
-            aud.PlayOneShot(audMetalSteps[Random.Range(0, audMetalSteps.Length)], audMetalStepsVol);
+            audSFX.PlayOneShot(audMetalSteps[Random.Range(0, audMetalSteps.Length)], audMetalStepsVol);
         }
         else if (currentFootsteptag == "Royal")
         {
-            aud.PlayOneShot(audRoyalSteps[Random.Range(0, audRoyalSteps.Length)], audRoyalStepsVol);
+            audSFX.PlayOneShot(audRoyalSteps[Random.Range(0, audRoyalSteps.Length)], audRoyalStepsVol);
         }
         else if (currentFootsteptag == "Stone")
         {
-            aud.PlayOneShot(audStoneSteps[Random.Range(0, audStoneSteps.Length)], audStoneStepsVol);
+            audSFX.PlayOneShot(audStoneSteps[Random.Range(0, audStoneSteps.Length)], audStoneStepsVol);
         }
         else if (currentFootsteptag == "Rock")
         {
-            aud.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
+            audSFX.PlayOneShot(audRockSteps[Random.Range(0, audRockSteps.Length)], audRockStepsVol);
         }
 
-            yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.3f);
 
         isPlayingSteps = false;
     }
@@ -1679,10 +1825,10 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             {
                 GameManager.instance.ammoReserves.colorGradientPreset = GameManager.instance.NoAmmoGradient;
             }
-                GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
+            GameManager.instance.ammoReserves.text = gunList[gunListIdx].ammoReserves.ToString("F0");
         }
     }
- 
+
 }
 
 

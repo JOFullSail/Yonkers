@@ -11,9 +11,9 @@ public class SettingsData : MonoBehaviour
     public float FOV = 70f;
     public float mouSens = 500f;
 	public float brightness = 50f;
-    public float MasterVol = 50f;
-    public float MusicVol = 50f;
-    public float SFXVol = 50f;
+    public float MasterVol = 0.5f;
+    public float MusicVol = 0.5f;
+    public float SFXVol = 0.5f;
     public float CharacterVoicesVol = 50f;
 
     [Header("Developer Settings")]
@@ -29,22 +29,22 @@ public class SettingsData : MonoBehaviour
 	public int brightnessMax = 90;
 	public int brightnessHalf = 50;
     public bool brightnessWholeNumbers = true;
+     
+    public float MasterVolMin = 0.0001f;
+    public float MasterVolMax = 1f;
+    public bool MasterVolWholeNumbers = false;
 
-    public int MasterVolMin = 0;
-    public int MasterVolMax = 100;
-    public bool MasterVolWholeNumbers = true;
+    public float MusicVolMin = 0.0001f;
+    public float MusicVolMax = 1f;
+    public bool MusicVolWholeNumbers = false;
 
-    public int MusicVolMin = 0;
-    public int MusicVolMax = 100;
-    public bool MusicVolWholeNumbers = true;
+    public float SFXVolMin = 0.0001f;
+    public float SFXVolMax = 1f;
+    public bool SFXVolWholeNumbers = false;
 
-    public int SFXVolMin = 0;
-    public int SFXVolMax = 100;
-    public bool SFXVolWholeNumbers = true;
-
-    public int CharacterVoicesVolMin = 0;
-    public int CharacterVoicesVolMax = 100;
-    public bool CharacterVoicesVolWholeNumbers = true;
+    public float CharacterVoicesVolMin = 0.0001f;
+    public float CharacterVoicesVolMax = 1f;
+    public bool CharacterVoicesVolWholeNumbers = false;
 
 
     // Initializes instance and sets all sliders to their correct position.
@@ -124,19 +124,9 @@ public class SettingsData : MonoBehaviour
             if (slider)
             {
                 float MasVolOrig = MasterVol;
-                if (MasterVolWholeNumbers)
-                {
-                    slider.minValue = (int)MasterVolMin;
-                    slider.maxValue = (int)MasterVolMax;
-                    slider.value = (int)MasVolOrig;
-                }
-                else
-                {
-                    slider.minValue = MasterVolMin;
-                    slider.maxValue = MasterVolMax;
-                    slider.value = MasVolOrig;
-                }
-
+                slider.minValue = MasterVolMin;
+                slider.maxValue = MasterVolMax;
+                slider.value = MasVolOrig;
                 MasterVol = MasVolOrig;
             }
 
@@ -145,20 +135,11 @@ public class SettingsData : MonoBehaviour
             if (slider)
             {
                 float MusicVolOrig = MusicVol;
-                if (MusicVolWholeNumbers)
-                {
-                    slider.minValue = (int)MusicVolMin;
-                    slider.maxValue = (int)MusicVolMax;
-                    slider.value = (int)MusicVolOrig;
-                }
-                else
-                {
+
                     slider.minValue = MusicVolMin;
                     slider.maxValue = MusicVolMax;
                     slider.value = MusicVolOrig;
-                }
-
-                MusicVol = MusicVolOrig;
+                    MusicVol = MusicVolOrig;
             }
 
             slider = btnFunctions.SFXVolSliderParent.GetComponentInChildren<Slider>();
@@ -166,20 +147,11 @@ public class SettingsData : MonoBehaviour
             if (slider)
             {
                 float SFXVolOrig = SFXVol;
-                if (SFXVolWholeNumbers)
-                {
-                    slider.minValue = (int)SFXVolMin;
-                    slider.maxValue = (int)SFXVolMax;
-                    slider.value = (int)SFXVolOrig;
-                }
-                else
-                {
+
                     slider.minValue = SFXVolMin;
                     slider.maxValue = SFXVolMax;
                     slider.value = SFXVolOrig;
-                }
-
-                SFXVol = SFXVolOrig;
+                    SFXVol = SFXVolOrig;
             }
 
             slider = btnFunctions.CharacterVoicesSliderParent.GetComponentInChildren<Slider>();
@@ -187,20 +159,10 @@ public class SettingsData : MonoBehaviour
             if (slider)
             {
                 float CharacterVoicesVolOrig = CharacterVoicesVol;
-                if (CharacterVoicesVolWholeNumbers)
-                {
-                    slider.minValue = (int)CharacterVoicesVolMin;
-                    slider.maxValue = (int)CharacterVoicesVolMax;
-                    slider.value = (int)CharacterVoicesVolOrig;
-                }
-                else
-                {
                     slider.minValue = CharacterVoicesVolMin;
                     slider.maxValue = CharacterVoicesVolMax;
                     slider.value = CharacterVoicesVolOrig;
-                }
-
-                CharacterVoicesVol = CharacterVoicesVolOrig;
+                    CharacterVoicesVol = CharacterVoicesVolOrig;
             }
         }
 

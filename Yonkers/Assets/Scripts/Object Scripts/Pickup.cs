@@ -38,21 +38,35 @@ public class Pickup : MonoBehaviour
                 case PickupType.Gun:
                     if (gun != null)
                     {
+                        sameGunCheck = false;
+
+                        string pickupName = gun.name.Replace("(Clone)", "").Trim();
+
                         for (int indx = 0; indx < GameManager.instance.playerScript.GunList.Count; indx++)
                         {
-                            if (gun.name == GameManager.instance.playerScript.GunList[indx].name)
+                            string inventoryName = GameManager.instance.playerScript.GunList[indx]
+                                .name.Replace("(Clone)", "").Trim();
+
+                            if (pickupName == inventoryName)
                             {
-                                GameManager.instance.playerScript.GunList[indx].ammoReserves = GameManager.instance.playerScript.GunList[indx].maxAmmoReserves;
-                                GameManager.instance.playerScript.GunList[indx].ammoCurrent = GameManager.instance.playerScript.GunList[indx].maxAmmoReserves;
+                                var g = GameManager.instance.playerScript.GunList[indx];
+
+                                g.ammoReserves = g.maxAmmoReserves;
+                                g.ammoCurrent = g.ammoMax;
+
                                 sameGunCheck = true;
+                                break;
                             }
                         }
-                        if(sameGunCheck == false)
+
+                        if (!sameGunCheck)
                         {
                             gun.ammoCurrent = gun.ammoMax;
                             pickup.GetGunStats(gun);
                         }
+
                         wasConsumed = true;
+                        GameManager.instance.playerScript.updatePlayerUI();
                     }
                     break;
 
@@ -65,12 +79,30 @@ public class Pickup : MonoBehaviour
                     break;
 
                 case PickupType.Ammo:
-                    int index = GameManager.instance.playerScript.GunList.IndexOf(gun); // returns -1 if item not found
-                    if (index != -1 && gun.ammoReserves < gun.maxAmmoReserves)
-                    {
-                        gun.ammoReserves += ammoAmount;
 
+                    GunStats.AmmoType ammoType = gun.ammoType;
+
+                    bool gaveAmmo = false;
+
+                    foreach (var g in GameManager.instance.playerScript.GunList)
+                    {
+                        if (g.ammoType == ammoType)
+                        {
+                            if (g.ammoReserves < g.maxAmmoReserves)
+                            {
+                                g.ammoReserves = Mathf.Min(
+                                    g.ammoReserves + ammoAmount,
+                                    g.maxAmmoReserves
+                                );
+                                gaveAmmo = true;
+                            }
+                        }
+                    }
+
+                    if (gaveAmmo)
+                    {
                         wasConsumed = true;
+                        GameManager.instance.playerScript.updatePlayerUI();
                     }
                     break;
             }

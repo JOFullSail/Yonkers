@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
+using UnityEngine.Audio;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Rendering;
-using UnityEngine.Audio;
 
 public class ButtonFunctions : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class ButtonFunctions : MonoBehaviour
     public Image SFXVolSliderParent;
     public Image CharacterVoicesSliderParent;
 
+    public float MasterVolorig;
+    public float MusicVolorig;
+    public float SFXVolorig;
+    public float CVVolorig;
     void Start()
     {
         if (SettingsData.instance != null)
@@ -25,12 +30,12 @@ public class ButtonFunctions : MonoBehaviour
             }
             if (FOVSliderParent != null && mouSensSliderParent != null && brightnessSliderParent != null)
             {
-                FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOVMin, SettingsData.instance.FOVMax,SettingsData.instance.FOV);
-                mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax,SettingsData.instance.mouSens);
-                brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax,SettingsData.instance.brightness);
+                FOVSliderParent.fillAmount = normalize(SettingsData.instance.FOVMin, SettingsData.instance.FOVMax, SettingsData.instance.FOV);
+                mouSensSliderParent.fillAmount = normalize(SettingsData.instance.mouSensMin, SettingsData.instance.mouSensMax, SettingsData.instance.mouSens);
+                brightnessSliderParent.fillAmount = normalize(SettingsData.instance.brightnessMin, SettingsData.instance.brightnessMax, SettingsData.instance.brightness);
                 MasterVolSliderParent.fillAmount = normalize(SettingsData.instance.MasterVolMin, SettingsData.instance.MasterVolMax, SettingsData.instance.MasterVol);
                 MusicVolSliderParent.fillAmount = normalize(SettingsData.instance.MusicVolMin, SettingsData.instance.MusicVolMax, SettingsData.instance.MusicVol);
-                SFXVolSliderParent.fillAmount = normalize(SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVol);
+                SFXVolSliderParent.fillAmount = normalize(SettingsData.instance.SFXVolMin, SettingsData.instance.SFXVolMax, SettingsData.instance.SFXVol);
                 CharacterVoicesSliderParent.fillAmount = normalize(SettingsData.instance.CharacterVoicesVolMin, SettingsData.instance.CharacterVoicesVolMax, SettingsData.instance.CharacterVoicesVol);
             }
         }
@@ -85,8 +90,8 @@ public class ButtonFunctions : MonoBehaviour
     }
     public void restart()
     {
+        GameManager.instance.ResetSave();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        GameManager.instance.stateUnpause();
     }
     public void play()
     {
@@ -120,12 +125,11 @@ public class ButtonFunctions : MonoBehaviour
     {
         // Whole Number Settings
         float sliderValue;
-        if (SettingsData.instance.MasterVolWholeNumbers) sliderValue = (int)slider.value;
-        else sliderValue = slider.value;
+        sliderValue = slider.value;
         // Applying Values
+        GameManager.instance.audMix.SetFloat("MasterVolume", Mathf.Log10(sliderValue) * 20);
         SettingsData.instance.MasterVol = sliderValue;
-        GameManager.instance.audMix.SetFloat("MasterVolume", sliderValue);
-        GameManager.instance.MastervolcurrentNumber.text = sliderValue.ToString();
+        GameManager.instance.MastervolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         MasterVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
@@ -133,12 +137,11 @@ public class ButtonFunctions : MonoBehaviour
     {
         // Whole Number Settings
         float sliderValue;
-        if (SettingsData.instance.MusicVolWholeNumbers) sliderValue = (int)slider.value;
-        else sliderValue = slider.value;
+        sliderValue = slider.value;
         // Applying Values
-        GameManager.instance.audMix.SetFloat("MusicVolume", sliderValue);
+        GameManager.instance.audMix.SetFloat("MusicVolume", Mathf.Log10(sliderValue) * 20);
         SettingsData.instance.MusicVol = sliderValue;
-        GameManager.instance.MusicvolcurrentNumber.text = sliderValue.ToString();
+        GameManager.instance.MusicvolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         MusicVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
@@ -146,12 +149,11 @@ public class ButtonFunctions : MonoBehaviour
     {
         // Whole Number Settings
         float sliderValue;
-        if (SettingsData.instance.SFXVolWholeNumbers) sliderValue = (int)slider.value;
-        else sliderValue = slider.value;
+        sliderValue = slider.value;
         // Applying Values
         SettingsData.instance.SFXVol = sliderValue;
-        GameManager.instance.audMix.SetFloat("SFXVolume", sliderValue);
-        GameManager.instance.SFXvolcurrentNumber.text = sliderValue.ToString();
+        GameManager.instance.audMix.SetFloat("SFXVolume", Mathf.Log10(sliderValue) * 20);
+        GameManager.instance.SFXvolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         SFXVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
@@ -163,8 +165,8 @@ public class ButtonFunctions : MonoBehaviour
         else sliderValue = slider.value;
         // Applying Values
         SettingsData.instance.CharacterVoicesVol = sliderValue;
-        GameManager.instance.audMix.SetFloat("VoiceVolume", sliderValue);
-        GameManager.instance.CVoicescurrentNumber.text = sliderValue.ToString();
+        GameManager.instance.audMix.SetFloat("VoiceVolume", Mathf.Log10(sliderValue) * 20);
+        GameManager.instance.CVoicescurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         CharacterVoicesSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
@@ -212,15 +214,16 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.BrightnesscurrentNumber.text = sliderValue.ToString();
         brightnessSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
     }
-    
+
     //new game goes to level select and refreshes player data
     public void NewGametoLevelSelect()
     {
         GameManager.instance.ResetSave();
         GameManager.instance.ResetProgression();
+        GameManager.instance.ResetInventory();
         GameManager.instance.levelLocks();
         GameManager.instance.statetoLevelSelect();
-        
+
     }
     //to settings menu
     public void toSettings()
@@ -255,10 +258,11 @@ public class ButtonFunctions : MonoBehaviour
     }
     public void Backfrom() //back from settings uses this! also "back" while in main menu scene!
     {
+
         if (SceneManager.GetActiveScene().name == "Main Menu Scene" || SceneManager.GetActiveScene().name == "Main Menu Scene First Open")
         {
             GameManager.instance.backtoMainmenu();
-            
+
         }
         else
         {
@@ -269,7 +273,7 @@ public class ButtonFunctions : MonoBehaviour
     public void backtoLevelselect()
     {
 
-        GameManager.instance.LoadNextLevel("Main Menu Scene");
+        GameManager.instance.LoadNextLevel("Main Menu Scene", false);
         GameManager.instance.clearActive();
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
@@ -282,34 +286,21 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.levelLocks();
         GameManager.instance.menuTolevel();
     }
-      public void Nextlevel()
+    public void Nextlevel()
     {
-        if(SceneManager.GetActiveScene().name == "Level 1 - Jorg Plains")
-        {
-            gotoLevel2();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "Level 1 - Yonk Hill")
-        {
-            gotoLevel3();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "Level 2 - Yonk Factory")//ADD NAMES!
-        {
-            gotoLevel4();
-            return;
-        }
-        else if (SceneManager.GetActiveScene().name == "Level 3- The Wall")
-        {
-            gotoLevel5();
-            return;
-        }
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+
+        string scenePath = SceneUtility.GetScenePathByBuildIndex(nextSceneIndex);
+
+        string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+
+        GameManager.instance.LoadNextLevel(sceneName);
     }
     public void gotoMainmenu()
     {
-        
+
         GameManager.instance.statePause();
-        GameManager.instance.LoadNextLevel("Main Menu Scene");
+        GameManager.instance.LoadNextLevel("Main Menu Scene", false);
         GameManager.OpenMainMenu = true;
 
     }
@@ -317,32 +308,30 @@ public class ButtonFunctions : MonoBehaviour
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains");
-
-
+        GameManager.instance.LoadNextLevel("Level 1 - Jorg Plains", false);
     }
     public void gotoLevel2()//head to level 2
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 1 - Yonk Hill");
+        GameManager.instance.LoadNextLevel("Level 2 - Yonk Hill", false);
     }
     public void gotoLevel3()//head to level 3
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 2 - Yonk Factory");
-    } 
+        GameManager.instance.LoadNextLevel("Level 3 - Yonk Factory", false);
+    }
     public void gotoLevel4()//head to level 4
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 3- The Wall");
+        GameManager.instance.LoadNextLevel("Level 4 - The Wall", false);
     }
     public void gotoLevel5()//head to level 5
     {
         GameManager.instance.stateUnpause();
         GameManager.instance.enablePlayerUI();
-        GameManager.instance.LoadNextLevel("Level 5- THE FINAL YONK");
+        GameManager.instance.LoadNextLevel("Level 5 - THE FINAL YONK", false);
     }
 }

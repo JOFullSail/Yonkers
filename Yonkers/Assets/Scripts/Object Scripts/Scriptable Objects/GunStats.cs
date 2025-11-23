@@ -1,9 +1,17 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GunStats", menuName = "Scriptable Objects/GunStats")]
 public class GunStats : ScriptableObject
 {
+    public enum AmmoType
+    {
+        Light,   // pistol, SMG
+        Medium,  // rifle
+        Heavy,   // rockets
+    }
+
     public GameObject gunModel;
 
     [Header("Universal Stats")]
@@ -12,8 +20,11 @@ public class GunStats : ScriptableObject
     [Range(1, 50)] public int ammoMax;
     [Range(0, 999)] public int ammoReserves;
     [Range(0, 999)] public int maxAmmoReserves;
-    [Range(0, 60)] public float recoilToCamera;
-    [Range(0, 500)] public float recoilToUser;
+    public AmmoType ammoType;
+
+    public float recoilDistance = 0.1f;
+    public float recoilRecoverySpeed = 10f;
+    public float recoilSharpness = 20f;
 
     [Tooltip("Special Weapons are dropped when ammunition runs out.")]
     public bool isSpecial;
@@ -38,4 +49,9 @@ public class GunStats : ScriptableObject
     public Vector3 positionWhenHeld = new Vector3(0.2850304f, -0.2229996f, 0.4335518f);
     public Vector3 rotationWhenHeld = new Vector3(-89.98f, 0f, 0f);
     public Vector3 scaleWhenHeld = Vector3.one;
+
+    [Header("Reload Animation")]
+    public float reloadMoveDistance = 0.2f;
+    public float reloadRotateAngle = 25f;
+    public float reloadSpeed = 8f;
 }

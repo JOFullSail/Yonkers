@@ -18,6 +18,10 @@ TagManager:
   - Royal
   - Stone
   - Rock
+  - HealthDrop
+  - AmmoLight
+  - AmmoMedium
+  - AmmoHeavy
   layers:
   - Default
   - TransparentFX

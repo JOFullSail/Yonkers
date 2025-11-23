@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.AI;
 using System.Linq;
 using UnityEngine.UI;
+using static GunStats;
 
 public class EnemyAI : MonoBehaviour, IDamage, IPushback
 {
@@ -104,8 +105,8 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     [Header("On-Death Item Dropping")]
     [SerializeField] bool canDropItems;
-    [SerializeField] GameObject[] possibleItemDrops;
-    [SerializeField] [Range(0, 100)] int dropChance;
+    public DropTable dropTable;
+    public float baseDropChance = 25f;
 
     Color colorOrig;
 
@@ -137,6 +138,11 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
 
     bool saidDetectionVO = false;
     float combatLineCooldown;
+
+    public int MaxHP
+    {
+        get { return maxHP; }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -509,14 +515,113 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
             room.UpdateEnemyCount(-1);
         }
 
-        if (canDropItems && Random.Range(0, 100) <= dropChance && possibleItemDrops.Count() > 0)
+        if (canDropItems && Random.Range(0, 100) <= baseDropChance)
         {
-            int itemPos = Random.Range(0, possibleItemDrops.Length);
-            Vector3 dropPos = transform.position;
-            dropPos.y += 0.5f;
-            Instantiate(possibleItemDrops[itemPos], dropPos, possibleItemDrops[itemPos].transform.rotation);
+            GameObject chosen = ChooseItemFromTable(dropTable);
+            if (chosen != null)
+            {
+                float adjusted = GetAdjustedDropChance(chosen);  // from earlier system
+
+                if (Random.value <= adjusted)
+                {
+                    Vector3 dropPos = transform.position + Vector3.up * 0.5f;
+                    Instantiate(chosen, dropPos, chosen.transform.rotation);
+                }
+            }
         }
 
         Destroy(gameObject);
+    }
+
+    private float GetAdjustedDropChance(GameObject item)
+    {
+        float baseChance = baseDropChance / 100f;
+        float needFactor = 0f;
+
+        float lightPct, mediumPct, heavyPct;
+        GetAmmoStats(out lightPct, out mediumPct, out heavyPct);
+
+        // Health Drop
+        if (item.CompareTag("HealthDrop"))
+        {
+            float hpPct = (float)GameManager.instance.playerScript.CurrentHealth / GameManager.instance.playerScript.OriginalHealth;
+
+            needFactor = Mathf.Pow(1f - hpPct, 1.3f);
+        }
+
+        // Light Ammo
+        else if (item.CompareTag("AmmoLight"))
+        {
+            needFactor = Mathf.Pow(1f - lightPct, 1.5f);
+        }
+
+        // Medium Ammo
+        else if (item.CompareTag("AmmoMedium"))
+        {
+            needFactor = Mathf.Pow(1f - mediumPct, 1.6f);
+        }
+
+        // Heavy Ammo
+        else if (item.CompareTag("AmmoHeavy"))
+        {
+            float rareMultiplier = 0.25f;
+
+            needFactor = Mathf.Pow(1f - heavyPct, 1.25f);
+
+            baseChance *= rareMultiplier;
+        }
+
+        return Mathf.Clamp01(baseChance * (1f + needFactor));
+    }
+
+    private void GetAmmoStats(out float lightPct, out float mediumPct, out float heavyPct)
+    {
+        float lightCurrent = 0f, lightMax = 0f;
+        float mediumCurrent = 0f, mediumMax = 0f;
+        float heavyCurrent = 0f, heavyMax = 0f;
+
+        foreach (var gun in GameManager.instance.playerScript.GunList)
+        {
+            switch (gun.ammoType)
+            {
+                case AmmoType.Light:
+                    lightCurrent += gun.ammoReserves;
+                    lightMax += gun.maxAmmoReserves;
+                    break;
+
+                case AmmoType.Medium:
+                    mediumCurrent += gun.ammoReserves;
+                    mediumMax += gun.maxAmmoReserves;
+                    break;
+
+                case AmmoType.Heavy:
+                    heavyCurrent += gun.ammoReserves;
+                    heavyMax += gun.maxAmmoReserves;
+                    break;
+            }
+        }
+
+        lightPct = lightMax == 0 ? 1f : (lightCurrent / lightMax);
+        mediumPct = mediumMax == 0 ? 1f : (mediumCurrent / mediumMax);
+        heavyPct = heavyMax == 0 ? 1f : (heavyCurrent / heavyMax);
+    }
+
+    private GameObject ChooseItemFromTable(DropTable table)
+    {
+        float totalWeight = 0f;
+        foreach (var entry in table.drops)
+            totalWeight += entry.weight;
+
+        float roll = Random.Range(0, totalWeight);
+        float cumulative = 0f;
+
+        foreach (var entry in table.drops)
+        {
+            cumulative += entry.weight;
+            if (roll <= cumulative)
+                return entry.dropPrefab;
+        }
+
+        return null;
     }
 }
