@@ -824,7 +824,7 @@ MonoBehaviour:
   explosionDamage: 0
   canDropItems: 1
   dropTable: {fileID: 11400000, guid: 064a1c5ad5a0c364193cb5a3877dbaca, type: 2}
-  baseDropChance: 25
+  baseDropChance: 75
   room: {fileID: 0}
   damageNumberPopup: {fileID: 2761844188908255003, guid: 2ec9454608d495f4ea7425688ed76d81, type: 3}
   healthBar: {fileID: 9184330331513077027, guid: 5d06c19ce8ee12b4b8090aab09b7d721, type: 3}
