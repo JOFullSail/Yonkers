@@ -24,6 +24,7 @@ public class Checkpoint : MonoBehaviour
     //[SerializeField] float labelDuration;
 
     bool hasTriggered;
+    bool triggeredThisSession = false;
     Material matOrig;
 
     public Transform SpawnPos
@@ -36,33 +37,29 @@ public class Checkpoint : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && !hasTriggered)
-        {
-            hasTriggered = true;
+        if (!other.CompareTag("Player"))
+            return;
 
-            GameManager.instance.SaveGame();
-            if (GameManager.instance.playerSpawn != null)
+        if (!triggeredThisSession)
+        {
+            triggeredThisSession = true;
+
+            if (!hasTriggered)
             {
+                hasTriggered = true;
+
                 GameManager.instance.playerSpawn.transform.position = spawnPos.transform.position;
                 GameManager.instance.playerSpawn.transform.rotation = spawnPos.transform.rotation;
-                GameManager.instance.playerSpawn.transform.parent = spawnPos;
                 StartCoroutine(feedback());
 
                 if (canRevertMaterial)
-                {
                     StartCoroutine(flashMaterial());
-                    // UI Label function here
-                }
                 else
-                {
-                    // UI Label function here
                     foreach (Renderer model in objects)
-                    {
                         model.material = newMaterial;
-                    }
-                }
             }
-            //else Debug.LogWarning("Please assign an object with the \"PlayerSpawn\" tag to use checkpoints.");
+
+            GameManager.instance.SaveGame();
         }
     }
 
