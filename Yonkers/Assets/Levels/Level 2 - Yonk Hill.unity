@@ -739,7 +739,7 @@ GameObject:
   - component: {fileID: 14114847}
   - component: {fileID: 14114846}
   - component: {fileID: 14114845}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube (4)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -20508,7 +20508,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 398891295}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GameObject (2)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -23804,7 +23804,7 @@ GameObject:
   - component: {fileID: 466580065}
   - component: {fileID: 466580064}
   - component: {fileID: 466580063}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube (9)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -25398,7 +25398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: climbDuration
-      value: 0.6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: audClimbSource
@@ -25446,7 +25446,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: bcb72b3117897ba50aff8525d6c1596c, type: 3}
     - target: {fileID: 1936253241755798585, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: climbHighlightMultiplier
-      value: 1.25
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 2701138106116441341, guid: 721580e29aca2fb428179cff41b0a82d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -30778,7 +30778,7 @@ GameObject:
   - component: {fileID: 610420184}
   - component: {fileID: 610420183}
   - component: {fileID: 610420182}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube (10)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -44159,7 +44159,7 @@ GameObject:
   - component: {fileID: 905063541}
   - component: {fileID: 905063540}
   - component: {fileID: 905063539}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube (8)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -49855,7 +49855,7 @@ GameObject:
   - component: {fileID: 1023003859}
   - component: {fileID: 1023003858}
   - component: {fileID: 1023003857}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube (3)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -58588,7 +58588,7 @@ GameObject:
   - component: {fileID: 1193218488}
   - component: {fileID: 1193218487}
   - component: {fileID: 1193218486}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube (6)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -67505,7 +67505,7 @@ GameObject:
   - component: {fileID: 1378600395}
   - component: {fileID: 1378600394}
   - component: {fileID: 1378600393}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube (5)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -79812,7 +79812,7 @@ GameObject:
   - component: {fileID: 1613119772}
   - component: {fileID: 1613119771}
   - component: {fileID: 1613119770}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube (7)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -80406,7 +80406,7 @@ GameObject:
   - component: {fileID: 1636730369}
   - component: {fileID: 1636730368}
   - component: {fileID: 1636730367}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube (2)
   m_TagString: NoClimb
   m_Icon: {fileID: 0}
@@ -84622,7 +84622,7 @@ GameObject:
   - component: {fileID: 1727852533}
   - component: {fileID: 1727852532}
   - component: {fileID: 1727852535}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Helper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84638,7 +84638,7 @@ Transform:
   m_GameObject: {fileID: 1727852530}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.1800003, z: 4.94}
+  m_LocalPosition: {x: 0, y: 2.1800003, z: 5.7745643}
   m_LocalScale: {x: 1, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:

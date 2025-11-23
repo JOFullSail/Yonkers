@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
     [Tooltip("Amount of time the player is allowed to climb a wall.\n\n- Will be overriden once the player reaches the top of a wall.")]
     [SerializeField] float climbDuration = 0.6f;
     [SerializeField] float climbHighlightDetection = 15f;
-    [SerializeField] float climbHighlightMultiplier = 1.25f;
+    [SerializeField] float climbHighlightMultiplier = 1.75f;
     [Tooltip("Max view distance between the player and the wall required for the player to climb a wall.")]
     [SerializeField] float climbWallDistance = 1.25f;
     [Tooltip("Max slope angle of a wall the player can climb.")]
@@ -485,12 +485,16 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
         Vector3 climbDirection = camForward;
 
-        if (Physics.Raycast(climbOrigin, climbDirection, out hit, climbWallDistance, ~noClimbLayers))
+        int wallAngle;
+        int wallDifference;
+
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, climbHighlightDetection,
+                ~noClimbLayers))
         {
             // Wall Vaulting
             if (!isClimbing)
             {
-                float topOffset = 0.1f;
+                float topOffset = 0f;
 
                 newWallHeight = hit.collider.bounds.max.y - topOffset;
             }
@@ -511,8 +515,8 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
             newWallNorm = hit.normal;
 
             // Angle Calculation
-            int wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
-            int wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
+            wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
+            wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
 
             // Climbing Wall Conditions
             if (useCanClimbTag) canBeClimbed = hit.collider.CompareTag(noClimbTag);
@@ -568,6 +572,33 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
 
             // Displays the normal of the wall the player is facing.
             //Debug.DrawRay(hit.transform.position, hit.normal, Color.red, 5f);
+            
+            // Climbing Wall Conditions (rushed code, but recalculating again to allow wall highlight to have its own seperate raycast)
+            wallAngle = (int)Vector3.Angle(hit.normal, Vector3.up);
+            wallDifference = Mathf.RoundToInt(Vector3.Angle(prevWallNorm.normalized, newWallNorm.normalized));
+            
+            if (useCanClimbTag) canBeClimbed = hit.collider.CompareTag(noClimbTag);
+            else canBeClimbed = !hit.collider.CompareTag(noClimbTag);
+            isAboveMinSlope = controller.slopeLimit <= wallAngle;
+            isBelowMaxSlope = wallAngle <= climbMaxSlopeAngle;
+            isFallOrClimb = playerVel.y < -1 || isClimbing;
+            notSameWall = prevWallPos == null || newWallPos != prevWallPos;
+            float wallTolerance = 25f;
+            isAboveMinDiff = prevWallNorm.y == 7f || wallDifference >= (climbMinAngleDiff - wallTolerance);
+            climbTimeLeft = climbTimer <= climbDuration; //|| debugClimbInfinitely;
+
+            // Wall Check
+            if ((canBeClimbed &&
+                 isAboveMinSlope &&
+                 isBelowMaxSlope &&
+                 isAboveMinDiff &&
+                 notSameWall && climbTimeLeft && gravityOn) //||
+                //debugClimbAnything && canBeClimbed && isFallOrClimb
+               ) // For debugClimbAnything.
+
+            {
+                canClimb = true;
+            }
 
             // Player Climb Authorization
             if (canClimb && !controller.isGrounded && isFallOrClimb && (jumpTimer < jumpGraceClimb || !(isJumping && isClimbing)))
@@ -1547,7 +1578,7 @@ public class PlayerController : MonoBehaviour, IDamage, IPushback, IPickup
         while (dashTimer < dashLength)
         {
             dashTimer += Time.deltaTime;
-            controller.Move(move);
+            if (!GameManager.instance.isPaused) controller.Move(move);
             yield return null;
         }
     }

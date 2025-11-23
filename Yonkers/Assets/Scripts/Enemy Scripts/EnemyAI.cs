@@ -139,6 +139,11 @@ public class EnemyAI : MonoBehaviour, IDamage, IPushback
     bool saidDetectionVO = false;
     float combatLineCooldown;
 
+    public int MaxHP
+    {
+        get { return maxHP; }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

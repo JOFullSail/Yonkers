@@ -403,7 +403,7 @@ MonoBehaviour:
   climbSpeed: 10.25
   climbDuration: 2
   climbHighlightDetection: 15
-  climbHighlightMultiplier: 1.25
+  climbHighlightMultiplier: 1.75
   climbWallDistance: 1.25
   climbMaxSlopeAngle: 90
   climbMinAngleDiff: 135
