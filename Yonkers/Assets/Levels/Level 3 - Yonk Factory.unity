@@ -1589,7 +1589,7 @@ GameObject:
   - component: {fileID: 114995191}
   m_Layer: 0
   m_Name: Platform base (42)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7455,7 +7455,7 @@ GameObject:
   - component: {fileID: 514351551}
   m_Layer: 0
   m_Name: Platform base (43)
-  m_TagString: CanClimb
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9629,7 +9629,7 @@ GameObject:
   - component: {fileID: 667631576}
   m_Layer: 0
   m_Name: Platform base (35)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13670,7 +13670,7 @@ GameObject:
   - component: {fileID: 862778427}
   m_Layer: 0
   m_Name: Platform base (75)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17503,7 +17503,7 @@ GameObject:
   - component: {fileID: 1089528128}
   m_Layer: 0
   m_Name: Platform base (31)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18490,7 +18490,7 @@ GameObject:
   - component: {fileID: 1148095849}
   m_Layer: 0
   m_Name: Platform base (1)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23231,7 +23231,7 @@ GameObject:
   - component: {fileID: 1445036683}
   m_Layer: 0
   m_Name: Platform base (5)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23617,7 +23617,7 @@ GameObject:
   - component: {fileID: 1477649931}
   m_Layer: 0
   m_Name: Platform base (21)
-  m_TagString: CanClimb
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23839,7 +23839,7 @@ GameObject:
   - component: {fileID: 1482294502}
   m_Layer: 0
   m_Name: Platform base (29)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26613,7 +26613,7 @@ GameObject:
   - component: {fileID: 1623485431}
   m_Layer: 0
   m_Name: Platform base (13)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28892,7 +28892,7 @@ GameObject:
   - component: {fileID: 1753211847}
   m_Layer: 0
   m_Name: Platform base (70)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30400,7 +30400,7 @@ GameObject:
   - component: {fileID: 1824301302}
   m_Layer: 0
   m_Name: Platform base (34)
-  m_TagString: Untagged
+  m_TagString: Metal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

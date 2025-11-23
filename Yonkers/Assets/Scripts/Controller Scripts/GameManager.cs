@@ -90,7 +90,6 @@ public class GameManager : MonoBehaviour
     public GameObject hypnoScreen;
     public GameObject webScreen;
     public GameObject ExitButton;
-
     public Image playerBrightnessOverlay;
     public Image playerHPBar;
     public TMP_Text playerHPLabel;
