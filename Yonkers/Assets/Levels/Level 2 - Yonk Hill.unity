@@ -55656,27 +55656,35 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: dfc3849ee1efc2d40973d6747b40a21a, type: 3}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: levelMaxScore
-      value: 1200
+      value: 80000
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: levelMusicVol
-      value: 0.5
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: gradeAMinScore
-      value: 750
+      value: 50000
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: gradeBMinScore
-      value: 600
+      value: 40000
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: gradeCMinScore
-      value: 350
+      value: 35000
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: gradeSMinScore
-      value: 900
+      value: 69000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
+      propertyPath: pointslostrate
+      value: 85
+      objectReference: {fileID: 0}
+    - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
+      propertyPath: pointsLostOnRespawn
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: sRankNeedsAllEnemiesDead
