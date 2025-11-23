@@ -13,6 +13,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] int gradeAMinScore = 400;
     [SerializeField] int gradeBMinScore = 300;
     [SerializeField] int gradeCMinScore = 200;
+    [SerializeField] float pointslostrate = 20;
     [SerializeField] bool sRankNeedsAllEnemiesDead;
 
     [Header("Score Modifiers")]
@@ -59,7 +60,7 @@ public class LevelManager : MonoBehaviour
     {
         if (currentScore > 0)
         {
-            currentScore -= Time.deltaTime;
+            currentScore -= pointslostrate * Time.deltaTime;
         }
 
         if (currentScore > levelMaxScore)
