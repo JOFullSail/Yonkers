@@ -50,7 +50,6 @@ public class Checkpoint : MonoBehaviour
 
                 GameManager.instance.playerSpawn.transform.position = spawnPos.transform.position;
                 GameManager.instance.playerSpawn.transform.rotation = spawnPos.transform.rotation;
-
                 StartCoroutine(feedback());
 
                 if (canRevertMaterial)
