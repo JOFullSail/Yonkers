@@ -39,7 +39,14 @@ public class Checkpoint : MonoBehaviour
     {
         if (!other.CompareTag("Player"))
             return;
-
+        if(gameObject.name == "Train Checkpoint Flag")
+        {
+            GameManager.instance.playerSpawn.transform.parent = transform;
+        }
+        else
+        {
+            GameManager.instance.playerSpawn.transform.parent = null;
+        }
         if (!triggeredThisSession)
         {
             triggeredThisSession = true;

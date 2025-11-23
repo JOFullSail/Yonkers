@@ -137,7 +137,7 @@ public class LevelManager : MonoBehaviour
         return (char)levelGrade;
     }
 
-    private void HandleFinalLevelComplete()
+    public void HandleFinalLevelComplete()
     {
         levelScore = (int)currentScore;
 

@@ -55684,7 +55684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: pointslostrate
-      value: 55
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 7371566286363770666, guid: 03ed3bb8972bdbc4e9916a898673932a, type: 3}
       propertyPath: pointsLostOnRespawn
@@ -81899,7 +81899,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5768369631922602247, guid: 34b6ab1f27312b245874c3dd7b63db4f, type: 3}
       propertyPath: m_Name
-      value: Checkpoint Flag
+      value: Train Checkpoint Flag
       objectReference: {fileID: 0}
     - target: {fileID: 5768369631922602247, guid: 34b6ab1f27312b245874c3dd7b63db4f, type: 3}
       propertyPath: m_TagString

@@ -477,7 +477,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 627aa57889e4c0f4dbd6533a4dcdbbf1, type: 3}
   - {fileID: 8300000, guid: c52a17d08fcec6e43931784567d17609, type: 3}
   - {fileID: 8300000, guid: 8d12826031c59534bb7a831d00d8323a, type: 3}
-  audRoyalStepsVol: 1
+  audRoyalStepsVol: 0.1
   audStoneSteps:
   - {fileID: 8300000, guid: c574f75bf2ef35544a3dfd38d4964086, type: 3}
   - {fileID: 8300000, guid: f430d9e3f6b655d419818d0d7016b39a, type: 3}

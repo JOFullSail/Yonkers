@@ -43,9 +43,12 @@ public class MeleeEnemy : EnemyAI
         transformPosition = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z);
         if (playerDetected)
             playerPosition = GameManager.instance.player.transform.position - transform.position;
-        
-        if (suicideOnTouch && Vector3.Distance(GameManager.instance.player.transform.position, transformPosition) <= reach)
+        if(GameManager.instance.player != null)
+        {
+            if (suicideOnTouch && Vector3.Distance(GameManager.instance.player.transform.position, transformPosition) <= reach)
             punch(pushForce, playerPosition);
+        }
+        
 
         attackTimer += Time.deltaTime;
 

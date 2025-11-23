@@ -146,6 +146,8 @@ public class TheCartoonKing : MonoBehaviour, IDamage
     float originalSpeed;
     float distance;
 
+    //ONE TIME TRIGGER FOR DEATH BOOl
+    bool onetimedeath;
     //THE STATS THE ENEMY STARTS WITH:
     void Start()
     {
@@ -171,7 +173,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         maxHP = HP;
         HPP2 = HP / 2;
         agent.speed = originalSpeed;
-
+        onetimedeath = true;
         if (entryMonologue != null)
         {
             voiceAudioSource.PlayOneShot(entryMonologue);
@@ -634,8 +636,9 @@ public class TheCartoonKing : MonoBehaviour, IDamage
         if (HP > 0 && hurtSounds.Count() > 0)
             voiceAudioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
 
-        if (HP <= 0)
+        if (HP <= 0 && onetimedeath == true)
         {
+            onetimedeath = false;
             isDead = true;
             defaultState = false;
             if (deathSound != null)
@@ -649,6 +652,7 @@ public class TheCartoonKing : MonoBehaviour, IDamage
             {
                 collisionBox.enabled = false;
             }
+
             agent.isStopped = true;
             agent.enabled = false;
             if (healthBarInstance != null)
