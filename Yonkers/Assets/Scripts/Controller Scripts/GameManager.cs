@@ -267,7 +267,7 @@ public class GameManager : MonoBehaviour
         }
         ExitButton.SetActive(false);
 #else
-        if (Input.GetButtonDown("Cancel") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open" && menuActive != menuDead)
+        if (Input.GetButtonDown("Cancel") && SceneManager.GetActiveScene().name != "Main Menu Scene" && SceneManager.GetActiveScene().name != "Main Menu Scene First Open"  && menuActive != menuDead)
         {
             if (menuActive == null)
             {
@@ -617,6 +617,11 @@ public class GameManager : MonoBehaviour
             {
                 ScoreLVL5.text = score.ToString();
                 GradeLVL5.sprite = GradeImageGetter(grade);
+            }
+            finalGrade = data.SavedFinal;
+            if(finalGrade != 'U')
+            {
+                OverallGrade.sprite = GradeImageGetter(finalGrade);
             }
         }
         finalGrade = data.SavedFinal;
@@ -1212,6 +1217,8 @@ public class GameManager : MonoBehaviour
         OverallGrade.sprite = GradeImageGetter(finalGrade);
         WinGradetxt.colorGradientPreset = GradientGetter(finalGrade);
         WinGradeImg.sprite = GradeImageGetter(finalGrade);
+        OverallGrade.sprite = GradeImageGetter(finalGrade);
+        SaveProgression();
         //Debug.Log("Final Grade is " + finalGrade);
         SaveProgression();
         stateWin();
