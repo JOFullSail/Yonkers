@@ -258,7 +258,7 @@ public class ButtonFunctions : MonoBehaviour
     }
     public void Backfrom() //back from settings uses this! also "back" while in main menu scene!
     {
-
+        
         if (SceneManager.GetActiveScene().name == "Main Menu Scene" || SceneManager.GetActiveScene().name == "Main Menu Scene First Open")
         {
             GameManager.instance.backtoMainmenu();

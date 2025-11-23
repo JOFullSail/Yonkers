@@ -313,7 +313,14 @@ public class GameManager : MonoBehaviour
         {
             disablePlayerUI();
         }
-
+        if (menuActive != null)
+        {
+            checkpointLabel.SetActive(false);
+        }
+        if(menuActive != menuSettings)
+        {
+            submenuAudioSettings.SetActive(false);
+        }
         if (menuActive != null && (menuActive == menuSettings || menuActive == menuLevelSelect || menuActive == CreditsScreen) && (Input.GetButton("Cancel") || Input.GetButton("Pause")))
             buttonFunctions.Backfrom();
     }
