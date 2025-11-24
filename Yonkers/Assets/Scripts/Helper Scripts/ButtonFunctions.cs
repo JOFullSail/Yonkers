@@ -120,6 +120,8 @@ public class ButtonFunctions : MonoBehaviour
 
         // Updating UI Bars
         FOVSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+
+        SettingsData.instance.FOV = sliderValue;
     }
     public void masterVol(Slider slider)
     {
@@ -132,6 +134,8 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.MastervolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         MasterVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+
+        SettingsData.instance.SaveSettings();
     }
     public void musicVol(Slider slider)
     {
@@ -144,6 +148,8 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.MusicvolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         MusicVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+
+        SettingsData.instance.SaveSettings();
     }
     public void SFXVol(Slider slider)
     {
@@ -156,6 +162,8 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.SFXvolcurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         SFXVolSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+
+        SettingsData.instance.SaveSettings();
     }
     public void charactervoicesVol(Slider slider)
     {
@@ -169,6 +177,8 @@ public class ButtonFunctions : MonoBehaviour
         GameManager.instance.CVoicescurrentNumber.text = (sliderValue * 100).ToString("F0");
         // Updating UI Bars
         CharacterVoicesSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+
+        SettingsData.instance.SaveSettings();
     }
 
     public void mouSens(Slider slider)
@@ -184,6 +194,8 @@ public class ButtonFunctions : MonoBehaviour
 
         // Updating UI Bars
         mouSensSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+
+        SettingsData.instance.SaveSettings();
     }
 
     public void brightness(Slider slider)
@@ -213,6 +225,7 @@ public class ButtonFunctions : MonoBehaviour
         }
         GameManager.instance.BrightnesscurrentNumber.text = sliderValue.ToString();
         brightnessSliderParent.fillAmount = normalize(slider.minValue, slider.maxValue, sliderValue);
+        SettingsData.instance.SaveSettings();
     }
 
     //new game goes to level select and refreshes player data

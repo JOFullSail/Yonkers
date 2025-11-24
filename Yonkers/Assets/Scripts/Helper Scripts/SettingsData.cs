@@ -52,6 +52,8 @@ public class SettingsData : MonoBehaviour
     {
         instance = this;
 
+        LoadSettings();
+
         Slider slider;
         if (btnFunctions.FOVSliderParent != null)
         {
@@ -167,5 +169,29 @@ public class SettingsData : MonoBehaviour
         }
 
     }
-    
+
+    public void SaveSettings()
+    {
+        PlayerPrefs.SetFloat("FOV", FOV);
+        PlayerPrefs.SetFloat("MouseSens", mouSens);
+        PlayerPrefs.SetFloat("Brightness", brightness);
+        PlayerPrefs.SetFloat("MasterVol", MasterVol);
+        PlayerPrefs.SetFloat("MusicVol", MusicVol);
+        PlayerPrefs.SetFloat("SFXVol", SFXVol);
+        PlayerPrefs.SetFloat("CharacterVoicesVol", CharacterVoicesVol);
+
+        PlayerPrefs.Save();
+    }
+
+    public void LoadSettings()
+    {
+        FOV = PlayerPrefs.GetFloat("FOV", FOV);
+        mouSens = PlayerPrefs.GetFloat("MouseSens", mouSens);
+        brightness = PlayerPrefs.GetFloat("Brightness", brightness);
+        MasterVol = PlayerPrefs.GetFloat("MasterVol", MasterVol);
+        MusicVol = PlayerPrefs.GetFloat("MusicVol", MusicVol);
+        SFXVol = PlayerPrefs.GetFloat("SFXVol", SFXVol);
+        CharacterVoicesVol = PlayerPrefs.GetFloat("CharacterVoicesVol", CharacterVoicesVol);
+    }
+
 }

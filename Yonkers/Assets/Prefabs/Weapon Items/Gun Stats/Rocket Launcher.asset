@@ -30,7 +30,7 @@ MonoBehaviour:
   hitEffect: {fileID: 0}
   shootSound:
   - {fileID: 8300000, guid: 40e71b0f7bd610849b40f150553f4702, type: 3}
-  shootSoundVol: 0.5
+  shootSoundVol: 1
   reloadSound:
   - {fileID: 8300000, guid: c3430338b7987524d96ce1f63db280cd, type: 3}
   reloadSoundVol: 0.5

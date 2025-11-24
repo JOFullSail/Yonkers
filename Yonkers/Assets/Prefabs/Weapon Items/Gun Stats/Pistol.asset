@@ -30,10 +30,10 @@ MonoBehaviour:
   hitEffect: {fileID: 970440554703164915, guid: 47096eff328e11a418ace7db2d72aa97, type: 3}
   shootSound:
   - {fileID: 8300000, guid: 6dd7024f00606b44eb5884197a66a893, type: 3}
-  shootSoundVol: 0.5
+  shootSoundVol: 1
   reloadSound:
   - {fileID: 8300000, guid: d85099fefd84d429788e09001413207b, type: 3}
-  reloadSoundVol: 0.25
+  reloadSoundVol: 0.5
   positionWhenHeld: {x: 0.2, y: -0.2229996, z: 0.4335518}
   rotationWhenHeld: {x: 0, y: 0, z: 0}
   scaleWhenHeld: {x: 1, y: 1, z: 1}

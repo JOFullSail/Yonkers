@@ -450,7 +450,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 966d870690ce41d4f8388865d71c19e2, type: 3}
   - {fileID: 8300000, guid: 46fcf9b19e8c7f745a66c4f8a68824a2, type: 3}
   - {fileID: 8300000, guid: 463ccb86a8411604e928f892cc7d94a2, type: 3}
-  audHurtVol: 0.5
+  audHurtVol: 1
   audMetalSteps:
   - {fileID: 8300000, guid: 1e2f0e416fe2e594cbf00039261260b3, type: 3}
   - {fileID: 8300000, guid: cf272f3dd6135244893a8236fa71f184, type: 3}
@@ -486,7 +486,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1608f981b884cc14fa058c28796fd290, type: 3}
   - {fileID: 8300000, guid: 8e705d09fbfc6a94191191c295faa3c3, type: 3}
   - {fileID: 8300000, guid: 9ebfac4a1bcc130458f72baec1da5911, type: 3}
-  audStoneStepsVol: 1
+  audStoneStepsVol: 0.8
   audRockSteps:
   - {fileID: 8300000, guid: b4d9a02538b2a644799d67c5b0a3329e, type: 3}
   - {fileID: 8300000, guid: fbad684bc1017544799cdff48d25d2ab, type: 3}
@@ -495,7 +495,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a7f8b093c8392f6419d25508ae10f4ef, type: 3}
   - {fileID: 8300000, guid: 1e243aeac70b65442aa81faa1c33c192, type: 3}
   - {fileID: 8300000, guid: 60435061565752243935c8cbd34d7af7, type: 3}
-  audRockStepsVol: 1
+  audRockStepsVol: 0.8
   audDash:
   - {fileID: 8300000, guid: 993fb6dd45c546d4093807ed7ebd8556, type: 3}
   audDashVol: 1
@@ -504,7 +504,7 @@ MonoBehaviour:
   audSpawnVol: 0.078
   audGun:
   - {fileID: 8300000, guid: dd22e7d230c0d1143984c2daef557181, type: 3}
-  audGunVol: 0.5
+  audGunVol: 1
   footchecklength: 12
   invertMove: 0
   gravityOffTimer: 0
